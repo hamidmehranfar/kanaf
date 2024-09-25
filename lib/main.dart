@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kanaf/res/color_scheme.dart';
+import 'package:kanaf/res/input_decoration_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: lightColorScheme,
+        inputDecorationTheme: lightInputDecorationTheme,
+
         dividerColor: Colors.transparent,
         hoverColor: Colors.transparent,
       ),
