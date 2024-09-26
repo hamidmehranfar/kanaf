@@ -10,6 +10,7 @@ ColorScheme lightColorScheme = const ColorScheme(
   onSecondary: Color(0xFFFFFFFF),
   onSurface: Color(0xFF000000),
   onError: Color(0xFFFFFFFF),
+  shadow: Color(0xFF494747),
   primaryContainer: Color(0xFFBBDEFB),
   secondaryContainer: Color(0xFFB2EBF2),
   onPrimaryContainer: Color(0xFF0D47A1),
