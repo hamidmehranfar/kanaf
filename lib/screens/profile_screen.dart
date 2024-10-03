@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '/global_configs.dart';
 
-class FirstScreen extends StatefulWidget {
-  const FirstScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<FirstScreen> createState() => _FirstScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen> with TickerProviderStateMixin{
+class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin{
   TabController? tabController;
 
   @override
@@ -52,6 +52,8 @@ class _FirstScreenState extends State<FirstScreen> with TickerProviderStateMixin
                   bottom: TabBar(
                     dividerColor: Colors.transparent,
                     padding: EdgeInsets.zero,
+                    labelColor: theme.colorScheme.onSurface,
+                    indicatorColor: theme.colorScheme.onSurface,
                     indicatorSize: TabBarIndicatorSize.tab,
                     controller: tabController,
                     tabs: const [
@@ -70,7 +72,6 @@ class _FirstScreenState extends State<FirstScreen> with TickerProviderStateMixin
                   itemCount: 20,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 2,
                     childAspectRatio: 1/2
                   ),
                   itemBuilder: (context, index){
@@ -84,7 +85,6 @@ class _FirstScreenState extends State<FirstScreen> with TickerProviderStateMixin
                     itemCount: 20,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        crossAxisSpacing: 2,
                         childAspectRatio: 1/2
                     ),
                     itemBuilder: (context, index){

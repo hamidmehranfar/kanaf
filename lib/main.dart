@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/screens/first_screen.dart';
+import 'package:kanaf/screens/home_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
 
@@ -33,9 +33,10 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData(
           size: 20
         ),
-        fontFamily: "IranSans"
+        fontFamily: "IranSans",
       ),
-      home: const FirstScreen(),
+      locale: const Locale("fa"),
+      home: const HomeScreen(),
     );
   }
 }
