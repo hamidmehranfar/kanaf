@@ -205,6 +205,23 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("نظرات", style: theme.textTheme.titleLarge,),
             ),
             const SizedBox(height: 8,),
+            isLoading! ? CustomShimmer(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 150,  // Set minimum width
+                    maxWidth: 150,  // Set maximum width
+                    minHeight: 150,
+                    maxHeight: 150,
+                  ),
+                  child: Container(
+                    margin: globalPadding * 6,
+                    decoration: BoxDecoration(
+                      borderRadius: globalBorderRadius*2,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+            ) :
             CarouselSlider(
               items: List.generate(comments.length, (int index){
                 return Container(
