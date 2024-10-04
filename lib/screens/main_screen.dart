@@ -30,46 +30,40 @@ class _MainScreenState extends State<MainScreen> {
         index: currentIndex,
         children: screens,
       ),
-      bottomNavigationBar: Theme(
-        data: ThemeData(
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              backgroundColor: Colors.black,
-              icon: Icon(Iconsax.home_2),
-              label: "خانه"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Iconsax.search_normal),
-                label: "جستجو"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Iconsax.message),
-                label: "چت"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Iconsax.messages),
-                label: "تالار گفتگو"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Iconsax.profile_circle),
-                label: "پروفایل"
-            ),
-          ],
-          currentIndex: currentIndex,
-          onTap: (int index){
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          selectedItemColor: theme.colorScheme.primary,
-          backgroundColor: theme.colorScheme.outline,
-          unselectedItemColor: theme.colorScheme.onPrimary,
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            backgroundColor: Colors.black,
+            icon: Icon(Iconsax.home_2),
+            label: "خانه"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Iconsax.search_normal),
+              label: "جستجو"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Iconsax.message),
+              label: "چت"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Iconsax.messages),
+              label: "تالار گفتگو"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Iconsax.profile_circle),
+              label: "پروفایل"
+          ),
+        ],
+        currentIndex: currentIndex,
+        onTap: (int index){
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        selectedItemColor: theme.colorScheme.primary,
+        backgroundColor: theme.colorScheme.outline,
+        unselectedItemColor: theme.colorScheme.onPrimary,
       ),
     );
   }

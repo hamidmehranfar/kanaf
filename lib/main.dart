@@ -24,6 +24,12 @@ class MyApp extends StatelessWidget {
         textTheme: textTheme,
         dividerColor: Colors.transparent,
         hoverColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        iconTheme: const IconThemeData(
+            size: 20
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: darkColorScheme,
@@ -34,7 +40,6 @@ class MyApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        canvasColor: Colors.green,
         iconTheme: const IconThemeData(
           size: 20
         ),

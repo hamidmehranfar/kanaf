@@ -18,7 +18,7 @@ class HomeWorksItem extends StatelessWidget {
         padding: globalPadding,
         decoration: BoxDecoration(
           borderRadius: globalBorderRadius *2,
-          color: theme.colorScheme.primary.withOpacity(0.3)
+          color: theme.colorScheme.secondary.withOpacity(0.3)
         ),
         child: Center(
           child: Text(text,
