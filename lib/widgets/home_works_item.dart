@@ -3,16 +3,15 @@ import 'package:kanaf/global_configs.dart';
 
 class HomeWorksItem extends StatelessWidget {
   final String text;
-  const HomeWorksItem({super.key, required this.text});
+  final void Function() onTap;
+  const HomeWorksItem({super.key, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
     return InkWell(
-      onTap: (){
-
-      },
+      onTap: onTap,
       child: Container(
         width: 80,
         height: 60,

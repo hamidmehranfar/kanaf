@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/models/comment.dart';
+import 'package:kanaf/screens/master_services_screen.dart';
 import 'package:kanaf/widgets/home_works_item.dart';
 import '/controllers/home_controller.dart';
 import '/widgets/custom_shimmer.dart';
@@ -101,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: IconButton(
                               style: IconButton.styleFrom(
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  padding: EdgeInsets.only(bottom: 1)
+                                  padding: const EdgeInsets.only(bottom: 1)
                               ),
                               onPressed: (){
 
@@ -195,7 +197,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(homeWorkTitles.length, (int index){
-                  return HomeWorksItem(text: homeWorkTitles[index]);
+                  return HomeWorksItem(
+                    text: homeWorkTitles[index],
+                    onTap: (){
+                      if(index == 0){
+                        Get.to(const MasterServicesScreen());
+                      }
+                    },
+                  );
                 }),
               ),
             ),
@@ -205,6 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("نظرات", style: theme.textTheme.titleLarge,),
             ),
             const SizedBox(height: 8,),
+            //FIXME : make shimmer smaller
             isLoading! ? CustomShimmer(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
