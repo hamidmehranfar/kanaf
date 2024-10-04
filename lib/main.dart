@@ -31,6 +31,10 @@ class MyApp extends StatelessWidget {
         textTheme: textTheme,
         dividerColor: Colors.transparent,
         hoverColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        canvasColor: Colors.green,
         iconTheme: const IconThemeData(
           size: 20
         ),

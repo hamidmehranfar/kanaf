@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Comment> comments = [];
 
   List<String> homeWorkTitles = [
-    "ارسال کار",
+    "اوسا کار",
     "محاسبه متریال",
     "نظارت بر ثبت پروژه",
     "آموزش و ترفند",
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: IconButton(
                               style: IconButton.styleFrom(
                                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  padding: EdgeInsets.zero
+                                  padding: EdgeInsets.only(bottom: 1)
                               ),
                               onPressed: (){
 
@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 200,
                       width: 300,
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: theme.colorScheme.primary,
                         borderRadius: globalBorderRadius * 2
                       ),
                     );

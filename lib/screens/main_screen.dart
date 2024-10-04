@@ -30,75 +30,46 @@ class _MainScreenState extends State<MainScreen> {
         index: currentIndex,
         children: screens,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: theme.colorScheme.outline,
-        unselectedItemColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: theme.colorScheme.primary,
-            icon: Container(
-              padding: bottomNavigationIconPadding,
-              decoration: BoxDecoration(
-                  borderRadius: globalBorderRadius * 3,
-                  color: currentIndex == 0 ? theme.colorScheme.primary.withOpacity(0.2) : Colors.transparent
-              ),
-              child: Icon(Iconsax.home_2),
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              backgroundColor: Colors.black,
+              icon: Icon(Iconsax.home_2),
+              label: "خانه"
             ),
-            label: "خانه"
-          ),
-          BottomNavigationBarItem(
-              icon: Container(
-                padding: bottomNavigationIconPadding,
-                decoration: BoxDecoration(
-                  borderRadius: globalBorderRadius * 3,
-                  color: currentIndex == 1 ? theme.colorScheme.primary.withOpacity(0.2) : Colors.transparent
-                ),
-                child: Icon(Iconsax.search_normal),
-              ),
-              label: "جستجو"
-          ),
-          BottomNavigationBarItem(
-              icon: Container(
-                padding: bottomNavigationIconPadding,
-                decoration: BoxDecoration(
-                    borderRadius: globalBorderRadius * 3,
-                    color: currentIndex == 2 ? theme.colorScheme.primary.withOpacity(0.2) : Colors.transparent
-                ),
-                child: Icon(Iconsax.message),
-              ),
-              label: "چت"
-          ),
-          BottomNavigationBarItem(
-              icon: Container(
-                padding: bottomNavigationIconPadding,
-                decoration: BoxDecoration(
-                    borderRadius: globalBorderRadius * 3,
-                    color: currentIndex == 3 ? theme.colorScheme.primary.withOpacity(0.2) : Colors.transparent
-                ),
-                child: Icon(Iconsax.messages),
-              ),
-              label: "تالار گفتگو"
-          ),
-          BottomNavigationBarItem(
-              icon: Container(
-                padding: bottomNavigationIconPadding,
-                decoration: BoxDecoration(
-                    borderRadius: globalBorderRadius * 3,
-                    color: currentIndex == 4 ? theme.colorScheme.primary.withOpacity(0.2) : Colors.transparent
-                ),
-                child: Icon(Iconsax.profile_circle),
-              ),
-              label: "پروفایل"
-          ),
-        ],
-        selectedItemColor: Colors.black,
-        currentIndex: currentIndex,
-        onTap: (int index){
-          setState(() {
-            currentIndex = index;
-          });
-        },
+            BottomNavigationBarItem(
+                icon: Icon(Iconsax.search_normal),
+                label: "جستجو"
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Iconsax.message),
+                label: "چت"
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Iconsax.messages),
+                label: "تالار گفتگو"
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Iconsax.profile_circle),
+                label: "پروفایل"
+            ),
+          ],
+          currentIndex: currentIndex,
+          onTap: (int index){
+            setState(() {
+              currentIndex = index;
+            });
+          },
+          selectedItemColor: theme.colorScheme.primary,
+          backgroundColor: theme.colorScheme.outline,
+          unselectedItemColor: theme.colorScheme.onPrimary,
+        ),
       ),
     );
   }
