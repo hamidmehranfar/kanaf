@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:kanaf/screens/services_list_screen.dart';
 import '/global_configs.dart';
 import '/models/enums/master_services.dart';
 
@@ -21,7 +23,7 @@ class MasterServicesItems extends StatelessWidget {
               Text(convertServiceToString(service), style: theme.textTheme.headlineSmall,),
               InkWell(
                 onTap: (){
-
+                  Get.to(ServicesListScreen(service : service));
                 },
                 child: Row(
                   children: [
