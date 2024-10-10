@@ -18,8 +18,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
-    focus.requestFocus();
     super.initState();
+    focus.requestFocus();
   }
 
   void onChangeListener(String searchText){

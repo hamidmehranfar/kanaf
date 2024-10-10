@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/screens/home_screen.dart';
 import 'package:kanaf/screens/profile_screen.dart';
+import 'package:kanaf/screens/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   List<Widget> screens = [
     const HomeScreen(),
-    Center(child: Text("search page"),),
+    const SearchScreen(),
     Center(child: Text("chat page"),),
     Center(child: Text("talar page"),),
     const ProfileScreen()
@@ -61,6 +62,8 @@ class _MainScreenState extends State<MainScreen> {
             currentIndex = index;
           });
         },
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
         selectedItemColor: theme.colorScheme.primary,
         backgroundColor: theme.colorScheme.outline,
         unselectedItemColor: theme.colorScheme.onPrimary,
