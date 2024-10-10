@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:kanaf/widgets/my_divider.dart';
+import '../widgets/my_divider.dart';
 import '../global_configs.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -13,7 +13,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController controller = TextEditingController();
+  FocusNode focus = FocusNode();
   List<String> searchList = [];
+
+  @override
+  void initState() {
+    focus.requestFocus();
+    super.initState();
+  }
 
   void onChangeListener(String searchText){
     searchList.clear();
@@ -60,6 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: theme.colorScheme.secondary.withOpacity(0.2),
                       ),
                       child: TextField(
+                        focusNode: focus,
                         controller: controller,
                         style: theme.textTheme.titleMedium,
                         decoration: InputDecoration(
