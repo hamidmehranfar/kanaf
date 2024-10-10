@@ -15,7 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this,);
+    tabController = TabController(length: 1, vsync: this,);
   }
 
   @override
@@ -27,8 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
           onPressed: (){
 
           },
-          icon: const Icon(Iconsax.arrow_left_2),),
-        title: Text("Hamid", style:theme.textTheme.titleLarge ,),
+          icon: const Icon(Iconsax.arrow_right_1),),
+        title: Text("حمید", style:theme.textTheme.titleLarge ,),
         centerTitle: true,
         actions: [
           IconButton(
@@ -57,8 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                     indicatorSize: TabBarIndicatorSize.tab,
                     controller: tabController,
                     tabs: const [
-                      Tab(icon: Icon(Iconsax.grid_1)),
-                      Tab(icon: Icon(Iconsax.video_square)),
                       Tab(icon: Icon(Iconsax.user_square)),
                     ],
                   ),
@@ -80,31 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                       color: index %2 == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
                     );
                   }
-                ),
-                GridView.builder(
-                    itemCount: 20,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1/2
-                    ),
-                    itemBuilder: (context, index){
-                      return Container(
-                        height: 400,
-                        color: index %2 == 0 ? theme.colorScheme.primary : theme.colorScheme.error,
-                      );
-                    }
-                ),
-                GridView.builder(
-                    itemCount: 20,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 2
-                    ),
-                    itemBuilder: (context, index){
-                      return Container(
-
-                      );
-                    }
                 ),
               ],
             ),
@@ -137,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text("3'248", style: theme.textTheme.titleLarge,),
-                          Text("Posts", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.shadow),),
+                          Text("پست", style: theme.textTheme.bodyMedium!,),
                         ],
                       ),
                     ),
@@ -147,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text("511K", style: theme.textTheme.titleLarge,overflow: TextOverflow.ellipsis,),
-                          Text("Followers", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.shadow),),
+                          Text("دنبال کننده", style: theme.textTheme.bodyMedium!,),
                         ],
                       ),
                     ),
@@ -157,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text("1,944", style: theme.textTheme.titleLarge,),
-                          Text("Following", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.shadow),),
+                          Text("دنبال شونده", style: theme.textTheme.bodyMedium!,),
                         ],
                       ),
                     ),
@@ -166,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               ),
             ],
           ),
-          Text("Hamid Mehranfar | College\nUniversity of Isfahan", style: theme.textTheme.bodyLarge,),
+          Text("حمید مهران فر | دانشجو \n دانشگاه اصفهان", style: theme.textTheme.bodyLarge,),
           const SizedBox(height: 10,),
           Row(
             children: [
@@ -193,19 +166,19 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               const SizedBox(width: 10,),
               Expanded(
                 child: Text.rich(TextSpan(
-                    text: "Followed by ",
+                    text: "دنبال شده توسط ",
                     style: theme.textTheme.bodyLarge,
                     children: [
                       TextSpan(
-                          text: "Hamid ",
+                          text: "حمید ",
                           style: theme.textTheme.titleLarge
                       ),
                       TextSpan(
-                          text: "and ",
+                          text: "و ",
                           style: theme.textTheme.bodyLarge
                       ),
                       TextSpan(
-                          text: "Javad",
+                          text: "جواد",
                           style: theme.textTheme.titleLarge
                       ),
                     ]
@@ -229,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   onPressed: (){
 
                   },
-                  child: Text("Follow", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.surface),)
+                  child: Text("دنبال کردن", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.surface),)
               ),
               FilledButton(
                   style: FilledButton.styleFrom(
@@ -245,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   onPressed: (){
 
                   },
-                  child: Text("Message", style: theme.textTheme.titleMedium)
+                  child: Text("پیام", style: theme.textTheme.titleMedium)
               ),
               FilledButton(
                   style: FilledButton.styleFrom(
@@ -261,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   onPressed: (){
 
                   },
-                  child: Text("Contact", style: theme.textTheme.titleMedium)
+                  child: Text("مخابین", style: theme.textTheme.titleMedium)
               ),
               IconButton(
                   onPressed: (){
