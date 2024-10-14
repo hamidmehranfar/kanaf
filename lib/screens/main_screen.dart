@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   List<Widget> screens = [
     const HomeScreen(),
-    const SearchScreen(),
+    const SearchScreen(isMainScreen: true,),
     Center(child: Text("chat page"),),
     Center(child: Text("talar page"),),
     const ProfileScreen()

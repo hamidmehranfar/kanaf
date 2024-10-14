@@ -124,7 +124,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                         Expanded(
                           child: InkWell(
                             onTap: (){
-                              Get.to(const SearchScreen());
+                              Get.to(const SearchScreen(isMainScreen: false,));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

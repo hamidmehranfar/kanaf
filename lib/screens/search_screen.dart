@@ -5,7 +5,8 @@ import '../widgets/my_divider.dart';
 import '../global_configs.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final bool isMainScreen;
+  const SearchScreen({super.key, required this.isMainScreen});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -19,7 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    focus.requestFocus();
+    if(!widget.isMainScreen) focus.requestFocus();
   }
 
   void onChangeListener(String searchText){

@@ -12,20 +12,29 @@ class HomeWorksItem extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      child: Container(
-        width: 80,
-        height: 60,
-        padding: globalPadding,
-        decoration: BoxDecoration(
-          borderRadius: globalBorderRadius *2,
-          color: theme.colorScheme.secondary.withOpacity(0.3)
-        ),
-        child: Center(
-          child: Text(text,
-            style: theme.textTheme.bodyLarge,
-            textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            padding: globalAllPadding * 4,
+            margin: globalPadding * 2,
+            decoration: BoxDecoration(
+                borderRadius: globalBorderRadius *2,
+                color: theme.colorScheme.secondary.withOpacity(0.3)
+            ),
+            child:
+            Image.asset("assets/images/user.png", fit: BoxFit.fill,),
           ),
-        ),
+          SizedBox(
+            width: 100,
+            child: Text(text,
+              style: theme.textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }

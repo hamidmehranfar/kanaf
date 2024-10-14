@@ -2,13 +2,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/models/comment.dart';
-import 'package:kanaf/screens/master_services_screen.dart';
-import 'package:kanaf/widgets/home_works_item.dart';
-import '/controllers/home_controller.dart';
-import '/widgets/custom_shimmer.dart';
-import '/global_configs.dart';
+import '../controllers/size_controller.dart';
+import '../models/comment.dart';
+import '../screens/master_services_screen.dart';
+import '../widgets/home_works_item.dart';
+import '../controllers/home_controller.dart';
+import '../widgets/custom_shimmer.dart';
+import '../global_configs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> homeWorkTitles = [
     "اوسا کار",
     "محاسبه متریال",
-    "نظارت بر ثبت پروژه",
+    "نظارت",
     "آموزش و ترفند",
   ];
 
@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: ListView(
           shrinkWrap: true,
+          padding: const EdgeInsets.only(bottom: 24),
           children: [
             Padding(
               padding: globalPadding * 3,
@@ -192,13 +193,17 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("خدمات", style: theme.textTheme.titleLarge,),
             ),
             const SizedBox(height: 8,),
-            Padding(
-              padding: globalPadding * 3,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(homeWorkTitles.length, (int index){
+                // homeWorkTitles.length + 2 is for add margin in first and end of row
+                children: List.generate(homeWorkTitles.length + 2, (int index){
+                  if(index == 0 || index == homeWorkTitles.length + 1){
+                    return const SizedBox(width: 4,);
+                  }
                   return HomeWorksItem(
-                    text: homeWorkTitles[index],
+                    // index - 1 is because first index is margin
+                    text: homeWorkTitles[index - 1],
                     onTap: (){
                       if(index == 0){
                         Get.to(const MasterServicesScreen());
@@ -216,21 +221,14 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8,),
             //FIXME : make shimmer smaller
             isLoading! ? CustomShimmer(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: 150,  // Set minimum width
-                    maxWidth: 150,  // Set maximum width
-                    minHeight: 150,
-                    maxHeight: 150,
-                  ),
-                  child: Container(
-                    margin: globalPadding * 6,
-                    decoration: BoxDecoration(
-                      borderRadius: globalBorderRadius*2,
-                      color: Colors.black,
-                    ),
-                  ),
-                )
+              child: Container(
+                height: 40,
+                margin: globalPadding * 6,
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius*2,
+                  color: Colors.black,
+                ),
+              )
             ) :
             CarouselSlider(
               items: List.generate(comments.length, (int index){
@@ -258,6 +256,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 viewportFraction: 0.5,
                 enableInfiniteScroll: false
               )
+            ),
+            const SizedBox(height: 24,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondary.withOpacity(0.3),
+                    borderRadius: globalBorderRadius * 2
+                  ),
+                  child: Center(child: Text("تالار گفتگو", style: theme.textTheme.bodyLarge,)),
+                ),
+                Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                      color: theme.colorScheme.secondary.withOpacity(0.3),
+                      borderRadius: globalBorderRadius * 2
+                  ),
+                  child: Center(child: Text("اخبار", style: theme.textTheme.bodyLarge,)),
+                ),
+              ],
             )
           ],
         ),
