@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kanaf/screens/home_screen.dart';
+import 'package:kanaf/screens/authentication/login_screen.dart';
 import 'package:kanaf/screens/main_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "IranSans",
       ),
       locale: const Locale("fa"),
-      home: const MainScreen(),
+      home: const LoginScreen(),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../controllers/size_controller.dart';
 import '../models/comment.dart';
 import '../screens/master_services_screen.dart';
-import '../widgets/home_works_item.dart';
+import '../widgets/home/home_works_item.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/custom_shimmer.dart';
 import '../global_configs.dart';

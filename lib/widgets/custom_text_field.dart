@@ -18,7 +18,6 @@ class CustomTextField extends StatefulWidget {
   final bool readOnly;
   final Widget? suffixIcon;
   final BoxConstraints? suffixIconConstraints;
-  final BuildContext parentContext;
   final String initialValue;
   final TextEditingController? controller;
   final FloatingLabelBehavior? floatingLabelBehavior;
@@ -41,7 +40,6 @@ class CustomTextField extends StatefulWidget {
     this.readOnly = false,
     this.suffixIcon,
     this.suffixIconConstraints,
-    required this.parentContext,
     this.initialValue = '',
     this.controller,
     this.floatingLabelBehavior,
@@ -60,6 +58,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   void initState() {
+    focusNode.addListener((){
+      setState(() {});
+    });
     if (widget.controller == null) {
       controller = TextEditingController(text: widget.initialValue);
     } else {
@@ -78,54 +79,62 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     var themeColors = Theme.of(context).colorScheme;
 
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      readOnly: widget.readOnly,
-      textDirection: widget.textDirection,
-      textInputAction: widget.textInputAction,
-      obscureText: widget.obscureText,
-      obscuringCharacter: '*',
-      maxLength: widget.maxLength,
-      maxLines: widget.maxLines,
-      keyboardType: widget.keyboardType,
-      autocorrect: false,
-      inputFormatters: widget.inputFormatters,
-      style: TextStyle(color: themeColors.onSurface),
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        errorText: widget.errorText,
-        labelText: widget.labelText,
-        suffixIcon: widget.suffixIcon,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: globalBorderRadius * 2,
-          borderSide: BorderSide(
-            width: 1.0,
-            color: themeColors.outlineVariant,
+    return SizedBox(
+      height: 50,
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        readOnly: widget.readOnly,
+        textDirection: widget.textDirection,
+        textInputAction: widget.textInputAction,
+        obscureText: widget.obscureText,
+        obscuringCharacter: '*',
+        maxLength: widget.maxLength,
+        maxLines: widget.maxLines,
+        enabled: widget.enabled,
+        keyboardType: widget.keyboardType,
+        autocorrect: false,
+        inputFormatters: widget.inputFormatters,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          errorText: widget.errorText,
+          labelText: widget.labelText,
+          suffixIcon: widget.suffixIcon,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: globalBorderRadius,
+            borderSide: BorderSide(
+              color: themeColors.primary,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: globalBorderRadius,
+            borderSide: BorderSide(
+              color: themeColors.onPrimary,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: globalBorderRadius,
+            borderSide: BorderSide(
+              color: themeColors.onSurface.withOpacity(0.5),
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: globalBorderRadius,
+            borderSide: BorderSide(
+              color: themeColors.error,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: globalBorderRadius,
+            borderSide: BorderSide(
+              color: themeColors.primary,
+            ),
+          ),
+          labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: !widget.enabled ? themeColors.onSurface.withOpacity(0.4) :
+                focusNode.hasFocus ? themeColors.primary : themeColors.onPrimary.withOpacity(0.5),
           ),
         ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: globalBorderRadius * 1.5,
-          borderSide: BorderSide(
-            width: 1.0,
-            color: themeColors.onSurface.withOpacity(0.12),
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: globalBorderRadius * 1.5,
-          borderSide: BorderSide(
-            width: 1.0,
-            color: themeColors.error,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: globalBorderRadius * 1.5,
-          borderSide: BorderSide(
-            width: 1.0,
-            color: themeColors.error,
-          ),
-        ),
-        labelStyle: Theme.of(context).textTheme.bodyLarge!,
       ),
     );
   }
