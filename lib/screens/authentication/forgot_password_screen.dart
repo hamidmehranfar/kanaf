@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/screens/authentication/forgot_password_screen.dart';
 import 'package:kanaf/widgets/authentication_bottom_sheet.dart';
-import 'package:kanaf/widgets/custom_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../../controllers/size_controller.dart';
+import '../../global_configs.dart';
+import '../../widgets/custom_text_field.dart';
+
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool isLoading = false;
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -46,26 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32,),
-            Text("ورود به حساب کاربری",
+            Text("فراموشی رمز عبور",
               style: theme.textTheme.titleLarge,),
             const SizedBox(height: 8,),
-            Text("شماره موبایل و رمز عبورتان را وارد کنید .",
+            Text("شماره موبایل خود را وارد کنید .",
               style: theme.textTheme.titleMedium,),
             const SizedBox(height: 48,),
             CustomTextField(labelText: "شماره موبایل",enabled: !isLoading,),
-            const SizedBox(height: 16,),
-            CustomTextField(labelText: "رمز عبور",enabled: !isLoading,),
-            TextButton(
-              onPressed: (){
-                Get.to(const ForgotPasswordScreen());
-              },
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-              child: Text("رمز عبور خود را فراموش کرده اید؟",
-                style: theme.textTheme.bodyMedium!.copyWith(
-                    color: theme.colorScheme.primary,
-                ),
-              ),
-            ),
             const SizedBox(height: 16,)
           ],
         ),
