@@ -38,7 +38,7 @@ class MasterServicesItems extends StatelessWidget {
         ),
         const SizedBox(height: 8,),
         SizedBox(
-          height: 50,
+          height: 100,
           child: ListView.separated(
             padding: globalPadding*2,
             scrollDirection: Axis.horizontal,
@@ -48,17 +48,23 @@ class MasterServicesItems extends StatelessWidget {
             },
             itemBuilder: (context, index){
               return Container(
-                width: 100,
+                padding: globalAllPadding * 2,
+                width: 120,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius * 2,
                   color: theme.colorScheme.secondary.withOpacity(0.3)
                 ),
-                child: Center(
-                  child: Text(
-                    "حمید مهران فر",
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge!.copyWith(color: Colors.black),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/user.png",
+                      fit: BoxFit.cover,width: 50,height: 50,),
+                    Text(
+                      "حمید مهران فر",
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge!.copyWith(color: Colors.black),
+                    ),
+                  ],
                 ),
               );
             }

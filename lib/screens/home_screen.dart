@@ -205,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // index - 1 is because first index is margin
                     text: homeWorkTitles[index - 1],
                     onTap: (){
-                      if(index == 0){
+                      if(index == 1){
                         Get.to(const MasterServicesScreen());
                       }
                     },
