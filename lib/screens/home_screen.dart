@@ -193,21 +193,32 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("خدمات", style: theme.textTheme.titleLarge,),
             ),
             const SizedBox(height: 8,),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            Padding(
+              padding: globalPadding * 3,
               child: Row(
-                // homeWorkTitles.length + 2 is for add margin in first and end of row
-                children: List.generate(homeWorkTitles.length + 2, (int index){
-                  if(index == 0 || index == homeWorkTitles.length + 1){
-                    return const SizedBox(width: 4,);
-                  }
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(2, (int index){
                   return HomeWorksItem(
-                    // index - 1 is because first index is margin
-                    text: homeWorkTitles[index - 1],
+                    text: homeWorkTitles[index],
                     onTap: (){
-                      if(index == 1){
+                      if(index == 0){
                         Get.to(const MasterServicesScreen());
                       }
+                    },
+                  );
+                }),
+              ),
+            ),
+            const SizedBox(height: 12,),
+            Padding(
+              padding: globalPadding * 3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(2, (int index){
+                  return HomeWorksItem(
+                    text: homeWorkTitles[index+2],
+                    onTap: (){
+
                     },
                   );
                 }),

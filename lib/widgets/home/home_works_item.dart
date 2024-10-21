@@ -10,31 +10,34 @@ class HomeWorksItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 100,
-            height: 100,
-            padding: globalAllPadding * 4,
-            margin: globalPadding * 2,
-            decoration: BoxDecoration(
-                borderRadius: globalBorderRadius *2,
-                color: theme.colorScheme.secondary.withOpacity(0.3)
+    return Container(
+      width: 180,
+      color: theme.colorScheme.primary.withOpacity(0.15),
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Container(
+              height: 100,
+              width: 100,
+              padding: globalAllPadding * 4,
+              margin: globalAllPadding,
+              decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius *2,
+                  color: theme.colorScheme.secondary.withOpacity(0.3)
+              ),
+              child:
+              Image.asset("assets/images/user.png", fit: BoxFit.fill,),
             ),
-            child:
-            Image.asset("assets/images/user.png", fit: BoxFit.fill,),
-          ),
-          SizedBox(
-            width: 100,
-            child: Text(text,
-              style: theme.textTheme.bodyLarge,
-              textAlign: TextAlign.center,
+            SizedBox(
+              width: 60,
+              child: Text(text,
+                style: theme.textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
