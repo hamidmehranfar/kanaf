@@ -21,7 +21,7 @@ class HomeWorksItem extends StatelessWidget {
               height: 100,
               width: 100,
               padding: globalAllPadding * 4,
-              margin: globalAllPadding,
+              margin: globalAllPadding.copyWith(top: 8, bottom: 8),
               decoration: BoxDecoration(
                   borderRadius: globalBorderRadius *2,
                   color: theme.colorScheme.secondary.withOpacity(0.3)

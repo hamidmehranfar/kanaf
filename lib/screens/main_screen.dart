@@ -5,6 +5,8 @@ import 'package:kanaf/screens/home_screen.dart';
 import 'package:kanaf/screens/profile_screen.dart';
 import 'package:kanaf/screens/search_screen.dart';
 
+import 'profile_screen_1.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -19,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     const SearchScreen(isMainScreen: true,),
     Center(child: Text("chat page"),),
     Center(child: Text("talar page"),),
-    const ProfileScreen()
+    const ProfileScreen1()
   ];
 
   @override

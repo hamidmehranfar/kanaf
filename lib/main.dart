@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "IranSans",
       ),
       locale: const Locale("fa"),
-      home: const MainScreen(),
+      home: const LoginScreen(),
     );
   }
 }
