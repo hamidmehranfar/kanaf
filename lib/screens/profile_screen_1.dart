@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/widgets/my_divider.dart';
+import 'package:kanaf/widgets/profile_item.dart';
 
 import '../global_configs.dart';
 
@@ -45,8 +46,7 @@ class _ProfileScreen1State extends State<ProfileScreen1> with TickerProviderStat
           child: SizedBox(
             width: SizeController.width,
             height: SizeController.height,
-            child: ListView(
-              shrinkWrap: true,
+            child: Column(
               children: [
                 Container(
                   color: theme.colorScheme.secondary.withOpacity(0.2),
@@ -112,6 +112,36 @@ class _ProfileScreen1State extends State<ProfileScreen1> with TickerProviderStat
                       const SizedBox(height: 8,)
                     ],
                   ),
+                ),
+                ListView(
+                  shrinkWrap: true,
+                  padding: globalPadding * 6,
+                  children: [
+                    const SizedBox(height: 24,),
+                    ProfileItem(
+                      title: "نام کاربری",
+                      icon: Icons.person_2_outlined,
+                      onTap: (){
+
+                      },
+                    ),
+                    const SizedBox(height: 48,),
+                    ProfileItem(
+                      title: "اعلان ها",
+                      icon: Icons.notifications_outlined,
+                      onTap: (){
+
+                      },
+                    ),
+                    const SizedBox(height: 48,),
+                    ProfileItem(
+                      title: "تنظیمات",
+                      icon: Icons.settings_outlined,
+                      onTap: (){
+
+                      },
+                    ),
+                  ],
                 )
               ],
             )
