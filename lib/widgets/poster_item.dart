@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/models/poster.dart';
+import 'package:kanaf/screens/details_screen.dart';
 import 'package:kanaf/widgets/my_divider.dart';
 
 class PosterItem extends StatelessWidget {
@@ -12,6 +14,9 @@ class PosterItem extends StatelessWidget {
     var theme = Theme.of(context);
 
     return InkWell(
+      onTap: (){
+        Get.to(DetailsScreen(title: poster.title,));
+      },
       child: SizedBox(
         height: 128,
         child: Column(

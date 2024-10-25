@@ -21,18 +21,18 @@ class ServicesListScreen extends StatefulWidget {
 }
 
 class _ServicesListScreenState extends State<ServicesListScreen> {
-  final PagingController<int, Poster> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, Poster> _pagingController = PagingController(firstPageKey: 1);
 
   @override
   void initState() {
     super.initState();
-    pagingController.addPageRequestListener((pageKey){
+    _pagingController.addPageRequestListener((pageKey){
       pagingControllerListener(pageKey);
     });
   }
   
   Future<void> pagingControllerListener(pageKey)async{
-    pagingController.appendLastPage(
+    _pagingController.appendLastPage(
       [
         Poster(
           title: "سمپاشی تخصصی موریانه سوسک ساس سم پاشی موش",
@@ -168,17 +168,22 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
       body: SizedBox(
         width: SizeController.width,
         height: SizeController.height,
-        child: PagedListView.separated(
-          shrinkWrap: true,
-          padding: allPadding * 4,
-          pagingController: pagingController,
-          separatorBuilder: (context, index){
-            return const SizedBox(height: 8,);
+        child: RefreshIndicator(
+          onRefresh: () async{
+            _pagingController.refresh();
           },
-          builderDelegate: PagedChildBuilderDelegate(
-            itemBuilder: (BuildContext context, Poster item, int index){
-              return PosterItem(poster : item);
-            }
+          child: PagedListView.separated(
+            shrinkWrap: true,
+            padding: allPadding * 4,
+            pagingController: _pagingController,
+            separatorBuilder: (context, index){
+              return const SizedBox(height: 8,);
+            },
+            builderDelegate: PagedChildBuilderDelegate(
+              itemBuilder: (BuildContext context, Poster item, int index){
+                return PosterItem(poster : item);
+              }
+            ),
           ),
         ),
       ),
