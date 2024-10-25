@@ -57,6 +57,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                     background: Padding(
                       padding: globalAllPadding * 4,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
@@ -122,7 +123,67 @@ class _DetailsScreenState extends State<DetailsScreen>
                             ],
                           ),
                           const SizedBox(height: 16,),
-                          Text(widget.title, style: theme.textTheme.titleLarge,)
+                          Text(widget.title, style: theme.textTheme.titleLarge,),
+                          const SizedBox(height: 16,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FilledButton(
+                                onPressed: (){},
+                                  style: FilledButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: globalBorderRadius,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    fixedSize: const Size.fromWidth(150)
+                                  ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.add_circle, color: theme.colorScheme.onPrimary,),
+                                    const SizedBox(width: 5,),
+                                    Text("دنبال کردن", style: theme.textTheme.bodyLarge,)
+                                  ],
+                                ),
+                              ),
+                              OutlinedButton(
+                                onPressed: (){},
+                                style: FilledButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: globalBorderRadius,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  fixedSize: const Size.fromWidth(150),
+                                  side: BorderSide(color: theme.colorScheme.primary,),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.telegram_outlined, color: theme.colorScheme.primary,),
+                                    const SizedBox(width: 5,),
+                                    Text("پیام", style: theme.textTheme.bodyLarge?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: OutlinedButton(
+                                  onPressed: (){},
+                                  style: FilledButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: globalBorderRadius,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    side: BorderSide(color: theme.colorScheme.primary,),
+                                  ),
+                                  child: Icon(Icons.phone, color: theme.colorScheme.primary,),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     )
@@ -130,37 +191,18 @@ class _DetailsScreenState extends State<DetailsScreen>
                   bottom: TabBar(
                     dividerColor: Colors.transparent,
                     padding: EdgeInsets.zero,
-                    indicator: UnderlineTabIndicator(
-                      borderSide: BorderSide(width: 3.0), //hight of indicator
-                      insets: EdgeInsets.symmetric(horizontal: 30.0), //give some padding to reduce the size of indicator
-                    ),
-                    labelColor: theme.colorScheme.onSurface,
                     indicatorColor: theme.colorScheme.onSurface,
                     indicatorSize: TabBarIndicatorSize.tab,
                     controller: tabController,
                     tabs: [
                       Tab(
-                        child: SizedBox(
-                          width: SizeController.width!/2,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Center(child: Text("پست ها")),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 20,
-                                color: theme.colorScheme.onSurface.withOpacity(0.5),
-                              )
-                            ],
-                          ),
+                        child: Text("پست ها",
+                          style: theme.textTheme.bodyMedium,
                         ),
                       ),
                       Tab(
-                        child: SizedBox(
-                          width: SizeController.width!/2 - 40,
-                          child: Center(child: Text("نظرات")),
-                        ),
+                        child: Text("نظرات",
+                          style: theme.textTheme.bodyMedium,),
                       ),
                     ],
                   ),
