@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var width = SizeController.width;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         toolbarHeight: 0,
         backgroundColor: Colors.transparent,
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
             isLoading! ? CustomShimmer(
               child: Container(
                 margin: globalPadding * 6,
-                height: 200,
+                height: 120,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius*2,
                   color: Colors.black,
@@ -136,19 +137,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 CarouselSlider(
                   items: List.generate(images.length, (int index){
                     return Container(
-                      height: 200,
-                      width: 300,
+                      margin: globalPadding * 4,
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
-                        borderRadius: globalBorderRadius * 2
+                        borderRadius: globalBorderRadius * 4
                       ),
                     );
                   }),
                   options: CarouselOptions(
+                    height: 150,
                     viewportFraction: 1,
                     initialPage: imagesCurrentIndex ?? 0,
                     autoPlay: true,
-                    //FIXME : ask this part
                     enableInfiniteScroll: true,
                     onPageChanged: (index,changeReason){
                       setState(() {
@@ -188,48 +188,28 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 24,),
-            Padding(
-              padding: globalPadding * 3,
-              child: Text("خدمات", style: theme.textTheme.titleLarge,),
-            ),
-            const SizedBox(height: 8,),
-            Padding(
-              padding: globalPadding * 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(2, (int index){
+            SizedBox(
+              width: width,
+              height: 120,
+              child: ListView.separated(
+                padding: globalPadding * 2,
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: 4,
+                itemBuilder: (context, index){
                   return HomeWorksItem(
                     text: homeWorkTitles[index],
                     onTap: (){
-                      if(index == 0){
-                        Get.to(const MasterServicesScreen());
-                      }
+                      Get.to(const MasterServicesScreen());
                     },
                   );
-                }),
-              ),
+                },
+                separatorBuilder: (context, index){
+                  return const SizedBox(width: 32,);
+                },
+              )
             ),
-            const SizedBox(height: 12,),
-            Padding(
-              padding: globalPadding * 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(2, (int index){
-                  return HomeWorksItem(
-                    text: homeWorkTitles[index+2],
-                    onTap: (){
-
-                    },
-                  );
-                }),
-              ),
-            ),
-            const SizedBox(height: 24,),
-            Padding(
-              padding: globalPadding * 3,
-              child: Text("نظرات", style: theme.textTheme.titleLarge,),
-            ),
-            const SizedBox(height: 8,),
+            const SizedBox(height: 20,),
             //FIXME : make shimmer smaller
             isLoading! ? CustomShimmer(
               child: Container(
@@ -244,27 +224,39 @@ class _HomeScreenState extends State<HomeScreen> {
             CarouselSlider(
               items: List.generate(comments.length, (int index){
                 return Container(
-                  width: 150,
+                  width: 280,
+                  margin: globalAllPadding * 2,
                   padding: globalPadding * 2,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius * 2,
-                    color: theme.colorScheme.onSurface.withOpacity(0.1)
+                    color: theme.colorScheme.surface,
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.secondary,
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                    border: Border.all(
+                      width: 2,
+                      color: theme.colorScheme.secondary.withOpacity(0.7),
+                    )
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(comments[index].name, style: theme.textTheme.titleMedium,),
-                      const SizedBox(height: 16,),
+                      const SizedBox(height: 4,),
                       Text(comments[index].comment, style: theme.textTheme.bodyMedium,textDirection: TextDirection.rtl,),
                     ],
                   ),
                 );
               }),
               options: CarouselOptions(
-                height: 150,
+                height: 120,
                 initialPage: commentsCurrentIndex ?? 0,
                 enlargeCenterPage: true,
-                viewportFraction: 0.5,
+                viewportFraction: 0.7,
                 enableInfiniteScroll: false
               )
             ),
