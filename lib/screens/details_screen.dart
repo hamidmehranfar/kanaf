@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:kanaf/controllers/size_controller.dart';
 import '../global_configs.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -12,14 +11,10 @@ class DetailsScreen extends StatefulWidget {
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
-class _DetailsScreenState extends State<DetailsScreen>
-    with TickerProviderStateMixin{
-  TabController? tabController;
-
+class _DetailsScreenState extends State<DetailsScreen>{
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this,);
   }
   @override
   Widget build(BuildContext context) {
@@ -52,7 +47,7 @@ class _DetailsScreenState extends State<DetailsScreen>
               return [
                 SliverAppBar(
                   automaticallyImplyLeading: false,
-                  expandedHeight: 300,
+                  expandedHeight: 250,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Padding(
                       padding: globalAllPadding * 4,
@@ -92,7 +87,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text("7", style: theme.textTheme.bodyLarge,overflow: TextOverflow.ellipsis,),
-                                          Text("دنبال کننده", style: theme.textTheme.bodyMedium!,),
+                                          Text("سابقه کاری", style: theme.textTheme.bodyMedium!,),
                                         ],
                                       ),
                                     ),
@@ -142,7 +137,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                                   children: [
                                     Icon(Icons.add_circle, color: theme.colorScheme.onPrimary,),
                                     const SizedBox(width: 5,),
-                                    Text("دنبال کردن", style: theme.textTheme.bodyLarge,)
+                                    Text("ثبت پروژه", style: theme.textTheme.bodyLarge,)
                                   ],
                                 ),
                               ),
@@ -188,69 +183,21 @@ class _DetailsScreenState extends State<DetailsScreen>
                       ),
                     )
                   ),
-                  bottom: TabBar(
-                    dividerColor: Colors.transparent,
-                    padding: EdgeInsets.zero,
-                    indicatorColor: theme.colorScheme.onSurface,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    controller: tabController,
-                    tabs: [
-                      Tab(
-                        child: Text("پست ها",
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ),
-                      Tab(
-                        child: Text("نظرات",
-                          style: theme.textTheme.bodyMedium,),
-                      ),
-                    ],
-                  ),
                 ),
               ];
             },
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                GridView.builder(
-                  itemCount: 20,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1/2
-                  ),
-                  itemBuilder: (context, index){
-                    return Container(
-                      height: 400,
-                      color: index %2 == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
-                    );
-                  }
+            body: GridView.builder(
+                itemCount: 20,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1/2
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context, index){
-                    if(index == 0){
-                      return const SizedBox(height: 16,);
-                    }
-                    return Padding(
-                      padding: globalPadding * 2,
-                      child: Container(
-                        height: 100,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: theme.colorScheme.onPrimary,
-                            width: 1
-                          ),
-                        ),
-                        padding: globalAllPadding * 4,
-                        child: Text(
-                          "تست"
-                        ),
-                      ),
-                    );
-                  }
-                ),
-              ],
+                itemBuilder: (context, index){
+                  return Container(
+                    height: 400,
+                    color: index %2 == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
+                  );
+                }
             ),
           ),
         ),

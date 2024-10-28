@@ -35,46 +35,46 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
     _pagingController.appendLastPage(
       [
         Poster(
-          title: "سمپاشی تخصصی موریانه سوسک ساس سم پاشی موش",
+          title: "کناف کاری با بهترین کیفیت",
           address: "پله شده در ملک شهر",
           imageUrl: ""
         ),
-        Poster(title: "دستگاه شنود مخفی",
+        Poster(title: "کناف کار با تجربه",
             address: "لحظاتی پیش در مبارکه",
             price: "4500000",
             imageUrl: ""),
         Poster(
-            title: "کتاب مبانی کلی ارتباط جمعی",
+            title: "کناف همراه با بهترین وسایل",
             address: "لحظاتی پیش در باغ غدیر",
             price: "200000",
             imageUrl: ""
         ),
         Poster(
-            title: "سمپاشی تخصصی موریانه سوسک ساس سم پاشی موش",
+            title: "کناف کاری با بهترین کیفیت",
             address: "پله شده در ملک شهر",
             imageUrl: ""
         ),
-        Poster(title: "دستگاه شنود مخفی",
+        Poster(title: "کناف کار با تجربه",
             address: "لحظاتی پیش در مبارکه",
             price: "4500000",
             imageUrl: ""),
         Poster(
-            title: "کتاب مبانی کلی ارتباط جمعی",
+            title: "کناف همراه با بهترین وسایل",
             address: "لحظاتی پیش در باغ غدیر",
             price: "200000",
             imageUrl: ""
         ),
         Poster(
-            title: "سمپاشی تخصصی موریانه سوسک ساس سم پاشی موش",
+            title: "کناف کاری با بهترین کیفیت",
             address: "پله شده در ملک شهر",
             imageUrl: ""
         ),
-        Poster(title: "دستگاه شنود مخفی",
+        Poster(title: "کناف کار با تجربه",
             address: "لحظاتی پیش در مبارکه",
             price: "4500000",
             imageUrl: ""),
         Poster(
-            title: "کتاب مبانی کلی ارتباط جمعی",
+            title: "کناف همراه با بهترین وسایل",
             address: "لحظاتی پیش در باغ غدیر",
             price: "200000",
             imageUrl: ""

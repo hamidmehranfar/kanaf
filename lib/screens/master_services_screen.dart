@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/models/enums/master_services.dart';
-import 'package:kanaf/widgets/master_services_items.dart';
-import 'package:kanaf/widgets/my_divider.dart';
+import '/controllers/size_controller.dart';
+import '/models/enums/master_services.dart';
+import '/widgets/master_services_items.dart';
+import '/widgets/my_divider.dart';
 
 class MasterServicesScreen extends StatelessWidget {
   const MasterServicesScreen({super.key});
@@ -21,21 +21,26 @@ class MasterServicesScreen extends StatelessWidget {
       ),
       body: SizedBox(
         height: SizeController.height,
-        child: ListView(
-          shrinkWrap: true,
+        child: Column(
           children: [
             const SizedBox(height: 16,),
-            MasterServicesItems(
-              service: MasterServices.master,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  MasterServicesItems(
+                    service: MasterServices.master,
+                  ),
+                  MasterServicesItems(
+                    service: MasterServices.opticalLine,
+                  ),
+                  MasterServicesItems(
+                    service: MasterServices.painter,
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 32,),
-            MasterServicesItems(
-              service: MasterServices.opticalLine,
-            ),
-            const SizedBox(height: 32,),
-            MasterServicesItems(
-              service: MasterServices.painter,
-            ),
+            const SizedBox(height: 16,),
           ],
         ),
       )

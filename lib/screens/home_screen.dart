@@ -265,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
-                  height: 150,
+                  height: 50,
                   width: 150,
                   decoration: BoxDecoration(
                     color: theme.colorScheme.secondary.withOpacity(0.3),
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(child: Text("تالار گفتگو", style: theme.textTheme.bodyLarge,)),
                 ),
                 Container(
-                  height: 150,
+                  height: 50,
                   width: 150,
                   decoration: BoxDecoration(
                       color: theme.colorScheme.secondary.withOpacity(0.3),
@@ -283,7 +283,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(child: Text("اخبار", style: theme.textTheme.bodyLarge,)),
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 24,),
+            Container(
+              height: 80,
+              margin: globalPadding * 2,
+              padding: globalAllPadding * 2,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                border: Border.all(
+                  color: theme.colorScheme.secondary,
+                ),
+                borderRadius: globalBorderRadius * 4
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 48,),
+                  Text("چت", style: theme.textTheme.titleLarge,),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24,),
+            CarouselSlider(
+                items: List.generate(comments.length, (int index){
+                  return Container(
+                    margin: globalAllPadding * 2,
+                    padding: globalPadding * 2,
+                    decoration: BoxDecoration(
+                        borderRadius: globalBorderRadius * 2,
+                        color: theme.colorScheme.surface,
+                        border: Border.all(
+                          width: 2,
+                          color: theme.colorScheme.secondary.withOpacity(0.7),
+                        )
+                    ),
+                    child: Center(
+                      child: Text(
+                        'تبلیغات',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    )
+                  );
+                }),
+                options: CarouselOptions(
+                    height: 100,
+                    initialPage: commentsCurrentIndex ?? 0,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1,
+                    enableInfiniteScroll: false
+                )
+            ),
           ],
         ),
       ),
