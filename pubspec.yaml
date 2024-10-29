@@ -79,17 +79,29 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   fonts:
-    - family: IranSans
+    - family: YekanBakh
       fonts:
-        - asset: assets/fonts/IranSans-Regular.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Regular.ttf
           weight: 400
-        - asset: assets/fonts/IranSans-Medium.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Regular.ttf
           weight: 500
-        - asset: assets/fonts/IranSans-Bold.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Bold.ttf
           weight: 700
-        - asset: assets/fonts/IranSans-SemiBold.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/IranSans-Light.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Light.ttf
+          weight: 300
+    - family: Kalameh
+      fonts:
+        - asset: assets/fonts/Kalameh/Kalameh-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Kalameh/Kalameh-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Kalameh/Kalameh-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Kalameh/Kalameh-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Kalameh/Kalameh-Light.ttf
           weight: 300
 
   # To add custom fonts to your application, add a fonts section here,

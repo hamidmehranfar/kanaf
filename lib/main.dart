@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData(
           size: 20
         ),
-        fontFamily: "IranSans",
+        fontFamily: "YekanBakh",
       ),
       locale: const Locale("fa"),
       home: const MainScreen(),
