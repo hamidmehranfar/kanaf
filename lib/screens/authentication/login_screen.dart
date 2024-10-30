@@ -30,14 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
           icon: const Icon(Iconsax.arrow_right_1),
         ),
       ),
-      bottomSheet: AuthenticationBottomSheet(
-        isLoading: isLoading,
-        onTap: (){
-          setState(() {
-            isLoading = true;
-          });
-        },
-      ),
       body: Container(
         width: SizeController.width,
         height: SizeController.height,
@@ -53,20 +45,15 @@ class _LoginScreenState extends State<LoginScreen> {
               style: theme.textTheme.titleMedium,),
             const SizedBox(height: 48,),
             CustomTextField(labelText: "شماره موبایل",enabled: !isLoading,),
-            const SizedBox(height: 16,),
-            CustomTextField(labelText: "رمز عبور",enabled: !isLoading,),
-            TextButton(
-              onPressed: (){
-                Get.to(const ForgotPasswordScreen());
+            const SizedBox(height: 32,),
+            AuthenticationBottomSheet(
+              isLoading: isLoading,
+              onTap: (){
+                setState(() {
+                  isLoading = true;
+                });
               },
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
-              child: Text("رمز عبور خود را فراموش کرده اید؟",
-                style: theme.textTheme.bodyMedium!.copyWith(
-                    color: theme.colorScheme.primary,
-                ),
-              ),
             ),
-            const SizedBox(height: 16,)
           ],
         ),
       ),

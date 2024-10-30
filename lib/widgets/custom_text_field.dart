@@ -109,13 +109,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
           enabledBorder: OutlineInputBorder(
             borderRadius: globalBorderRadius,
             borderSide: BorderSide(
-              color: themeColors.onPrimary,
+              color: themeColors.onSurface,
             ),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: globalBorderRadius,
             borderSide: BorderSide(
-              color: themeColors.onSurface.withOpacity(0.5),
+              color: themeColors.inverseSurface.withOpacity(0.7),
             ),
           ),
           errorBorder: OutlineInputBorder(
@@ -131,8 +131,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: !widget.enabled ? themeColors.onSurface.withOpacity(0.4) :
-                focusNode.hasFocus ? themeColors.primary : themeColors.onPrimary.withOpacity(0.5),
+            color: !widget.enabled ? themeColors.inverseSurface.withOpacity(0.7):
+                focusNode.hasFocus ? themeColors.primary : themeColors.onSurface,
           ),
         ),
       ),

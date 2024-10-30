@@ -29,37 +29,36 @@ class _SignupScreenState extends State<SignupScreen> {
           icon: const Icon(Iconsax.arrow_right_1),
         ),
       ),
-      bottomSheet: AuthenticationBottomSheet(
-        onTap: (){
+      body: SingleChildScrollView(
+        child: Container(
+          width: SizeController.width,
+          height: SizeController.height,
+          padding: globalPadding * 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 32,),
+              Text("ورود به حساب کاربری",
+                style: theme.textTheme.titleLarge,),
+              const SizedBox(height: 8,),
+              Text("شماره موبایل و رمز عبورتان را وارد کنید .",
+                style: theme.textTheme.titleMedium,),
+              const SizedBox(height: 48,),
+              CustomTextField(labelText: "نام",enabled: !isLoading,),
+              const SizedBox(height: 16,),
+              CustomTextField(labelText: "نام خانوادگی",enabled: !isLoading,),
+              const SizedBox(height: 16,),
+              CustomTextField(labelText: "شماره تماس",enabled: !isLoading,),
+              const SizedBox(height: 16,),
+              CustomTextField(labelText: "ایمیل",enabled: !isLoading,),
+              const SizedBox(height: 24,),
+              AuthenticationBottomSheet(
+                onTap: (){
 
-        },
-        isLoading: isLoading,
-      ),
-      body: SizedBox(
-        width: SizeController.width,
-        height: SizeController.height,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: globalPadding * 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 32,),
-                Text("ورود به حساب کاربری",
-                  style: theme.textTheme.titleLarge,),
-                const SizedBox(height: 8,),
-                Text("شماره موبایل و رمز عبورتان را وارد کنید .",
-                  style: theme.textTheme.titleMedium,),
-                const SizedBox(height: 48,),
-                CustomTextField(labelText: "نام",enabled: !isLoading,),
-                const SizedBox(height: 16,),
-                CustomTextField(labelText: "نام خانوادگی",enabled: !isLoading,),
-                const SizedBox(height: 16,),
-                CustomTextField(labelText: "شماره تماس",enabled: !isLoading,),
-                const SizedBox(height: 16,),
-                CustomTextField(labelText: "ایمیل",enabled: !isLoading,),
-              ],
-            ),
+                },
+                isLoading: isLoading,
+              ),
+            ],
           ),
         ),
       ),
