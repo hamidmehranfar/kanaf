@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../controllers/size_controller.dart';
@@ -200,7 +201,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   return HomeWorksItem(
                     text: homeWorkTitles[index],
                     onTap: (){
-                      Get.to(const MasterServicesScreen());
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                        return const MasterServicesScreen();
+                      }));
                     },
                   );
                 },
@@ -232,14 +235,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: theme.colorScheme.surface,
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.secondary,
+                        color: theme.colorScheme.inverseSurface,
                         spreadRadius: 2,
                         blurRadius: 5,
                       ),
                     ],
                     border: Border.all(
                       width: 2,
-                      color: theme.colorScheme.secondary.withOpacity(0.7),
+                      color: theme.colorScheme.inverseSurface.withOpacity(0.7),
                     )
                   ),
                   child: Column(
@@ -268,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 50,
                   width: 150,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary.withOpacity(0.3),
+                    color: theme.colorScheme.primary.withOpacity(0.3),
                     borderRadius: globalBorderRadius * 2
                   ),
                   child: Center(child: Text("تالار گفتگو", style: theme.textTheme.bodyLarge,)),
@@ -277,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 50,
                   width: 150,
                   decoration: BoxDecoration(
-                      color: theme.colorScheme.secondary.withOpacity(0.3),
+                      color: theme.colorScheme.primary.withOpacity(0.3),
                       borderRadius: globalBorderRadius * 2
                   ),
                   child: Center(child: Text("اخبار", style: theme.textTheme.bodyLarge,)),
@@ -314,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: theme.colorScheme.surface,
                         border: Border.all(
                           width: 2,
-                          color: theme.colorScheme.secondary.withOpacity(0.7),
+                          color: theme.colorScheme.primary.withOpacity(0.7),
                         )
                     ),
                     child: Center(

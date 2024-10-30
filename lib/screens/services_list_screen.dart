@@ -93,32 +93,28 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
-        backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
+        toolbarHeight: 60,
         // systemOverlayStyle: systemUiOverlayStyle,
         automaticallyImplyLeading: false,
-        title: Column(
-          children: [
-            const SizedBox(height: 8,),
-            Row(
-              children: [
-                InkWell(
-                  onTap: (){
-                    Get.back();
-                  },
-                  child: const Icon(Iconsax.arrow_right_1),
-                ),
-                const SizedBox(width: 10,),
-                Expanded(
-                  child: Container(
-                    height: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: globalBorderRadius,
-                      border: Border.all(
-                        color: theme.colorScheme.secondary,
-                        width: 1,
-                      )
-                    ),
+        title: Container(
+          padding: globalPadding * 2,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            borderRadius: globalBorderRadius * 2
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 8,),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(Iconsax.arrow_right_1),
+                  ),
+                  const SizedBox(width: 4,),
+                  Expanded(
                     child: Row(
                       children: [
                         Expanded(
@@ -133,7 +129,6 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                                   padding: globalPadding * 4,
                                   child: Text("جستجو در همه ی اگهی ها", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.inverseSurface),),
                                 ),
-                                const Icon(Icons.search),
                               ],
                             ),
                           ),
@@ -153,16 +148,16 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8,)
-          ],
+                ],
+              ),
+              const SizedBox(height: 8,)
+            ],
+          ),
         ),
         bottom: MyDivider(
           height: 1,
-          thickness: 1,
-          color: theme.colorScheme.inverseSurface.withOpacity(0.2),
+          thickness: 2,
+          color: theme.colorScheme.inverseSurface.withOpacity(0.4),
         ),
       ),
       body: SizedBox(

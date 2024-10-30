@@ -44,7 +44,6 @@ class _SearchScreenState extends State<SearchScreen> {
         toolbarHeight: 64,
         titleSpacing: 0,
         centerTitle: false,
-        backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
         automaticallyImplyLeading: false,
         title: Column(
           children: [
@@ -65,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       padding: globalPadding * 2,
                       decoration: BoxDecoration(
                         borderRadius: globalBorderRadius * 2,
-                        color: theme.colorScheme.secondary.withOpacity(0.2),
+                        color: theme.colorScheme.primary.withOpacity(0.3),
                       ),
                       child: TextField(
                         focusNode: focus,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/screens/services_list_screen.dart';
 import '/global_configs.dart';
@@ -23,7 +22,11 @@ class MasterServicesItems extends StatelessWidget {
               Text(convertServiceToString(service), style: theme.textTheme.headlineSmall,),
               InkWell(
                 onTap: (){
-                  Get.to(ServicesListScreen(service : service));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context){
+                      return ServicesListScreen(service : service);
+                    })
+                  );
                 },
                 child: Row(
                   children: [
@@ -52,7 +55,10 @@ class MasterServicesItems extends StatelessWidget {
                 width: 120,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius * 2,
-                  color: theme.colorScheme.secondary.withOpacity(0.3)
+                  border: Border.all(
+                    color: theme.colorScheme.primary,
+                    width: 2
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

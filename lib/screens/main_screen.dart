@@ -16,11 +16,35 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   List<Widget> screens = [
-    const HomeScreen(),
-    const SearchScreen(isMainScreen: true,),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings){
+        return MaterialPageRoute(
+          builder:(context){
+            return const HomeScreen();
+          }
+        );
+      },
+    ),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings){
+        return MaterialPageRoute(
+            builder:(context){
+              return const SearchScreen(isMainScreen: true,);
+            }
+        );
+      },
+    ),
     Center(child: Text("chat page"),),
     Center(child: Text("talar page"),),
-    const ProfileScreen()
+    Navigator(
+      onGenerateRoute: (RouteSettings settings){
+        return MaterialPageRoute(
+            builder:(context){
+              return const ProfileScreen();
+            }
+        );
+      },
+    ),
   ];
 
   @override
@@ -34,26 +58,71 @@ class _MainScreenState extends State<MainScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            backgroundColor: Colors.black,
-            icon: Icon(Iconsax.home_2),
-            label: "خانه"
+              backgroundColor: Colors.black,
+              icon: Container(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                width: 45,
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius * 10,
+                  color: currentIndex==0 ? theme.colorScheme.primary.withOpacity(0.5) :
+                  null,
+                ),
+                child: const Icon(Iconsax.home_2),
+              ),
+              label: "خانه"
           ),
           BottomNavigationBarItem(
-              icon: Icon(Iconsax.search_normal),
+              icon: Container(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                width: 45,
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius * 10,
+                  color: currentIndex==1 ? theme.colorScheme.primary.withOpacity(0.5) :
+                  null,
+                ),
+                child: const Icon(Iconsax.search_normal)
+              ),
               label: "جستجو"
           ),
           BottomNavigationBarItem(
-              icon: Icon(Iconsax.message),
+              icon: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  width: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 10,
+                    color: currentIndex==2 ? theme.colorScheme.primary.withOpacity(0.5) :
+                    null,
+                  ),
+                child: const Icon(Iconsax.message)
+              ),
               label: "چت"
           ),
           BottomNavigationBarItem(
-              icon: Icon(Iconsax.messages),
+              icon: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  width: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 10,
+                    color: currentIndex==3 ? theme.colorScheme.primary.withOpacity(0.5) :
+                    null,
+                  ),
+                child: const Icon(Iconsax.messages)
+              ),
               label: "تالار گفتگو"
           ),
           BottomNavigationBarItem(
-              icon: Icon(Iconsax.profile_circle),
+              icon: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  width: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 10,
+                    color: currentIndex==4 ? theme.colorScheme.primary.withOpacity(0.5) :
+                    null,
+                  ),
+                child: const Icon(Iconsax.profile_circle)
+              ),
               label: "پروفایل"
           ),
         ],
@@ -65,10 +134,10 @@ class _MainScreenState extends State<MainScreen> {
         },
         selectedFontSize: 12,
         unselectedFontSize: 12,
-        selectedItemColor: theme.colorScheme.primary,
-        backgroundColor: theme.colorScheme.outline,
-        unselectedItemColor: theme.colorScheme.onPrimary,
-      ),
+        backgroundColor: Color(0xFFCAD8DC),
+        selectedItemColor: theme.colorScheme.onSurface,
+        unselectedItemColor: theme.colorScheme.inverseSurface,
+      )
     );
   }
 }

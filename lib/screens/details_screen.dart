@@ -137,7 +137,9 @@ class _DetailsScreenState extends State<DetailsScreen>{
                                   children: [
                                     Icon(Icons.add_circle, color: theme.colorScheme.onPrimary,),
                                     const SizedBox(width: 5,),
-                                    Text("ثبت پروژه", style: theme.textTheme.bodyLarge,)
+                                    Text("ثبت پروژه", style: theme.textTheme.bodyLarge?.copyWith(
+                                      color: theme.colorScheme.onPrimary,
+                                    ),)
                                   ],
                                 ),
                               ),
@@ -154,7 +156,7 @@ class _DetailsScreenState extends State<DetailsScreen>{
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.telegram_outlined, color: theme.colorScheme.primary,),
+                                    Icon(Icons.message_outlined, color: theme.colorScheme.primary,),
                                     const SizedBox(width: 5,),
                                     Text("پیام", style: theme.textTheme.bodyLarge?.copyWith(
                                       color: theme.colorScheme.primary,
