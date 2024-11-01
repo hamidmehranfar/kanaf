@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Kalameh",
       ),
       locale: const Locale("fa"),
-      home: const OtpScreen(),
+      home: const MainScreen(),
     );
   }
 }

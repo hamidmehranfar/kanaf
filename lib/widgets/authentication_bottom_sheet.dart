@@ -26,7 +26,7 @@ class AuthenticationBottomSheet extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: globalBorderRadius,
             ),
-            fixedSize: Size((SizeController.width ?? 100) - 32, 40)
+            fixedSize: Size((SizeController.width ?? 100) - 32, 50)
           ),
           child:
             isLoading ? SizedBox(

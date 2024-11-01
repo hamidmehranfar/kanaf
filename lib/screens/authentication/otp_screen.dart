@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/global_configs.dart';
+import 'package:kanaf/widgets/authentication_bottom_sheet.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     const SizedBox(height: 50),
                     Text(
                       "کد را وارد کنید",
-                      style: theme.textTheme.titleSmall,
+                      style: theme.textTheme.titleMedium,
                     ),
                     const SizedBox(height: 24),
                     //pin code
@@ -126,37 +127,16 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     const SizedBox(height: 24),
                     //login button
-                    SizedBox(
-                      width: SizeController.width,
-                      height: 56,
-                      child: FilledButton(
-
-                        onPressed: isLoading ? null : (){
-
-                        },
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: globalBorderRadius * 2
-                          )
-                        ),
-                        child: isLoading
-                            ? SpinKitThreeBounce(
-                          color: theme.colorScheme.primary,
-                          size: 20,
-                        )
-                            : Text(
-                          "وارد شوید",
-                          style: theme.textTheme.titleSmall!.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
+                    AuthenticationBottomSheet(
+                      isLoading: isLoading,
+                      onTap: (){},
                     ),
                   ],
                 ),
               ),
             ),
-          )),
+          ),
+      ),
     );
   }
 }

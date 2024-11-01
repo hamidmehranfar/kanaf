@@ -134,7 +134,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         selectedFontSize: 12,
         unselectedFontSize: 12,
-        backgroundColor: Color(0xFFCAD8DC),
+        backgroundColor: const Color(0xFFCAD8DC),
         selectedItemColor: theme.colorScheme.onSurface,
         unselectedItemColor: theme.colorScheme.inverseSurface,
       )
