@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import '../controllers/size_controller.dart';
 import '../models/comment.dart';
 import '../screens/master_services_screen.dart';
@@ -111,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: (){
 
                               },
-                              icon: Icon(Iconsax.add_circle, size: 24,color: theme.colorScheme.onPrimary),
+                              icon: Icon(Icons.add_circle, size: 24,color: theme.colorScheme.onPrimary),
                             ),
                           ),
                         ),

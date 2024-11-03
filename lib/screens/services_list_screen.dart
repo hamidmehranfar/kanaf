@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kanaf/screens/search_screen.dart';
 import '../controllers/size_controller.dart';
@@ -111,7 +110,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                     onTap: (){
                       Navigator.of(context).pop();
                     },
-                    child: const Icon(Iconsax.arrow_right_1),
+                    child: const Icon(Icons.arrow_right),
                   ),
                   const SizedBox(width: 4,),
                   Expanded(

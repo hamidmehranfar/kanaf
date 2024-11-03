@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import '../widgets/my_divider.dart';
 import '../global_configs.dart';
 
@@ -55,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     onTap: (){
                       Get.back();
                     },
-                    child: const Icon(Iconsax.arrow_right_1),
+                    child: const Icon(Icons.arrow_right),
                   ),
                   const SizedBox(width: 8,),
                   Expanded(

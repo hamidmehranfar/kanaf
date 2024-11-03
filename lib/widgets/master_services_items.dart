@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/screens/services_list_screen.dart';
 import '/global_configs.dart';
 import '/models/enums/master_services.dart';
@@ -32,7 +31,7 @@ class MasterServicesItems extends StatelessWidget {
                   children: [
                     Text("مشاهده همه", style: theme.textTheme.titleMedium,),
                     const SizedBox(width: 4,),
-                    const Icon(Iconsax.arrow_left_2)
+                    const Icon(Icons.arrow_left)
                   ],
                 ),
               )

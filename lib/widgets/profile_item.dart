@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ProfileItem extends StatelessWidget {
   final Function() onTap;
@@ -25,7 +24,7 @@ class ProfileItem extends StatelessWidget {
         ),
         InkWell(
           onTap: onTap,
-          child: const Icon(Iconsax.arrow_left_2),
+          child: const Icon(Icons.arrow_left),
         ),
       ],
     );

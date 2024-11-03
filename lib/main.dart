@@ -4,6 +4,7 @@ import 'package:kanaf/screens/authentication/login_screen.dart';
 import 'package:kanaf/screens/authentication/otp_screen.dart';
 import 'package:kanaf/screens/authentication/signup_screen.dart';
 import 'package:kanaf/screens/main_screen.dart';
+import 'package:kanaf/screens/start_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
 
@@ -42,13 +43,10 @@ class MyApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        iconTheme: const IconThemeData(
-          size: 20
-        ),
-        fontFamily: "Kalameh",
+        fontFamily: "LexendDeca",
       ),
       locale: const Locale("fa"),
-      home: const MainScreen(),
+      home: const StartScreen(),
     );
   }
 }

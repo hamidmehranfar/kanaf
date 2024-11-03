@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/widgets/authentication_bottom_sheet.dart';
 
 import '../../controllers/size_controller.dart';
@@ -26,7 +25,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(Iconsax.arrow_right_1),
+          icon: const Icon(Icons.arrow_right),
         ),
       ),
       bottomSheet: AuthenticationBottomSheet(

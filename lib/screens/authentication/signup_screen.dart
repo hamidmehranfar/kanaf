@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../controllers/size_controller.dart';
 import '../../global_configs.dart';
@@ -26,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(Iconsax.arrow_right_1),
+          icon: const Icon(Icons.arrow_right),
         ),
       ),
       body: SingleChildScrollView(

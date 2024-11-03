@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/widgets/authentication_bottom_sheet.dart';
@@ -109,7 +108,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       child: Row(
                         children: [
                           Icon(
-                            Iconsax.message_edit,
+                          Icons.arrow_right,
                             size: 20,
                             color: theme.colorScheme.secondary,
                           ),

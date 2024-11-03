@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import '/controllers/size_controller.dart';
 import '/widgets/my_divider.dart';
 import '/widgets/profile_item.dart';

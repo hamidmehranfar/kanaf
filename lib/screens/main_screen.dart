@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/screens/home_screen.dart';
 import 'package:kanaf/screens/search_screen.dart';
@@ -69,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
                   color: currentIndex==0 ? theme.colorScheme.primary.withOpacity(0.5) :
                   null,
                 ),
-                child: const Icon(Iconsax.home_2),
+                child: const Icon(Icons.home),
               ),
               label: "خانه"
           ),
@@ -82,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                   color: currentIndex==1 ? theme.colorScheme.primary.withOpacity(0.5) :
                   null,
                 ),
-                child: const Icon(Iconsax.search_normal)
+                child: const Icon(Icons.search)
               ),
               label: "جستجو"
           ),
@@ -95,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
                     color: currentIndex==2 ? theme.colorScheme.primary.withOpacity(0.5) :
                     null,
                   ),
-                child: const Icon(Iconsax.message)
+                child: const Icon(Icons.message)
               ),
               label: "چت"
           ),
@@ -108,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                     color: currentIndex==3 ? theme.colorScheme.primary.withOpacity(0.5) :
                     null,
                   ),
-                child: const Icon(Iconsax.messages)
+                child: const Icon(Icons.message)
               ),
               label: "تالار گفتگو"
           ),
@@ -121,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
                     color: currentIndex==4 ? theme.colorScheme.primary.withOpacity(0.5) :
                     null,
                   ),
-                child: const Icon(Iconsax.profile_circle)
+                child: Icon(Icons.person_off)
               ),
               label: "پروفایل"
           ),

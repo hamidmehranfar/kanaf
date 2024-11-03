@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/screens/authentication/forgot_password_screen.dart';
@@ -27,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onPressed: () {
             Get.back();
           },
-          icon: const Icon(Iconsax.arrow_right_1),
+          icon: const Icon(Icons.arrow_right),
         ),
       ),
       body: Container(
