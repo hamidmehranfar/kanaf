@@ -7,7 +7,7 @@ TextTheme textTheme = const TextTheme(
   headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
   headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
   headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-  titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  titleLarge: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
   titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
   titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
   bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),

@@ -67,6 +67,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/start_screen/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -82,21 +83,39 @@ flutter:
   fonts:
     - family: LexendDeca
       fonts:
-        - asset: assets/fonts/LexendDeca-ExtraLight.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraLight.ttf
           weight: 200
-        - asset: assets/fonts/LexendDeca-Light.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-Light.ttf
           weight: 300
-        - asset: assets/fonts/LexendDeca-Regular.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-Regular.ttf
           weight: 400
-        - asset: assets/fonts/LexendDeca-Medium.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-Medium.ttf
           weight: 500
-        - asset: assets/fonts/LexendDeca-SemiBold.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/LexendDeca-Bold.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-Bold.ttf
           weight: 700
-        - asset: assets/fonts/LexendDeca-ExtraBold.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/LexendDeca-Black.ttf
+        - asset: assets/fonts/Lexend_Deca/LexendDeca-Black.ttf
+          weight: 900
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
+          weight: 200
+        - asset: assets/fonts/Roboto/Roboto-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+          weight: 600
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+          weight: 800
+        - asset: assets/fonts/Roboto/Roboto-Black.ttf
           weight: 900
 
   # To add custom fonts to your application, add a fonts section here,

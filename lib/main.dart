@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData(
             size: 20
         ),
+        fontFamily: "LexendDeca",
       ),
       darkTheme: ThemeData(
         colorScheme: darkColorScheme,

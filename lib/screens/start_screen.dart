@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/res/app_strings.dart';
 import 'package:kanaf/widgets/start_screen_button.dart';
@@ -10,12 +11,16 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      body: Padding(
+      body: Container(
+        width: SizeController.width,
         padding: globalPadding * 5,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 510),
-            Text("به کناف‌کار خوش اومدی!!",
+            const SizedBox(height: 140),
+            Image.asset("assets/images/start_screen/person.png", width: 115,height: 335,),
+            const SizedBox(height: 16,),
+            Text(AppStrings.welcomeText,
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: theme.colorScheme.onSurface
               ),),

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kanaf/controllers/size_controller.dart';
 import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/screens/authentication/forgot_password_screen.dart';
-import 'package:kanaf/widgets/authentication_bottom_sheet.dart';
 import 'package:kanaf/widgets/custom_text_field.dart';
+import 'package:kanaf/widgets/login_button.dart';
+
+import '../../res/app_strings.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,39 +22,28 @@ class _LoginScreenState extends State<LoginScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(Icons.arrow_right),
-        ),
-      ),
-      body: Container(
-        width: SizeController.width,
-        height: SizeController.height,
-        padding: globalPadding * 4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 32,),
-            Text("ورود به حساب کاربری",
-              style: theme.textTheme.titleLarge,),
-            const SizedBox(height: 8,),
-            Text("شماره موبایل و رمز عبورتان را وارد کنید .",
-              style: theme.textTheme.titleMedium,),
-            const SizedBox(height: 48,),
-            CustomTextField(labelText: "شماره موبایل",enabled: !isLoading,),
-            const SizedBox(height: 32,),
-            AuthenticationBottomSheet(
-              isLoading: isLoading,
-              onTap: (){
-                setState(() {
-                  isLoading = true;
-                });
-              },
+      body: Padding(
+        padding: globalPadding * 12,
+        child: SizedBox(
+          width: SizeController.width,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 140),
+                Image.asset("assets/images/start_screen/person.png", width: 115,height: 335,),
+                const SizedBox(height: 16,),
+                Text(AppStrings.welcomeText,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                      color: theme.colorScheme.onSurface
+                  ),),
+                const SizedBox(height: 18,),
+                const CustomTextField(hintText: "شماره همراه",),
+                const SizedBox(height: 25,),
+                const LoginButton()
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

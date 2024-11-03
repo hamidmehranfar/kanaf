@@ -85,6 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: controller,
         focusNode: focusNode,
         readOnly: widget.readOnly,
+        textAlign: TextAlign.center,
         textDirection: widget.textDirection,
         textInputAction: widget.textInputAction,
         obscureText: widget.obscureText,
@@ -97,38 +98,34 @@ class _CustomTextFieldState extends State<CustomTextField> {
         inputFormatters: widget.inputFormatters,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          errorText: widget.errorText,
           labelText: widget.labelText,
+          errorText: widget.errorText,
           suffixIcon: widget.suffixIcon,
+          fillColor: themeColors.tertiary.withOpacity(0.21),
+          filled: true,
           focusedBorder: OutlineInputBorder(
-            borderRadius: globalBorderRadius,
-            borderSide: BorderSide(
-              color: themeColors.primary,
-            ),
+            borderRadius: globalBorderRadius * 3,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: globalBorderRadius,
-            borderSide: BorderSide(
-              color: themeColors.onSurface,
-            ),
+            borderRadius: globalBorderRadius * 3,
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: globalBorderRadius,
+            borderRadius: globalBorderRadius * 3,
             borderSide: BorderSide(
               color: themeColors.inverseSurface.withOpacity(0.7),
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: globalBorderRadius,
+            borderRadius: globalBorderRadius * 3,
             borderSide: BorderSide(
               color: themeColors.error,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: globalBorderRadius,
-            borderSide: BorderSide(
-              color: themeColors.primary,
-            ),
+            borderRadius: globalBorderRadius * 3,
+          ),
+          hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: themeColors.onSecondary.withOpacity(0.5)
           ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: !widget.enabled ? themeColors.inverseSurface.withOpacity(0.7):
