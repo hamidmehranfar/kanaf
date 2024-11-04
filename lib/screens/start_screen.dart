@@ -22,17 +22,20 @@ class StartScreen extends StatelessWidget {
             const SizedBox(height: 16,),
             Text(AppStrings.welcomeText,
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: theme.colorScheme.onSurface
+                color: theme.colorScheme.onSurface,
+                fontFamily: "LexendDeca"
               ),),
             const SizedBox(height: 16,),
             Text(AppStrings.appText,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.outline
+                color: theme.colorScheme.outline,
+                fontFamily: "LexendDeca"
               ),),
             const SizedBox(height: 6,),
             Text("لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی ",
               style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSecondary.withOpacity(0.5)
+                color: theme.colorScheme.onSecondary.withOpacity(0.5),
+                fontFamily: "Quicksand"
               ),
             ),
             const SizedBox(height: 40,),

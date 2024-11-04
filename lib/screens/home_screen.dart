@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../controllers/size_controller.dart';
 import '../models/comment.dart';
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var width = SizeController.width;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         toolbarHeight: 0,
         backgroundColor: Colors.transparent,

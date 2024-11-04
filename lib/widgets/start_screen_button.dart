@@ -41,7 +41,8 @@ class StartScreenButton extends StatelessWidget {
               ),
             ),
             Text("Let's Start", style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.onSecondary
+                color: theme.colorScheme.onSecondary,
+                fontFamily: "LexendDeca"
             ),)
           ],
         ),

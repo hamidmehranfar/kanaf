@@ -124,8 +124,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: globalBorderRadius * 3,
           ),
-          hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: themeColors.onSecondary.withOpacity(0.5)
+          hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: themeColors.onSecondary.withOpacity(0.5),
+              fontFamily: "LexendDeca"
           ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: !widget.enabled ? themeColors.inverseSurface.withOpacity(0.7):

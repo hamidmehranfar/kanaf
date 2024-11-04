@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/global_configs.dart';
+import 'package:get/get.dart';
+import 'package:kanaf/screens/main_screen.dart';
+import '/../global_configs.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
@@ -8,7 +10,9 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return InkWell(
-      onTap: (){},
+      onTap: (){
+        Get.offAll(()=> const MainScreen());
+      },
       child: Container(
         width: 160,
         height: 43,
@@ -30,6 +34,7 @@ class LoginButton extends StatelessWidget {
         child: Center(
           child: Text("ارسال کد", style: theme.textTheme.headlineSmall?.copyWith(
             color: theme.colorScheme.tertiaryContainer,
+            fontWeight: FontWeight.w500
           ),),
         ),
       ),
