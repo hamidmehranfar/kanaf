@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kanaf/global_configs.dart';
+import '../widgets/custom_appbar.dart';
 import '/controllers/size_controller.dart';
 import '/models/enums/master_services.dart';
 import '/widgets/master_services_items.dart';
@@ -11,36 +13,109 @@ class MasterServicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("اوستا کارها", style: theme.textTheme.titleLarge,),
-        bottom: MyDivider(
-          color: theme.colorScheme.inverseSurface,
-          height: 1,
-          thickness: 1,
-        )
-      ),
+      appBar: const CustomAppbar(),
       body: SizedBox(
         height: SizeController.height,
-        child: Column(
+        width: SizeController.width,
+        child: ListView(
+          shrinkWrap: true,
           children: [
-            const SizedBox(height: 16,),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  MasterServicesItems(
-                    service: MasterServices.master,
-                  ),
-                  MasterServicesItems(
-                    service: MasterServices.opticalLine,
-                  ),
-                  MasterServicesItems(
-                    service: MasterServices.painter,
-                  ),
-                ],
+            const SizedBox(height: 14,),
+            Center(
+              child: Text("استادکارها", style: theme.textTheme.headlineLarge?.copyWith(
+                color: theme.colorScheme.tertiary,
+                fontWeight: FontWeight.w300
+              ),),
+            ),
+            const SizedBox(height: 5,),
+            Padding(
+              padding: globalPadding * 11,
+              child: MyDivider(
+                color: theme.colorScheme.onSecondary,
+                height: 1,
+                thickness: 1,
+              ),
+            ),
+            const SizedBox(height: 22,),
+            SizedBox(
+              width: SizeController.width,
+              height: 170,
+              child: ListView.separated(
+                padding: globalPadding * 10,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index){
+                  return const MasterServicesItems(service: MasterServices.master);
+                },
+                separatorBuilder: (context, index){
+                  return const SizedBox(width: 9,);
+                },
+                itemCount: 4,
               ),
             ),
             const SizedBox(height: 16,),
+            Center(
+              child: Text("لاین نور", style: theme.textTheme.headlineLarge?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                  fontWeight: FontWeight.w300
+              ),),
+            ),
+            const SizedBox(height: 5,),
+            Padding(
+              padding: globalPadding * 11,
+              child: MyDivider(
+                color: theme.colorScheme.onSecondary,
+                height: 1,
+                thickness: 1,
+              ),
+            ),
+            const SizedBox(height: 22,),
+            SizedBox(
+              width: SizeController.width,
+              height: 170,
+              child: ListView.separated(
+                padding: globalPadding * 10,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index){
+                  return const MasterServicesItems(service: MasterServices.opticalLine);
+                },
+                separatorBuilder: (context, index){
+                  return const SizedBox(width: 9,);
+                },
+                itemCount: 4,
+              ),
+            ),
+            const SizedBox(height: 16,),
+            Center(
+              child: Text("نقاش", style: theme.textTheme.headlineLarge?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                  fontWeight: FontWeight.w300
+              ),),
+            ),
+            const SizedBox(height: 5,),
+            Padding(
+              padding: globalPadding * 11,
+              child: MyDivider(
+                color: theme.colorScheme.onSecondary,
+                height: 1,
+                thickness: 1,
+              ),
+            ),
+            const SizedBox(height: 22,),
+            SizedBox(
+              width: SizeController.width,
+              height: 170,
+              child: ListView.separated(
+                padding: globalPadding * 10,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index){
+                  return const MasterServicesItems(service: MasterServices.painter);
+                },
+                separatorBuilder: (context, index){
+                  return const SizedBox(width: 9,);
+                },
+                itemCount: 4,
+              ),
+            ),
           ],
         ),
       )

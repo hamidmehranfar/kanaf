@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/screens/services_list_screen.dart';
+import '/../screens/services_list_screen.dart';
 import '/global_configs.dart';
 import '/models/enums/master_services.dart';
 
@@ -10,72 +10,68 @@ class MasterServicesItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: globalPadding * 2,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(convertServiceToString(service), style: theme.textTheme.headlineSmall,),
-              InkWell(
-                onTap: (){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context){
-                      return ServicesListScreen(service : service);
-                    })
-                  );
-                },
-                child: Row(
-                  children: [
-                    Text("مشاهده همه", style: theme.textTheme.titleMedium,),
-                    const SizedBox(width: 4,),
-                    const Icon(Icons.arrow_left)
-                  ],
-                ),
-              )
-            ],
-          ),
+    return InkWell(
+      onTap: (){
+        Navigator.of(context).push(MaterialPageRoute(builder: (context){
+          return const ServicesListScreen(service: MasterServices.master);
+        }));
+      },
+      child: Container(
+        width: 90,
+        height: 170,
+        decoration: BoxDecoration(
+          borderRadius: globalBorderRadius * 10,
+          color: theme.colorScheme.primary
         ),
-        const SizedBox(height: 8,),
-        SizedBox(
-          height: 100,
-          child: ListView.separated(
-            padding: globalPadding*2,
-            scrollDirection: Axis.horizontal,
-            itemCount: 10,
-            separatorBuilder: (context, index){
-              return const SizedBox(width: 10,);
-            },
-            itemBuilder: (context, index){
-              return Container(
-                padding: globalAllPadding * 2,
-                width: 120,
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: Image.asset("assets/images/master_user.png",
+                width: 87,height: 87,fit: BoxFit.fill,)
+            ),
+            const SizedBox(height: 6,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(5, (index){
+               return Icon(Icons.star, color: theme.colorScheme.tertiary,
+                 size: 12,
+               );
+             }),
+            ),
+            const SizedBox(height: 6,),
+            Text("علی موحدی", style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.onPrimary
+            ),),
+            Container(
+                padding: EdgeInsets.zero,
+                width : 70,
+                height: 20,
                 decoration: BoxDecoration(
-                  borderRadius: globalBorderRadius * 2,
-                  border: Border.all(
-                    color: theme.colorScheme.primary,
-                    width: 2
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/user.png",
-                      fit: BoxFit.cover,width: 50,height: 50,),
-                    Text(
-                      "حمید مهران فر",
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyLarge!.copyWith(color: Colors.black),
+                    color: theme.colorScheme.tertiary.withOpacity(0.75),
+                    borderRadius: globalBorderRadius * 3,
+                    border: Border.all(
+                        color: theme.colorScheme.onSurface.withOpacity(0.5)
                     ),
-                  ],
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.onPrimary,
+                        offset: const Offset(-10, -15),
+                        blurRadius: 38,
+                      )
+                    ]
                 ),
-              );
-            }
-          ),
-        )
-      ],
+                child: Center(
+                  child: Text("بررسی سابقه", style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary
+                  ),),
+                )
+            )
+          ],
+        ),
+      ),
     );
   }
 }

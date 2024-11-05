@@ -9,9 +9,9 @@ String convertServiceToString(MasterServices service){
     return "اوستا کار";
   }
   else if(service == MasterServices.opticalLine){
-    return "لاین نوری";
+    return "لاین نور";
   }
   else{
-    return "نقاش";
+    return "نقاش ها";
   }
 }
