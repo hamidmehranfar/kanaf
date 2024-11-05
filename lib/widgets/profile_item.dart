@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
+import '/../global_configs.dart';
 
 class ProfileItem extends StatelessWidget {
   final Function() onTap;
   final String title;
-  final IconData icon;
+  final Color color;
   const ProfileItem({super.key, required this.onTap,
-    required this.title, required this.icon});
+    required this.title, required this.color});
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon),
-            const SizedBox(width: 24,),
-            Text(title, style: theme.textTheme.titleLarge,)
-          ],
+    return FilledButton(
+      onPressed: onTap,
+      style: FilledButton.styleFrom(
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: globalBorderRadius * 3
         ),
-        InkWell(
-          onTap: onTap,
-          child: const Icon(Icons.arrow_left),
-        ),
-      ],
+        fixedSize: const Size(200, 50),
+      ),
+      child: Text(title, style: theme.textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w400
+      ),),
     );
   }
 }

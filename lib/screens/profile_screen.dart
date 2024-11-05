@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kanaf/widgets/custom_appbar.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
 import '/controllers/size_controller.dart';
 import '/widgets/my_divider.dart';
 import '/widgets/profile_item.dart';
@@ -24,134 +26,130 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: theme.colorScheme.primary.withOpacity(0.3),
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          // actions: [
-          //   IconButton(
-          //     onPressed: (){
-          //
-          //     },
-          //     icon: const Icon(Iconsax.more),),
-          // ],
-        ),
+        appBar: const CustomAppbar(),
         body: SafeArea(
-          child: Container(
-            width: SizeController.width,
-            height: SizeController.height,
-            color: theme.colorScheme.primary.withOpacity(0.3),
-            child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              const SizedBox(height: 25,),
+              Center(
+                child: Text("احمد احمدی", style: theme.textTheme.headlineLarge?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                  fontWeight: FontWeight.w300
+                ),),
+              ),
+              const SizedBox(height: 14,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius * 10,
+                ),
+                child: Image.asset("assets/images/master_profile.png",
+                  width: 150,height: 150),
+              ),
+              const SizedBox(height: 7,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 6,),
+              Padding(
+                padding: globalPadding * 12,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(height: 32,),
-                    SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: ClipRRect(
-                        borderRadius: globalBorderRadius * 2,
-                        child: Image.asset("assets/images/user.png",width: 100,),
-                      ),
-                    ),
-                    const SizedBox(height: 12,),
-                    Text("حمید", style: theme.textTheme.titleLarge,),
-                    const SizedBox(height: 12,),
-                    Text("09900990099", style: theme.textTheme.titleMedium,),
-                    const SizedBox(height: 12,),
-                    Padding(
-                      padding: globalPadding * 3,
-                      child: MyDivider(
-                        color: theme.colorScheme.inverseSurface.withOpacity(0.5),
-                        height: 1,
-                        thickness: 1,
-                      ),
-                    ),
-                    const SizedBox(height: 16,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("3'248", style: theme.textTheme.titleLarge,),
-                              Text("پست", style: theme.textTheme.bodyMedium!,),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("10", style: theme.textTheme.titleLarge,overflow: TextOverflow.ellipsis,),
-                              Text("امتیاز", style: theme.textTheme.bodyMedium!,),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("knf23", style: theme.textTheme.titleLarge,),
-                              Text("کد معرف", style: theme.textTheme.bodyMedium!,),
-                            ],
-                          ),
-                        ),
+                        Text("3".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w400
+                        ),),
+                        Text("پست", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
                       ],
                     ),
-                    const SizedBox(height: 8,)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("1".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                        Text("امتیاز", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("3".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                        Text("کد معرف", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                      ],
+                    ),
                   ],
                 ),
-                Expanded(
-                  child: Container(
-                    margin: globalPadding * 4,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                      ),
-                      color: theme.colorScheme.surface,
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      padding: globalPadding * 6,
-                      children: [
-                        const SizedBox(height: 24,),
-                        ProfileItem(
-                          title: "پست ها",
-                          icon: Icons.person_2_outlined,
-                          onTap: (){
-
-                          },
-                        ),
-                        const SizedBox(height: 48,),
-                        ProfileItem(
-                          title: "پروفایل",
-                          icon: Icons.notifications_outlined,
-                          onTap: (){
-
-                          },
-                        ),
-                        const SizedBox(height: 48,),
-                        ProfileItem(
-                          title: "تنظیمات",
-                          icon: Icons.settings_outlined,
-                          onTap: (){
-
-                          },
-                        ),
-                      ],
-                    ),
+              ),
+              const SizedBox(height: 6,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 25,),
+              Column(
+                children: [
+                  ProfileItem(
+                    onTap: (){},
+                    title: "گزارش کارها",
+                    color: theme.colorScheme.tertiary,
                   ),
-                )
-              ],
-            )
-          ),
+                  const SizedBox(height: 11,),
+                  ProfileItem(
+                    onTap: (){},
+                    title: "تنظیمات صفحه",
+                    color: theme.colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 11,),
+                  ProfileItem(
+                    onTap: (){},
+                    title: "ویرایش پست ها",
+                    color: theme.colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 11,),
+                  ProfileItem(
+                    onTap: (){},
+                    title: "پروفایل",
+                    color: theme.colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 20,),
+                ],
+              ),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+            ],
+          )
         )
     );
   }
