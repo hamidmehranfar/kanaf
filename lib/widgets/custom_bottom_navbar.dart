@@ -21,7 +21,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         bottom: 13,
       ),
       width: SizeController.width,
-      height: 100,
+      height: 110,
       child: Stack(
         children: [
           Positioned(
@@ -34,7 +34,17 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               ),
               decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
-                  borderRadius: globalBorderRadius * 6
+                  borderRadius: globalBorderRadius * 6,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.tertiary,
+                    offset: const Offset(-3,-3)
+                  ),
+                  BoxShadow(
+                    color: theme.colorScheme.onSecondary,
+                    offset: const Offset(3, 3)
+                  )
+                ]
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -50,8 +60,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.person, size: 25,
-                                color: theme.colorScheme.secondary,),
+                              Image.asset("assets/icons/user_icon.png",
+                                width: 30, height: 30,
+                              ),
                               Text("پروفایل", style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary
                               ),),
@@ -64,8 +75,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.chat, size: 25,
-                                color: theme.colorScheme.secondary,),
+                              Image.asset("assets/icons/pen_icon.png",
+                                width: 30, height: 30,
+                              ),
                               Text("چت", style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary
                               ),),
@@ -87,8 +99,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.settings_outlined, size: 25,
-                                color: theme.colorScheme.secondary,),
+                              Image.asset("assets/icons/conversation_icon.png",
+                                width: 30, height: 30,
+                              ),
                               Text("تالار گفتگو", style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary
                               ),),
@@ -101,8 +114,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           },
                           child: Column(
                             children: [
-                              Icon(Icons.search, size: 25,
-                                color: theme.colorScheme.secondary,),
+                              Image.asset("assets/icons/search_icon.png",
+                                width: 30,height: 30,),
                               Text("جستجو", style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary
                               ),),
@@ -124,7 +137,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 widget.onTap(0);
               },
               child: Container(
-                height: 50,
+                height: 60,
                 padding: globalPadding * 4,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.onPrimary,
@@ -133,8 +146,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 child: Column(
                   children: [
                     const SizedBox(height: 5,),
-                    Icon(Icons.home_filled, size: 25,
-                      color: theme.colorScheme.tertiary,
+                    Image.asset("assets/icons/home_icon.png",
+                      width: 30, height: 30,
                     ),
                     Text("خانه", style: theme.textTheme.labelMedium,)
                   ],

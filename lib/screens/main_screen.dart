@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/screens/home_screen.dart';
-import 'package:kanaf/screens/search_screen.dart';
-import 'package:kanaf/widgets/custom_bottom_navbar.dart';
+import '/../controllers/size_controller.dart';
+import '/../widgets/custom_bottom_navbar.dart';
+import '/../screens/home_screen.dart';
+import '/../screens/search_screen.dart';
 
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
-
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -19,9 +18,9 @@ class _MainScreenState extends State<MainScreen> {
     Navigator(
       onGenerateRoute: (RouteSettings settings){
         return MaterialPageRoute(
-          builder:(context){
-            return const HomeScreen();
-          }
+            builder:(context){
+              return const HomeScreen();
+            }
         );
       },
     ),
@@ -36,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     ),
     Center(child: Text("chat page"),),
     Scaffold(
-      backgroundColor: Colors.green,
+        backgroundColor: Colors.green,
         body: Center(child: Text("talar page"),)
     ),
     Navigator(
@@ -55,18 +54,27 @@ class _MainScreenState extends State<MainScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
+      backgroundColor: theme.colorScheme.surface,
+      body: SizedBox(
+        width: SizeController.width,
+        height: SizeController.height,
+        child: Stack(
+          children: [
+            IndexedStack(
+              index: currentIndex,
+              children: screens,
+            ),
+            Positioned(
+              bottom: 0,
+              child: CustomBottomNavBar(onTap: (int index){
+                setState(() {
+                  currentIndex = index;
+                });
+              },)
+            ),
+          ]
+        ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        onTap: (int index){
-          setState(() {
-            print(index);
-            currentIndex = index;
-          });
-        },
-      )
     );
   }
 }

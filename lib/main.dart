@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/screens/authentication/login_screen.dart';
-import 'package:kanaf/screens/authentication/otp_screen.dart';
-import 'package:kanaf/screens/authentication/signup_screen.dart';
-import 'package:kanaf/screens/main_screen.dart';
-import 'package:kanaf/screens/start_screen.dart';
+import '/../screens/start_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
 
