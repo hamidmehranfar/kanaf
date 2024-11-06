@@ -56,7 +56,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       children: [
                         InkWell(
                           onTap: (){
-                            widget.onTap(4);
+                            print("on tap 0");
+                            widget.onTap(0);
                           },
                           child: Column(
                             children: [
@@ -71,7 +72,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                         ),
                         InkWell(
                           onTap: (){
-                            widget.onTap(3);
+                            print("on tap 1");
+                            widget.onTap(1);
                           },
                           child: Column(
                             children: [
@@ -95,7 +97,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       children: [
                         InkWell(
                           onTap: (){
-                            widget.onTap(1);
+                            print("on tap 3");
+                            widget.onTap(3);
                           },
                           child: Column(
                             children: [
@@ -110,7 +113,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                         ),
                         InkWell(
                           onTap: (){
-                            widget.onTap(0);
+                            print("on tap 4");
+                            widget.onTap(4);
                           },
                           child: Column(
                             children: [
@@ -134,7 +138,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             right: 0,
             child:InkWell(
               onTap: (){
-                widget.onTap(0);
+                print("on tap 2");
+                widget.onTap(2);
               },
               child: Container(
                 height: 60,

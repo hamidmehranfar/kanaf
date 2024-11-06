@@ -13,8 +13,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
+  int currentIndex = 2;
   List<Widget> screens = [
+    Navigator(
+      onGenerateRoute: (RouteSettings settings){
+        return MaterialPageRoute(
+            builder:(context){
+              return const ProfileScreen();
+            }
+        );
+      },
+    ),
+    Center(child: Text("chat page"),),
     Navigator(
       onGenerateRoute: (RouteSettings settings){
         return MaterialPageRoute(
@@ -24,16 +34,6 @@ class _MainScreenState extends State<MainScreen> {
         );
       },
     ),
-    Navigator(
-      onGenerateRoute: (RouteSettings settings){
-        return MaterialPageRoute(
-            builder:(context){
-              return const SearchScreen(isMainScreen: true,);
-            }
-        );
-      },
-    ),
-    Center(child: Text("chat page"),),
     Scaffold(
         backgroundColor: Colors.green,
         body: Center(child: Text("talar page"),)
@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
       onGenerateRoute: (RouteSettings settings){
         return MaterialPageRoute(
             builder:(context){
-              return const ProfileScreen();
+              return const SearchScreen(isMainScreen: true,);
             }
         );
       },
@@ -68,6 +68,7 @@ class _MainScreenState extends State<MainScreen> {
               bottom: 0,
               child: CustomBottomNavBar(onTap: (int index){
                 setState(() {
+                  print("clicked index : $index");
                   currentIndex = index;
                 });
               },)
