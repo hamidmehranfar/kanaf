@@ -1,13 +1,14 @@
 class Poster{
   String title;
-  String address;
+  //FIXME : ask this
+  int num;
   String imageUrl;
-  String? price;
+  double rating;
 
   Poster({
     required this.title,
-    required this.address,
+    required this.num,
     required this.imageUrl,
-    this.price,
+    required this.rating,
   });
 }

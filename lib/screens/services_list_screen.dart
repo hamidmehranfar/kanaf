@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kanaf/screens/search_screen.dart';
+import 'package:kanaf/widgets/custom_appbar.dart';
 import '../controllers/size_controller.dart';
 import '../global_configs.dart';
 import '../models/enums/master_services.dart';
@@ -32,53 +33,14 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
   
   Future<void> pagingControllerListener(pageKey)async{
     _pagingController.appendLastPage(
-      [
-        Poster(
-          title: "کناف کاری با بهترین کیفیت",
-          address: "پله شده در ملک شهر",
-          imageUrl: ""
-        ),
-        Poster(title: "کناف کار با تجربه",
-            address: "لحظاتی پیش در مبارکه",
-            price: "4500000",
-            imageUrl: ""),
-        Poster(
-            title: "کناف همراه با بهترین وسایل",
-            address: "لحظاتی پیش در باغ غدیر",
-            price: "200000",
-            imageUrl: ""
-        ),
-        Poster(
-            title: "کناف کاری با بهترین کیفیت",
-            address: "پله شده در ملک شهر",
-            imageUrl: ""
-        ),
-        Poster(title: "کناف کار با تجربه",
-            address: "لحظاتی پیش در مبارکه",
-            price: "4500000",
-            imageUrl: ""),
-        Poster(
-            title: "کناف همراه با بهترین وسایل",
-            address: "لحظاتی پیش در باغ غدیر",
-            price: "200000",
-            imageUrl: ""
-        ),
-        Poster(
-            title: "کناف کاری با بهترین کیفیت",
-            address: "پله شده در ملک شهر",
-            imageUrl: ""
-        ),
-        Poster(title: "کناف کار با تجربه",
-            address: "لحظاتی پیش در مبارکه",
-            price: "4500000",
-            imageUrl: ""),
-        Poster(
-            title: "کناف همراه با بهترین وسایل",
-            address: "لحظاتی پیش در باغ غدیر",
-            price: "200000",
-            imageUrl: ""
-        ),
-      ]
+      List.generate(20, (int index){
+        return Poster(
+            title: "استاد کار",
+            num: 17,
+            imageUrl: "",
+            rating: 6.5
+        );
+      })
     );
   }
 
@@ -91,74 +53,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
     // );
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60,
-        // systemOverlayStyle: systemUiOverlayStyle,
-        automaticallyImplyLeading: false,
-        title: Container(
-          padding: globalPadding * 2,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withOpacity(0.3),
-            borderRadius: globalBorderRadius * 2
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: 8,),
-              Row(
-                children: [
-                  InkWell(
-                    onTap: (){
-                      Navigator.of(context).pop();
-                    },
-                    child: const Icon(Icons.arrow_right),
-                  ),
-                  const SizedBox(width: 4,),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: (){
-                              Get.to(const SearchScreen(isMainScreen: false,));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: globalPadding * 4,
-                                  child: Text("جستجو در همه ی اگهی ها", style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.inverseSurface),),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8,),
-                        InkWell(
-                          child: Row(
-                            children: [
-                              Container(width: 1,color: theme.colorScheme.inverseSurface,),
-                              const SizedBox(width: 5,),
-                              Text("اصفهان", style: theme.textTheme.bodyMedium,),
-                              const Icon(Icons.location_on_outlined),
-                              const SizedBox(width: 4,)
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8,)
-            ],
-          ),
-        ),
-        bottom: MyDivider(
-          height: 1,
-          thickness: 2,
-          color: theme.colorScheme.inverseSurface.withOpacity(0.4),
-        ),
-      ),
+      appBar: const CustomAppbar(),
       body: SizedBox(
         width: SizeController.width,
         height: SizeController.height,
@@ -166,18 +61,41 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
           onRefresh: () async{
             _pagingController.refresh();
           },
-          child: PagedListView.separated(
-            shrinkWrap: true,
-            padding: allPadding * 4,
-            pagingController: _pagingController,
-            separatorBuilder: (context, index){
-              return const SizedBox(height: 8,);
-            },
-            builderDelegate: PagedChildBuilderDelegate(
-              itemBuilder: (BuildContext context, Poster item, int index){
-                return PosterItem(poster : item);
-              }
-            ),
+          child: Column(
+            children: [
+              const SizedBox(height: 14,),
+              Center(
+                child: Text("استادکارها", style: theme.textTheme.headlineLarge?.copyWith(
+                    color: theme.colorScheme.tertiary,
+                    fontWeight: FontWeight.w300
+                ),),
+              ),
+              const SizedBox(height: 5,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 20,),
+              Expanded(
+                child: PagedListView.separated(
+                  shrinkWrap: true,
+                  padding: allPadding * 5,
+                  pagingController: _pagingController,
+                  separatorBuilder: (context, index){
+                    return const SizedBox(height: 10,);
+                  },
+                  builderDelegate: PagedChildBuilderDelegate(
+                    itemBuilder: (BuildContext context, Poster item, int index){
+                      return PosterItem(poster : item);
+                    }
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

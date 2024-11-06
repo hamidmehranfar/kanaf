@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/models/poster.dart';
-import 'package:kanaf/screens/details_screen.dart';
-import 'package:kanaf/widgets/my_divider.dart';
+import 'package:kanaf/controllers/size_controller.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
+import '/../global_configs.dart';
+import '/../models/poster.dart';
+import '/../screens/details_screen.dart';
+import '/../widgets/my_divider.dart';
 
 class PosterItem extends StatelessWidget {
   final Poster poster;
@@ -15,44 +17,111 @@ class PosterItem extends StatelessWidget {
 
     return InkWell(
       onTap: (){
-        Get.to(DetailsScreen(title: poster.title,));
+        Get.to(const DetailsScreen());
       },
-      child: SizedBox(
-        height: 128,
+      child: Container(
+        width: SizeController.width,
+        padding: globalPadding * 4,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary,
+          borderRadius: globalBorderRadius * 3,
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(poster.title, style: theme.textTheme.titleLarge,),
-                        Text(poster.address, style: theme.textTheme.bodyMedium,)
-                      ],
-                    ),
-                  ),
-                  Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: globalBorderRadius * 2,
+            const SizedBox(height: 30,),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child:Column(
+                    children: [
+                      Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "استادکار",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4,),
+                          Row(
+                            children: [
+                              Text(poster.num.toString().toPersianDigit(),
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.tertiary,
+                                ),
+                              ),
+                              const SizedBox(width: 1,),
+                              Icon(Icons.stacked_bar_chart_outlined,
+                                size: 13,color: theme.colorScheme.secondary,),
+                              const SizedBox(width: 9,),
+                              Text(poster.rating.toString().toPersianDigit(),
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.tertiary,
+                                ),
+                              ),
+                              Icon(Icons.star,
+                                size: 13,color: theme.colorScheme.secondary,),
+                            ],
+                          )
+                        ],
                       ),
-                      child: Image.asset("assets/images/logo_test.jpg", width: 150,fit: BoxFit.cover,)
+                      const SizedBox(height: 5,),
+                      MyDivider(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        height: 2,
+                        thickness: 2,
+                      ),
+                      const SizedBox(height: 6,),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                            padding: EdgeInsets.zero,
+                            width : 73,
+                            height: 23,
+                            decoration: BoxDecoration(
+                                color: theme.colorScheme.tertiary.withOpacity(0.75),
+                                borderRadius: globalBorderRadius * 3,
+                                border: Border.all(
+                                    color: theme.colorScheme.onSurface.withOpacity(0.5)
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: theme.colorScheme.onPrimary,
+                                    offset: const Offset(-15, -10),
+                                    blurRadius: 50,
+
+                                  )
+                                ]
+                            ),
+                            child: Center(
+                              child: Text("جزئیات", style: theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.onPrimary
+                              ),),
+                            )
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 13,),
+                CircleAvatar(
+                  backgroundColor: theme.colorScheme.primary,
+                  child: Image.asset("assets/images/master_user.png",
+                    width: 60,height: 60,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8,),
-            MyDivider(color: theme.colorScheme.inverseSurface, height: 1, thickness: 0.5),
+            const SizedBox(height: 15,),
           ],
         ),
-      ),
+      )
     );
   }
 }

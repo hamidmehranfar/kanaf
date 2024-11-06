@@ -6,7 +6,7 @@ ColorScheme lightColorScheme = const ColorScheme(
   secondary: Color(0xFFFFF478),
   tertiary: Color(0xFF1697B3),
   surface: Color(0xFFFFFFFF),
-  inverseSurface: Color(0xFF6C6C79),
+  inverseSurface: Color(0xFFD9D9D9),
   error: Color(0xFFD32F2F),
   onPrimary: Color(0xFFFFFFFF),
   onSecondary: Color(0xFF000000),

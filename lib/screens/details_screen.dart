@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
+import '/../controllers/size_controller.dart';
+import '/../widgets/custom_appbar.dart';
+import '/../widgets/my_divider.dart';
 import '../global_configs.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final String title;
-  const DetailsScreen({super.key, required this.title});
+  const DetailsScreen({super.key});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -20,186 +23,147 @@ class _DetailsScreenState extends State<DetailsScreen>{
     var theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: (){
-            Get.back();
-          },
-          icon: const Icon(Icons.arrow_right),
-        ),
-        actions: [
-          IconButton(
-            onPressed: (){
-
-            },
-            icon: const Icon(Icons.more_vert),
-          ),
-        ],
-        shadowColor: theme.colorScheme.onSurface.withOpacity(0.5),
-        elevation: 5,
-      ),
+      appBar: const CustomAppbar(),
       body: SafeArea(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled){
-              return [
-                SliverAppBar(
-                  automaticallyImplyLeading: false,
-                  expandedHeight: 250,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Padding(
-                      padding: globalAllPadding * 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: globalPadding * 11,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10,),
+              SizedBox(
+                width: SizeController.width,
+                height: 120,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top:50,
+                      left: 0,
+                      right: 0,
+                      child: MyDivider(
+                        color: theme.colorScheme.onSurface,
+                        height: 1,
+                        thickness: 1,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: 88,
+                        height: 88,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle
+                        ),
+                        child: Image.asset("assets/images/master_user.png",),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 100,
-                                height: 100,
-                                child: ClipRRect(
-                                  borderRadius: globalBorderRadius * 2,
-                                  child: Container(
-                                  color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text("3", style: theme.textTheme.bodyLarge,),
-                                          Text("پست", style: theme.textTheme.bodyMedium!,),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text("7", style: theme.textTheme.bodyLarge,overflow: TextOverflow.ellipsis,),
-                                          Text("سابقه کاری", style: theme.textTheme.bodyMedium!,),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Container(
-                                        height: 100,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: theme.colorScheme.onSurface.withOpacity(0.5)
-                                          ),
-                                          borderRadius: globalBorderRadius * 2,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text("1", style: theme.textTheme.titleLarge,),
-                                            Text("رتبه کسب و کار", style: theme.textTheme.titleMedium!,),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            width:90,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.tertiary,
+                              borderRadius: globalBorderRadius * 3
+                            ),
                           ),
-                          const SizedBox(height: 16,),
-                          Text(widget.title, style: theme.textTheme.titleLarge,),
-                          const SizedBox(height: 16,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              FilledButton(
-                                onPressed: (){},
-                                  style: FilledButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: globalBorderRadius,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    fixedSize: const Size.fromWidth(150)
-                                  ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.add_circle, color: theme.colorScheme.onPrimary,),
-                                    const SizedBox(width: 5,),
-                                    Text("ثبت پروژه", style: theme.textTheme.bodyLarge?.copyWith(
-                                      color: theme.colorScheme.onPrimary,
-                                    ),)
-                                  ],
-                                ),
-                              ),
-                              OutlinedButton(
-                                onPressed: (){},
-                                style: FilledButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: globalBorderRadius,
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                  fixedSize: const Size.fromWidth(150),
-                                  side: BorderSide(color: theme.colorScheme.primary,),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.message_outlined, color: theme.colorScheme.primary,),
-                                    const SizedBox(width: 5,),
-                                    Text("پیام", style: theme.textTheme.bodyLarge?.copyWith(
-                                      color: theme.colorScheme.primary,
-                                    ),),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: OutlinedButton(
-                                  onPressed: (){},
-                                  style: FilledButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: globalBorderRadius,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    side: BorderSide(color: theme.colorScheme.primary,),
-                                  ),
-                                  child: Icon(Icons.phone, color: theme.colorScheme.primary,),
-                                ),
-                              ),
-                            ],
+                          Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            width:90,
+                            height: 36,
+                            decoration: BoxDecoration(
+                                color: theme.colorScheme.tertiary,
+                                borderRadius: globalBorderRadius * 3
+                            ),
                           ),
                         ],
-                      ),
+                      )
                     )
-                  ),
+                  ],
                 ),
-              ];
-            },
-            body: GridView.builder(
-                itemCount: 20,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              ),
+              Container(
+                width:90,
+                height: 36,
+                decoration: BoxDecoration(
+                    color: theme.colorScheme.tertiary,
+                    borderRadius: globalBorderRadius * 3
+                ),
+              ),
+              const SizedBox(height: 16,),
+              Padding(
+                padding: globalPadding * 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("3".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                        Text("پست", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("1".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                        Text("سابقه", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("3".toPersianDigit(), style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                        Text("رتبه", style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w400
+                        ),),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16,),
+              MyDivider(
+                color: theme.colorScheme.onSurface,
+                height: 1,
+                thickness: 1,
+              ),
+              const SizedBox(height: 12,),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    childAspectRatio: 1/2
-                ),
-                itemBuilder: (context, index){
-                  return Container(
-                    height: 400,
-                    color: index %2 == 0 ? theme.colorScheme.primary : theme.colorScheme.secondary,
-                  );
-                }
-            ),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10
+                  ),
+                  itemBuilder: (context, index){
+                    return Container(
+                      color: theme.colorScheme.inverseSurface,
+                      width: 80,
+                      height: 80,
+                    );
+                  },
+                )
+              )
+            ],
           ),
         ),
       )
