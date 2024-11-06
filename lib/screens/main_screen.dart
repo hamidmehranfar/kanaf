@@ -4,7 +4,7 @@ import '/../widgets/custom_bottom_navbar.dart';
 import '/../screens/home_screen.dart';
 import '/../screens/search_screen.dart';
 
-import 'profile_screen.dart';
+import 'profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

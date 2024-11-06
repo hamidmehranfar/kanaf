@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kanaf/screens/profile/works_report_screen.dart';
 import 'package:kanaf/widgets/custom_appbar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import '/controllers/size_controller.dart';
 import '/widgets/my_divider.dart';
 import '/widgets/profile_item.dart';
 
-import '../global_configs.dart';
+import '../../global_configs.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -116,7 +118,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               Column(
                 children: [
                   ProfileItem(
-                    onTap: (){},
+                    onTap: (){
+                      Get.to(const WorksReportScreen());
+                    },
                     title: "گزارش کارها",
                     color: theme.colorScheme.tertiary,
                   ),
