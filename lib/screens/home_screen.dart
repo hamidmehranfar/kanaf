@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int? commentsCurrentIndex;
 
   HomeController homeController = HomeController();
-  CarouselSliderController carouselSliderController = CarouselSliderController();
+  int commentSliderIndex = 0;
 
   List<String> images = [];
   List<Comment> comments = [];
@@ -213,7 +213,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: globalPadding * 2,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius * 5,
-                    color: theme.colorScheme.primary,
+                    color: commentSliderIndex == index ? theme.colorScheme.primary
+                        : theme.colorScheme.secondary
+                    ,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             alignment: Alignment.topCenter,
                             child: Text(comments[index].name, style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: theme.colorScheme.onPrimary,
+                              color: commentSliderIndex == index ? theme.colorScheme.onPrimary
+                                  : theme.colorScheme.onSecondary
+                              ,
                             ),textDirection: TextDirection.rtl,),
                           ),
                         ),
@@ -242,8 +246,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 120,
                 initialPage: commentsCurrentIndex ?? 0,
                 enlargeCenterPage: true,
-                viewportFraction: 0.6,
-                enableInfiniteScroll: false
+                viewportFraction: 0.51,
+                enableInfiniteScroll: false,
+                onPageChanged: (int index, CarouselPageChangedReason reason){
+                  setState(() {
+                    commentSliderIndex = index;
+                  });
+                }
               )
             ),
             const SizedBox(height: 20,),
