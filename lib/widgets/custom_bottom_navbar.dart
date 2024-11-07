@@ -49,33 +49,40 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(
-                    width: 100,
+                  Expanded(
+                    flex: 1,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                          onTap: (){
-                            print("on tap 0");
+                        TextButton(
+                          onPressed:(){
                             widget.onTap(0);
                           },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           child: Column(
                             children: [
                               Image.asset("assets/icons/user_icon.png",
                                 width: 30, height: 30,
                               ),
+                              const SizedBox(height: 2,),
                               Text("پروفایل", style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary
                               ),),
                             ],
                           ),
                         ),
-                        InkWell(
-                          onTap: (){
-                            print("on tap 1");
+                        TextButton(
+                          onPressed:(){
                             widget.onTap(1);
                           },
-                          child: Column(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child:Column(
                             children: [
                               Image.asset("assets/icons/pen_icon.png",
                                 width: 30, height: 30,
@@ -89,17 +96,20 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 80,),
-                  SizedBox(
-                    width: 100,
+                  const SizedBox(width: 60,),
+                  Expanded(
+                    flex: 1,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                          onTap: (){
-                            print("on tap 3");
+                        TextButton(
+                          onPressed:(){
                             widget.onTap(3);
                           },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           child: Column(
                             children: [
                               Image.asset("assets/icons/conversation_icon.png",
@@ -111,11 +121,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                             ],
                           ),
                         ),
-                        InkWell(
-                          onTap: (){
-                            print("on tap 4");
+                        TextButton(
+                          onPressed:(){
                             widget.onTap(4);
                           },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           child: Column(
                             children: [
                               Image.asset("assets/icons/search_icon.png",
@@ -136,17 +149,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           Positioned(
             left: 0,
             right: 0,
-            child:InkWell(
+            child: GestureDetector(
               onTap: (){
-                print("on tap 2");
                 widget.onTap(2);
               },
               child: Container(
                 height: 60,
                 padding: globalPadding * 4,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onPrimary,
-                  shape: BoxShape.circle
+                    color: theme.colorScheme.onPrimary,
+                    shape: BoxShape.circle
                 ),
                 child: Column(
                   children: [
