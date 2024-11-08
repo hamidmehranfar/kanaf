@@ -126,7 +126,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: themeColors.onSecondary.withOpacity(0.5),
-              fontFamily: "LexendDeca"
           ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: !widget.enabled ? themeColors.inverseSurface.withOpacity(0.7):

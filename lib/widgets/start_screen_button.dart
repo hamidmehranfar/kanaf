@@ -33,16 +33,15 @@ class StartScreenButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              width: SizeController.width!/3.5,
+              width: SizeController.width!/2.8,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Icon(IconlyBold.arrow_right,
                   color: theme.colorScheme.onSecondary,size: 24,),
               ),
             ),
-            Text("Let's Start", style: theme.textTheme.titleLarge?.copyWith(
+            Text("شروع", style: theme.textTheme.titleLarge?.copyWith(
                 color: theme.colorScheme.onSecondary,
-                fontFamily: "LexendDeca"
             ),)
           ],
         ),

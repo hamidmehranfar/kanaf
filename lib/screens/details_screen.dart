@@ -23,7 +23,9 @@ class _DetailsScreenState extends State<DetailsScreen>{
     var theme = Theme.of(context);
 
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(
+        onTap: ()=>Get.back(),
+      ),
       body: SafeArea(
         child: Padding(
           padding: globalPadding * 11,

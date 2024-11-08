@@ -36,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
                       color: theme.colorScheme.onSurface,
-                      fontFamily: "LexendDeca"
                   ),),
                 const SizedBox(height: 18,),
                 const CustomTextField(hintText: "شماره همراه",),

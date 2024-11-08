@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../controllers/size_controller.dart';
 
 import '../../global_configs.dart';
@@ -14,7 +15,11 @@ class WorksReportScreen extends StatelessWidget {
     var theme = Theme.of(context);
     
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(
+        onTap: (){
+          Get.back();
+        },
+      ),
       body: SizedBox(
         width: SizeController.width,
         height: SizeController.height,

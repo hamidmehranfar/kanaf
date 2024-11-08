@@ -3,7 +3,8 @@ import 'package:kanaf/global_configs.dart';
 import 'package:kanaf/res/app_strings.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
-  const CustomAppbar({super.key});
+  final VoidCallback onTap;
+  const CustomAppbar({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,11 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.notifications,
-                size: 40,color: Color(0xFFA4F7F9),),
+              InkWell(
+                onTap: onTap,
+                child: const Icon(Icons.notifications,
+                  size: 40,color: Color(0xFFA4F7F9),),
+              ),
               Text(AppStrings.kanafSlogan, style: theme.textTheme.headlineLarge?.copyWith(
                 color: theme.colorScheme.secondary,
                 fontWeight: FontWeight.w300

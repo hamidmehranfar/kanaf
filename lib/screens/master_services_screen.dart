@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kanaf/global_configs.dart';
+import 'package:kanaf/screens/services_list_screen.dart';
+import 'package:kanaf/widgets/master_service_label_item.dart';
 import '../widgets/custom_appbar.dart';
 import '/controllers/size_controller.dart';
 import '/models/enums/master_services.dart';
 import '/widgets/master_services_items.dart';
 import '/widgets/my_divider.dart';
+import 'home_screen.dart';
 
 class MasterServicesScreen extends StatelessWidget {
   const MasterServicesScreen({super.key});
@@ -13,7 +16,10 @@ class MasterServicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(
+      onTap: (){
+        Navigator.of(context).pop();
+      },),
       body: SizedBox(
         height: SizeController.height,
         width: SizeController.width,
@@ -21,12 +27,14 @@ class MasterServicesScreen extends StatelessWidget {
           shrinkWrap: true,
           children: [
             const SizedBox(height: 14,),
-            Center(
-              child: Text("استادکارها", style: theme.textTheme.headlineLarge?.copyWith(
-                color: theme.colorScheme.tertiary,
-                fontWeight: FontWeight.w300
-              ),),
-            ),
+            MasterServiceLabelItem(
+              label: "استادکارها",
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                  return const ServicesListScreen(service: MasterServices.master);
+                })
+              );
+            }),
             const SizedBox(height: 5,),
             Padding(
               padding: globalPadding * 11,
@@ -53,12 +61,14 @@ class MasterServicesScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16,),
-            Center(
-              child: Text("لاین نور", style: theme.textTheme.headlineLarge?.copyWith(
-                  color: theme.colorScheme.tertiary,
-                  fontWeight: FontWeight.w300
-              ),),
-            ),
+            MasterServiceLabelItem(
+                label: "لاین نور",
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                    return const ServicesListScreen(service: MasterServices.master);
+                  })
+                  );
+                }),
             const SizedBox(height: 5,),
             Padding(
               padding: globalPadding * 11,
@@ -85,11 +95,13 @@ class MasterServicesScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16,),
-            Center(
-              child: Text("نقاش", style: theme.textTheme.headlineLarge?.copyWith(
-                  color: theme.colorScheme.tertiary,
-                  fontWeight: FontWeight.w300
-              ),),
+            MasterServiceLabelItem(
+              label: "نقاش",
+              onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                  return const ServicesListScreen(service: MasterServices.master);
+                }));
+              }
             ),
             const SizedBox(height: 5,),
             Padding(
@@ -116,6 +128,7 @@ class MasterServicesScreen extends StatelessWidget {
                 itemCount: 4,
               ),
             ),
+            const SizedBox(height: 150,)
           ],
         ),
       )

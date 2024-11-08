@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '/../screens/services_list_screen.dart';
+import 'package:get/get.dart';
+import '../screens/details_screen.dart';
 import '/global_configs.dart';
 import '/models/enums/master_services.dart';
 
@@ -12,12 +13,10 @@ class MasterServicesItems extends StatelessWidget {
     var theme = Theme.of(context);
     return InkWell(
       onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context){
-          return const ServicesListScreen(service: MasterServices.master);
-        }));
+        Get.to(const DetailsScreen());
       },
       child: Container(
-        width: 90,
+        width: 100,
         height: 170,
         decoration: BoxDecoration(
           borderRadius: globalBorderRadius * 10,
@@ -30,7 +29,7 @@ class MasterServicesItems extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Image.asset("assets/images/master_user.png",
-                width: 87,height: 87,fit: BoxFit.fill,)
+                width: 95,height: 87,fit: BoxFit.fill,)
             ),
             const SizedBox(height: 6,),
             Row(
@@ -47,7 +46,7 @@ class MasterServicesItems extends StatelessWidget {
             ),),
             Container(
                 padding: EdgeInsets.zero,
-                width : 70,
+                width : 80,
                 height: 20,
                 decoration: BoxDecoration(
                     color: theme.colorScheme.tertiary.withOpacity(0.75),

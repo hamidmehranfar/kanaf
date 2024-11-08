@@ -28,7 +28,9 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-        appBar: const CustomAppbar(),
+        appBar: CustomAppbar(
+          onTap: (){},
+        ),
         body: SafeArea(
           child: ListView(
             shrinkWrap: true,

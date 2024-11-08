@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:kanaf/screens/master_services_screen.dart';
 import 'package:kanaf/screens/search_screen.dart';
 import 'package:kanaf/widgets/custom_appbar.dart';
 import '../controllers/size_controller.dart';
@@ -53,7 +54,11 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
     // );
 
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(
+        onTap: (){
+          Navigator.of(context).pop();
+        },
+      ),
       body: SizedBox(
         width: SizeController.width,
         height: SizeController.height,

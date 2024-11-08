@@ -83,60 +83,78 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   fonts:
-    - family: LexendDeca
+    - family: YekanBakh
       fonts:
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraLight.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Light.ttf
           weight: 200
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-Light.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Light.ttf
           weight: 300
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-Regular.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-Medium.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Regular.ttf
           weight: 500
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-SemiBold.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-Bold.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-Bold.ttf
           weight: 700
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraBold.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/Lexend_Deca/LexendDeca-Black.ttf
+        - asset: assets/fonts/YekanBakh/YekanBakh-ExtraBlack.ttf
           weight: 900
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
-          weight: 200
-        - asset: assets/fonts/Roboto/Roboto-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-          weight: 600
-        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-          weight: 800
-        - asset: assets/fonts/Roboto/Roboto-Black.ttf
-          weight: 900
-    - family: Quicksand
-      fonts:
-        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
-          weight: 200
-        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Quicksand/Quicksand-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Quicksand/Quicksand-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Quicksand/Quicksand-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-          weight: 800
-        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-          weight: 900
+#    - family: LexendDeca
+#      fonts:
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraLight.ttf
+#          weight: 200
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Light.ttf
+#          weight: 300
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Regular.ttf
+#          weight: 400
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Medium.ttf
+#          weight: 500
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-SemiBold.ttf
+#          weight: 600
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Bold.ttf
+#          weight: 700
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraBold.ttf
+#          weight: 800
+#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Black.ttf
+#          weight: 900
+#    - family: Roboto
+#      fonts:
+#        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
+#          weight: 200
+#        - asset: assets/fonts/Roboto/Roboto-Light.ttf
+#          weight: 300
+#        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+#          weight: 400
+#        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+#          weight: 500
+#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+#          weight: 600
+#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+#          weight: 700
+#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+#          weight: 800
+#        - asset: assets/fonts/Roboto/Roboto-Black.ttf
+#          weight: 900
+#    - family: Quicksand
+#      fonts:
+#        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
+#          weight: 200
+#        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
+#          weight: 300
+#        - asset: assets/fonts/Quicksand/Quicksand-Regular.ttf
+#          weight: 400
+#        - asset: assets/fonts/Quicksand/Quicksand-Medium.ttf
+#          weight: 500
+#        - asset: assets/fonts/Quicksand/Quicksand-SemiBold.ttf
+#          weight: 600
+#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+#          weight: 700
+#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+#          weight: 800
+#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+#          weight: 900
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

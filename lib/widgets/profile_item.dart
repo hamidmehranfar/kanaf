@@ -19,7 +19,7 @@ class ProfileItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: globalBorderRadius * 3
         ),
-        fixedSize: const Size(200, 50),
+        fixedSize: const Size(220, 50),
       ),
       child: Text(title, style: theme.textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w400

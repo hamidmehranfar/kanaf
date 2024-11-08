@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData(
             size: 20
         ),
-        fontFamily: "Roboto",
+        fontFamily: "YekanBakh",
       ),
       darkTheme: ThemeData(
         colorScheme: darkColorScheme,
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        fontFamily: "Roboto",
+        fontFamily: "YekanBakh",
       ),
       locale: const Locale("fa"),
       home: const StartScreen(),

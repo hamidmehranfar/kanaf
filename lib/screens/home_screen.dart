@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int? commentsCurrentIndex;
 
   HomeController homeController = HomeController();
-  int commentSliderIndex = 0;
 
   List<String> images = [];
   List<Comment> comments = [];
@@ -64,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       imagesCurrentIndex = (images.length/2).floor();
       commentsCurrentIndex = (comments.length/2).floor();
+
       isLoading = false;
     });
   }
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(onTap: (){},),
       body: SafeArea(
         child: ListView(
           shrinkWrap: true,
@@ -213,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: globalPadding * 2,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius * 5,
-                    color: commentSliderIndex == index ? theme.colorScheme.primary
+                    color: commentsCurrentIndex == index ? theme.colorScheme.primary
                         : theme.colorScheme.secondary
                     ,
                   ),
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             alignment: Alignment.topCenter,
                             child: Text(comments[index].name, style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: commentSliderIndex == index ? theme.colorScheme.onPrimary
+                              color: commentsCurrentIndex == index ? theme.colorScheme.onPrimary
                                   : theme.colorScheme.onSecondary
                               ,
                             ),textDirection: TextDirection.rtl,),
@@ -250,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 enableInfiniteScroll: false,
                 onPageChanged: (int index, CarouselPageChangedReason reason){
                   setState(() {
-                    commentSliderIndex = index;
+                    commentsCurrentIndex = index;
                   });
                 }
               )
@@ -285,7 +285,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 20,),
+            Padding(
+              padding: globalPadding * 11,
+              child: MyDivider(color: AppColors.dividerColor,
+                  height: 1, thickness: 1),
+            ),
+            const SizedBox(height: 13,),
+            CarouselSlider(
+              items: List.generate(comments.length, (int index){
+                return Container(
+                  width: width,
+                  margin: globalPadding,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 4,
+                    border: Border.all(
+                      color: theme.colorScheme.primary
+                    )
+                  ),
+                  child: const Center(
+                    child: Text("تبلیغات"),
+                  ),
+                );
+              }),
+              options: CarouselOptions(
+                height: 120,
+                initialPage:  2,
+                enlargeCenterPage: true,
+                enableInfiniteScroll: false,
+              )
+            ),
+            const SizedBox(height: 120,)
           ],
         ),
       ),
