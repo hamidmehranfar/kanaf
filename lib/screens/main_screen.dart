@@ -56,8 +56,8 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SizedBox(
-        width: SizeController.width,
-        height: SizeController.height,
+        width: SizeController.width(context),
+        height: SizeController.height(context),
         child: Stack(
           children: [
             IndexedStack(
@@ -68,7 +68,6 @@ class _MainScreenState extends State<MainScreen> {
               bottom: 0,
               child: CustomBottomNavBar(onTap: (int index){
                 setState(() {
-                  print("clicked index : $index");
                   currentIndex = index;
                 });
               },)

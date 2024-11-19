@@ -21,8 +21,8 @@ class WorksReportScreen extends StatelessWidget {
         },
       ),
       body: SizedBox(
-        width: SizeController.width,
-        height: SizeController.height,
+        width: SizeController.width(context),
+        height: SizeController.height(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

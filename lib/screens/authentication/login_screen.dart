@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: globalPadding * 12,
         child: SizedBox(
-          width: SizeController.width,
+          width: SizeController.width(context),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

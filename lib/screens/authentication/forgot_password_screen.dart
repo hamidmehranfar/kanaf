@@ -37,8 +37,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         },
       ),
       body: Container(
-        width: SizeController.width,
-        height: SizeController.height,
+        width: SizeController.width(context),
+        height: SizeController.height(context),
         padding: globalPadding * 4,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

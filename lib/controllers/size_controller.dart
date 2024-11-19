@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SizeController{
-  static var width = Get.context?.width;
+  static double height(BuildContext context) {
+    return MediaQuery.of(context).size.height;
+  }
 
-  static var height = Get.context?.height;
+  static double width(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
 }

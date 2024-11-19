@@ -26,8 +26,8 @@ class _OtpScreenState extends State<OtpScreen> {
       appBar: AppBar(),
       body: SafeArea(
           child: SizedBox(
-            width: SizeController.width,
-            height: SizeController.height,
+            width: SizeController.width(context),
+            height: SizeController.height(context),
             child: SingleChildScrollView(
               child: Padding(
                 padding: globalPadding * 5,

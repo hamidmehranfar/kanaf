@@ -20,7 +20,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         right: 20,
         bottom: 13,
       ),
-      width: SizeController.width,
+      width: SizeController.width(context),
       height: 110,
       child: Stack(
         children: [

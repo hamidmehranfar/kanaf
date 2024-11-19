@@ -21,8 +21,8 @@ class MasterServicesScreen extends StatelessWidget {
         Navigator.of(context).pop();
       },),
       body: SizedBox(
-        height: SizeController.height,
-        width: SizeController.width,
+        width: SizeController.width(context),
+        height: SizeController.height(context),
         child: ListView(
           shrinkWrap: true,
           children: [
@@ -46,7 +46,7 @@ class MasterServicesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 22,),
             SizedBox(
-              width: SizeController.width,
+              width: SizeController.width(context),
               height: 170,
               child: ListView.separated(
                 padding: globalPadding * 10,
@@ -80,7 +80,7 @@ class MasterServicesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 22,),
             SizedBox(
-              width: SizeController.width,
+              width: SizeController.width(context),
               height: 170,
               child: ListView.separated(
                 padding: globalPadding * 10,
@@ -114,7 +114,7 @@ class MasterServicesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 22,),
             SizedBox(
-              width: SizeController.width,
+              width: SizeController.width(context),
               height: 170,
               child: ListView.separated(
                 padding: globalPadding * 10,

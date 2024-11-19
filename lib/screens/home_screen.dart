@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: globalBorderRadius*5,
                   color: Colors.black,
                 ),
-                width: width,
+                width: SizeController.width(context),
                 )
               ) :
             Stack(
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   items: List.generate(images.length, (int index){
                     return Container(
                       margin: globalPadding * 10,
-                      width: width,
+                      width: SizeController.width(context),
                       height: 200,
                       // decoration: BoxDecoration(
                       //   color: theme.colorScheme.primary,
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 18,),
             SizedBox(
-              width: width,
+              width: SizeController.width(context),
               height: 160,
               child: ListView.separated(
                 padding: globalPadding * 5,
@@ -296,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
             CarouselSlider(
               items: List.generate(comments.length, (int index){
                 return Container(
-                  width: width,
+                  width: SizeController.width(context),
                   margin: globalPadding,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius * 4,

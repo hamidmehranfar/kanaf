@@ -20,7 +20,7 @@ class PosterItem extends StatelessWidget {
         Get.to(const DetailsScreen());
       },
       child: Container(
-        width: SizeController.width,
+        width: SizeController.width(context),
         padding: globalPadding * 4,
         decoration: BoxDecoration(
           color: theme.colorScheme.primary,

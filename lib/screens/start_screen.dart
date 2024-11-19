@@ -12,7 +12,7 @@ class StartScreen extends StatelessWidget {
     var theme = Theme.of(context);
     return Scaffold(
       body: Container(
-        width: SizeController.width,
+        width: SizeController.width(context),
         padding: globalPadding * 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -34,7 +34,7 @@ class _DetailsScreenState extends State<DetailsScreen>{
             children: [
               const SizedBox(height: 10,),
               SizedBox(
-                width: SizeController.width,
+                width: SizeController.width(context),
                 height: 120,
                 child: Stack(
                   children: [

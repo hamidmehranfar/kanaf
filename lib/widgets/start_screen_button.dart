@@ -33,7 +33,7 @@ class StartScreenButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              width: SizeController.width!/2.8,
+              width: SizeController.width(context)/2.8,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Icon(IconlyBold.arrow_right,

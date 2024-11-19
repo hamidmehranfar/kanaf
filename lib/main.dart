@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '/../screens/start_screen.dart';
+import '/screens/start_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kanaf',
       theme: ThemeData(
         colorScheme: lightColorScheme,
         inputDecorationTheme: lightInputDecorationTheme,

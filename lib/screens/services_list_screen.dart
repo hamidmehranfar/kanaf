@@ -60,8 +60,8 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
         },
       ),
       body: SizedBox(
-        width: SizeController.width,
-        height: SizeController.height,
+        width: SizeController.width(context),
+        height: SizeController.height(context),
         child: RefreshIndicator(
           onRefresh: () async{
             _pagingController.refresh();
