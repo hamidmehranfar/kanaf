@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:kanaf/res/app_colors.dart';
+import '../res/app_colors.dart';
 import '/../widgets/custom_appbar.dart';
 import '/../widgets/my_divider.dart';
 import '../controllers/size_controller.dart';
@@ -37,13 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Image> homeWorkIcons = [
     Image.asset("assets/icons/user_icon.png",
-      width: 41,height: 46,),
+      width: 32,height: 36,),
     Image.asset("assets/icons/pen_icon.png",
-      width: 40,height: 38,),
+      width: 31,height: 30,),
     Image.asset("assets/icons/supervision_icon.png",
-      width: 51,height: 41,),
+      width: 40,height: 32,),
     Image.asset("assets/icons/learn_icon.png",
-      width: 42,height: 50,),
+      width: 33,height: 39,),
   ];
 
   @override
@@ -75,7 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: CustomAppbar(onTap: (){},),
+      appBar: CustomAppbar(
+        onTap: (){},
+        iconAsset: "assets/icons/arrow_back_19.png",
+      ),
       body: SafeArea(
         child: ListView(
           shrinkWrap: true,
@@ -100,9 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Container(
                       margin: globalPadding * 10,
                       width: SizeController.width(context),
-                      height: 200,
                       // decoration: BoxDecoration(
-                      //   color: theme.colorScheme.primary,
                       //   borderRadius: globalBorderRadius * 4
                       // ),
                       child: Image.asset("assets/images/image.png",fit: BoxFit.fill,),
@@ -158,15 +159,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 1, thickness: 1),
             ),
             const SizedBox(height: 18,),
-            SizedBox(
-              width: SizeController.width(context),
-              height: 160,
-              child: ListView.separated(
-                padding: globalPadding * 5,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index){
+            Padding(
+              padding: globalPadding * 8,
+              child: Wrap(
+                spacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: List.generate(4, (index){
                   return HomeWorksItem(
                     text: homeWorkTitles[index],
                     imageIcon: homeWorkIcons[index],
@@ -176,11 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       }));
                     },
                   );
-                },
-                separatorBuilder: (context, index){
-                  return const SizedBox(width: 32,);
-                },
-              )
+                }),
+              ),
             ),
             const SizedBox(height: 10,),
             Center(
@@ -198,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16,),
             isLoading! ? CustomShimmer(
               child: Container(
-                height: 210,
+
                 margin: globalPadding * 6,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius*5,
@@ -209,26 +204,22 @@ class _HomeScreenState extends State<HomeScreen> {
             CarouselSlider(
               items: List.generate(comments.length, (int index){
                 return Container(
-                  width: 210,
-                  padding: globalPadding * 2,
+                  width: commentsCurrentIndex == index ? 210 : 100,
+                  padding: globalPadding * 5,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius * 5,
                     color: commentsCurrentIndex == index ? theme.colorScheme.primary
                         : theme.colorScheme.secondary
                     ,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: commentsCurrentIndex == index ? Row(
                     children: [
-                      const SizedBox(height: 16,),
-                      Center(
-                        child: Image.asset("assets/images/user_ava.png",width: 60,height: 60,),
-                      ),
-                      const SizedBox(height: 12,),
-                      Expanded(
-                        child: Center(
-                          child: Align(
-                            alignment: Alignment.topCenter,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 23,),
+                          Image.asset("assets/images/user_ava.png"),
+                          Expanded(
                             child: Text(comments[index].name, style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w500,
                               color: commentsCurrentIndex == index ? theme.colorScheme.onPrimary
@@ -236,18 +227,58 @@ class _HomeScreenState extends State<HomeScreen> {
                               ,
                             ),textDirection: TextDirection.rtl,),
                           ),
-                        ),
+                        ],
                       ),
+                      const SizedBox(width: 8,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 25,),
+                          Row(
+                            children: [
+                              Text("6.5", style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.tertiary
+                              ),),
+                              const SizedBox(width: 2,),
+                              Icon(Icons.star, color: AppColors.sideColor,size: 10,)
+                            ],
+                          ),
+                          Text("برنامه خوبی است")
+                        ],
+                      )
+                    ],
+                  ) : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        const SizedBox(height: 20,),
+                        Center(
+                          child: Image.asset("assets/images/user_ava.png",width: 60,height: 60,),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Text(comments[index].name, style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: commentsCurrentIndex == index ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSecondary
+                                ,
+                              ),textDirection: TextDirection.rtl,),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 12,),
                     ],
                   ),
                 );
               }),
               options: CarouselOptions(
-                height: 120,
+                height: 130,
                 initialPage: commentsCurrentIndex ?? 0,
-                enlargeCenterPage: true,
-                viewportFraction: 0.51,
+                // enlargeCenterPage: true,
+                viewportFraction: 0.5,
                 enableInfiniteScroll: false,
+                // disableCenter: true,
                 onPageChanged: (int index, CarouselPageChangedReason reason){
                   setState(() {
                     commentsCurrentIndex = index;
@@ -274,6 +305,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: theme.colorScheme.primary,
                       borderRadius: globalBorderRadius * 3
                     ),
+                    child: Center(
+                      child: Text("چت", style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onPrimary
+                      ),),
+                    ),
                   ),
                   Container(
                     width: 105,
@@ -281,6 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
                         borderRadius: globalBorderRadius * 3
+                    ),
+                    child: Center(
+                      child: Text("تالار گفتگو", style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary
+                      ),),
                     ),
                   )
                 ],

@@ -3,9 +3,8 @@ import 'package:get/get.dart';
 import 'package:kanaf/screens/profile/works_report_screen.dart';
 import 'package:kanaf/widgets/custom_appbar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
-import '/controllers/size_controller.dart';
 import '/widgets/my_divider.dart';
-import '/widgets/profile_item.dart';
+import '/widgets/button_item.dart';
 
 import '../../global_configs.dart';
 
@@ -30,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     return Scaffold(
         appBar: CustomAppbar(
           onTap: (){},
+          icon: Icons.menu,
         ),
         body: SafeArea(
           child: ListView(
@@ -119,7 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               const SizedBox(height: 25,),
               Column(
                 children: [
-                  ProfileItem(
+                  ButtonItem(
                     onTap: (){
                       Get.to(const WorksReportScreen());
                     },
@@ -127,19 +127,19 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                     color: theme.colorScheme.tertiary,
                   ),
                   const SizedBox(height: 11,),
-                  ProfileItem(
+                  ButtonItem(
                     onTap: (){},
                     title: "تنظیمات صفحه",
                     color: theme.colorScheme.secondary,
                   ),
                   const SizedBox(height: 11,),
-                  ProfileItem(
+                  ButtonItem(
                     onTap: (){},
                     title: "ویرایش پست ها",
                     color: theme.colorScheme.secondary,
                   ),
                   const SizedBox(height: 11,),
-                  ProfileItem(
+                  ButtonItem(
                     onTap: (){},
                     title: "پروفایل",
                     color: theme.colorScheme.secondary,

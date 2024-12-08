@@ -4,7 +4,14 @@ import 'package:kanaf/res/app_strings.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
   final VoidCallback onTap;
-  const CustomAppbar({super.key, required this.onTap});
+  final IconData? icon;
+  final String? iconAsset;
+  final bool hasShadow;
+  const CustomAppbar({super.key, required this.onTap,
+    this.icon,
+    this.iconAsset,
+    this.hasShadow = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +25,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(25),
           bottomRight: Radius.circular(25)
-        )
+        ),
+        boxShadow: hasShadow ? [
+          BoxShadow(
+            color: theme.colorScheme.onSurface,
+            blurRadius: 20,
+            spreadRadius: 20,
+          )
+        ] : null
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -27,16 +41,17 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: onTap,
-                child: const Icon(Icons.notifications,
-                  size: 40,color: Color(0xFFA4F7F9),),
-              ),
+              Image.asset("assets/images/user_ava.png", width: 44,height: 44,),
               Text(AppStrings.kanafSlogan, style: theme.textTheme.headlineLarge?.copyWith(
                 color: theme.colorScheme.secondary,
                 fontWeight: FontWeight.w300
               ),),
-              Image.asset("assets/images/user_ava.png", width: 44,height: 44,),
+              InkWell(
+                onTap: onTap,
+                child: icon != null ? Icon(icon,
+                  size: 40,color: theme.colorScheme.onPrimary,) : iconAsset!=null ?
+                  Image.asset(iconAsset!, width: 40, height: 40,) : Container(),
+              ),
             ],
           ),
         ],

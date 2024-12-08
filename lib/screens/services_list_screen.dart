@@ -58,6 +58,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
         onTap: (){
           Navigator.of(context).pop();
         },
+        iconAsset: "assets/icons/arrow_back_19.png",
       ),
       body: SizedBox(
         width: SizeController.width(context),

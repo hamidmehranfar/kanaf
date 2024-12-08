@@ -84,7 +84,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           ),
                           child:Column(
                             children: [
-                              Image.asset("assets/icons/pen_icon.png",
+                              Image.asset("assets/icons/chat.png",
                                 width: 30, height: 30,
                               ),
                               Text("چت", style: theme.textTheme.labelMedium?.copyWith(

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import '/../global_configs.dart';
 
-class ProfileItem extends StatelessWidget {
+class ButtonItem extends StatelessWidget {
   final Function() onTap;
   final String title;
   final Color color;
-  const ProfileItem({super.key, required this.onTap,
-    required this.title, required this.color});
+  final double width;
+  final double height;
+  final TextStyle? textStyle;
+  const ButtonItem({super.key, required this.onTap,
+    required this.title, required this.color,
+    this.width = 220, this.height = 50, this.textStyle
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +24,9 @@ class ProfileItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: globalBorderRadius * 3
         ),
-        fixedSize: const Size(220, 50),
+        fixedSize: Size(width, height),
       ),
-      child: Text(title, style: theme.textTheme.titleLarge?.copyWith(
+      child: Text(title, style: textStyle ?? theme.textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w400
       ),),
     );

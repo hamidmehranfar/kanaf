@@ -5,7 +5,7 @@ import '../../controllers/size_controller.dart';
 import '../../global_configs.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/my_divider.dart';
-import '../../widgets/profile_item.dart';
+import '../../widgets/button_item.dart';
 
 class WorksReportScreen extends StatelessWidget {
   const WorksReportScreen({super.key});
@@ -19,6 +19,7 @@ class WorksReportScreen extends StatelessWidget {
         onTap: (){
           Get.back();
         },
+        iconAsset: "assets/icons/arrow_back_19.png",
       ),
       body: SizedBox(
         width: SizeController.width(context),
@@ -40,7 +41,7 @@ class WorksReportScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14,),
-            ProfileItem(
+            ButtonItem(
               onTap: (){},
               title: "ثبت گزارش کار جدید",
               color: theme.colorScheme.tertiary,

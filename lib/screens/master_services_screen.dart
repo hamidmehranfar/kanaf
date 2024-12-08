@@ -17,9 +17,11 @@ class MasterServicesScreen extends StatelessWidget {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: CustomAppbar(
-      onTap: (){
-        Navigator.of(context).pop();
-      },),
+        onTap: (){
+          Navigator.of(context).pop();
+        },
+        iconAsset: "assets/icons/arrow_back_19.png",
+      ),
       body: SizedBox(
         width: SizeController.width(context),
         height: SizeController.height(context),
