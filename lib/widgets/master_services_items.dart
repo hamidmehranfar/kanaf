@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../screens/details_screen.dart';
 import '/global_configs.dart';
-import '/models/enums/master_services.dart';
+import '/res/enums/master_services.dart';
 
 class MasterServicesItems extends StatelessWidget {
   final MasterServices service;

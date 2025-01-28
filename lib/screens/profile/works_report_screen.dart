@@ -1,19 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/size_controller.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../global_configs.dart';
-import '../../widgets/custom_appbar.dart';
-import '../../widgets/my_divider.dart';
-import '../../widgets/button_item.dart';
+import '/controllers/project_controller.dart';
+import '/models/project.dart';
+import '/res/controllers_key.dart';
+import '/widgets/profile/projects_item.dart';
+import '/controllers/size_controller.dart';
+import '/global_configs.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/my_divider.dart';
+import '/widgets/button_item.dart';
 
-class WorksReportScreen extends StatelessWidget {
+class WorksReportScreen extends StatefulWidget {
   const WorksReportScreen({super.key});
+
+  @override
+  State<WorksReportScreen> createState() => _WorksReportScreenState();
+}
+
+class _WorksReportScreenState extends State<WorksReportScreen> {
+  bool isLoading = true;
+
+  ProjectController profileController = Get.find(
+    tag: ControllersKey.profileControllerKey,
+  );
+
+  PagingController<int, Project> _pagingController = PagingController(firstPageKey: 1);
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener((pageKey) async {
+      await _fetchProjects(pageKey);
+    });
+  }
+
+  Future<void> _fetchProjects(int pageKey) async {
+    final newItems = await profileController.getProjects(pageKey);
+    if(newItems == null){
+      _pagingController.error = profileController.apiMessage;
+    }
+    else{
+      final lastPage = newItems.length < 10;
+      if(lastPage){
+        _pagingController.appendLastPage(newItems);
+      }
+      else{
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: CustomAppbar(
         onTap: (){
@@ -24,89 +67,69 @@ class WorksReportScreen extends StatelessWidget {
       body: SizedBox(
         width: SizeController.width(context),
         height: SizeController.height(context),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 25,),
-            Text("گزارش ها", style: theme.textTheme.headlineLarge?.copyWith(
+        child: RefreshIndicator(
+          onRefresh: () async{
+            _pagingController.refresh();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 25,),
+              Text("گزارش ها", style: theme.textTheme.headlineLarge?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                  fontWeight: FontWeight.w300
+              ),),
+              const SizedBox(height: 14,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 14,),
+              ButtonItem(
+                width: 250,
+                onTap: (){},
+                title: "ثبت گزارش کار جدید",
                 color: theme.colorScheme.tertiary,
-                fontWeight: FontWeight.w300
-            ),),
-            const SizedBox(height: 14,),
-            Padding(
-              padding: globalPadding * 11,
-              child: MyDivider(
-                color: theme.colorScheme.onSecondary,
-                height: 1,thickness: 1,
               ),
-            ),
-            const SizedBox(height: 14,),
-            ButtonItem(
-              onTap: (){},
-              title: "ثبت گزارش کار جدید",
-              color: theme.colorScheme.tertiary,
-            ),
-            const SizedBox(height: 15,),
-            Container(
-              margin: globalPadding * 6,
-              padding: globalPadding * 7,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                borderRadius: globalBorderRadius * 3,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 10,),
-                  Image.asset("assets/images/image.png",),
-                  const SizedBox(height: 36,),
-                  Text("ادمین کناف کار", style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),),
-                  const SizedBox(height: 6,),
-                  MyDivider(color: theme.colorScheme.onSurface,
-                      height: 1, thickness: 1,
-                  ),
-                  const SizedBox(height: 4,),
-                  Row(
-                    children: [
-                      Expanded(
+              const SizedBox(height: 15,),
+              Expanded(
+                child: PagedListView(pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate(
+                    itemBuilder: (BuildContext context,Project item,int index){
+                      return ProjectsItem(project: item,);
+                    },
+                    firstPageErrorIndicatorBuilder: (context){
+                      return Center(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("تایید شده", style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                                fontWeight: FontWeight.w300
-                            ),),
-                            Text("نظر ادمین کناف کار", style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                                fontWeight: FontWeight.w300
-                            ),)
+                            const Text("مشکلی پیش آمده است"),
+                            const SizedBox(height: 16),
+                            IconButton(
+                              onPressed: (){
+                                _pagingController.refresh();
+                              },
+                              icon: const Icon(Icons.refresh)
+                            )
                           ],
                         ),
-                      ),
-                      const SizedBox(width: 2,),
-                      CircleAvatar(
-                        backgroundColor: theme.colorScheme.primary,
-                        child: Image.asset("assets/images/master_user.png",
-                          width: 36, height: 36,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 44,)
-                ],
+                      );
+                    }
+                  )
+                )
               ),
-            ),
-            const SizedBox(height: 24,),
-            Padding(
-              padding: globalPadding * 11,
-              child: MyDivider(
-                color: theme.colorScheme.onSecondary,
-                height: 1,thickness: 1,
+              const SizedBox(height: 24,),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '/../controllers/size_controller.dart';
-import '/../global_configs.dart';
-import '/../res/app_strings.dart';
-import '/../widgets/start_screen_button.dart';
+
+import '/controllers/size_controller.dart';
+import '/global_configs.dart';
+import '/res/app_strings.dart';
+import '/widgets/start_screen_button.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});

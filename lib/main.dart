@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '/controllers/authentication_controller.dart';
+import '/controllers/project_controller.dart';
+import '/res/controllers_key.dart';
 import '/screens/start_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
-
 import 'res/text_theme.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  AuthenticationController authController = Get.put(
+    AuthenticationController(),
+    tag: ControllersKey.authControllerKey
+  );
+
+  ProjectController profileController = Get.put(
+    ProjectController(),
+    tag: ControllersKey.profileControllerKey,
+  );
 
   @override
   Widget build(BuildContext context) {

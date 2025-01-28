@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:kanaf/screens/main_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '/../global_configs.dart';
 
 class LoginButton extends StatelessWidget {
-  const LoginButton({super.key});
+  final bool isLoading;
+  final Function() onTap;
+  const LoginButton({super.key,
+    required this.isLoading,
+    required this.onTap
+  });
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return InkWell(
-      onTap: (){
-        Get.offAll(()=> const MainScreen());
-      },
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: 160,
         height: 43,
@@ -31,7 +33,11 @@ class LoginButton extends StatelessWidget {
             )
           ]
         ),
-        child: Center(
+        child: isLoading ? SpinKitThreeBounce(
+          size: 20,
+          color: theme.colorScheme.onPrimary,
+        ) :
+        Center(
           child: Text("ارسال کد", style: theme.textTheme.headlineSmall?.copyWith(
             color: theme.colorScheme.tertiaryContainer,
             fontWeight: FontWeight.w500

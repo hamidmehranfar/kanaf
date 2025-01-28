@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/widgets/custom_appbar.dart';
-import 'package:kanaf/widgets/button_item.dart';
 
-import '../global_configs.dart';
-import '../res/app_colors.dart';
-import '../widgets/my_divider.dart';
+import '/controllers/size_controller.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/button_item.dart';
+import '/global_configs.dart';
+import '/res/app_colors.dart';
+import '/widgets/my_divider.dart';
 
 class CreateProjectScreen extends StatefulWidget {
   const CreateProjectScreen({super.key});
@@ -162,6 +162,14 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                 ),
               ),
               const SizedBox(height: 10),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: theme.colorScheme.onSecondary,
+                  height: 1,thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 12),
               ButtonItem(
                 onTap: (){},
                 title: "ایجاد",

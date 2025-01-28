@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/screens/profile/works_report_screen.dart';
-import 'package:kanaf/widgets/custom_appbar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+
+import '/screens/profile/create_post_story_screen.dart';
+import '/screens/profile/works_report_screen.dart';
+import '/widgets/custom_appbar.dart';
 import '/widgets/my_divider.dart';
 import '/widgets/button_item.dart';
-
-import '../../global_configs.dart';
+import '/global_configs.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -129,31 +130,59 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   const SizedBox(height: 11,),
                   ButtonItem(
                     onTap: (){},
-                    title: "تنظیمات صفحه",
-                    color: theme.colorScheme.secondary,
+                    title: "ویرایش صفحه",
+                    color: theme.colorScheme.secondary.withValues(
+                      alpha: 0.53
+                    ),
+                  ),
+                  const SizedBox(height: 11,),
+                  ButtonItem(
+                    onTap: (){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:(context){
+                            return const CreatePostStoryScreen(
+                              isStory: false,
+                            );
+                          }
+                        )
+                      );
+                    },
+                    title: "پست جدید",
+                    color: theme.colorScheme.secondary.withValues(
+                        alpha: 0.53
+                    ),
+                  ),
+                  const SizedBox(height: 11,),
+                  ButtonItem(
+                    onTap: (){
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder:(context){
+                                return const CreatePostStoryScreen(
+                                  isStory: true,
+                                );
+                              }
+                          )
+                      );
+                    },
+                    title: "استوری جدید",
+                    color: theme.colorScheme.secondary.withValues(
+                        alpha: 0.53
+                    ),
                   ),
                   const SizedBox(height: 11,),
                   ButtonItem(
                     onTap: (){},
-                    title: "ویرایش پست ها",
-                    color: theme.colorScheme.secondary,
-                  ),
-                  const SizedBox(height: 11,),
-                  ButtonItem(
-                    onTap: (){},
-                    title: "پروفایل",
-                    color: theme.colorScheme.secondary,
+                    title: "ایجاد گزارش",
+                    color: theme.colorScheme.secondary.withValues(
+                        alpha: 0.53
+                    ),
                   ),
                   const SizedBox(height: 20,),
                 ],
               ),
-              Padding(
-                padding: globalPadding * 11,
-                child: MyDivider(
-                  color: theme.colorScheme.onSecondary,
-                  height: 1,thickness: 1,
-                ),
-              ),
+              const SizedBox(height: 100,),
             ],
           )
         )

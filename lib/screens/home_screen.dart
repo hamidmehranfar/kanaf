@@ -1,15 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../res/app_colors.dart';
-import '/../widgets/custom_appbar.dart';
-import '/../widgets/my_divider.dart';
-import '../controllers/size_controller.dart';
-import '../models/comment.dart';
-import '../screens/master_services_screen.dart';
-import '../widgets/home/home_works_item.dart';
-import '../controllers/home_controller.dart';
-import '../widgets/custom_shimmer.dart';
-import '../global_configs.dart';
+
+import '/models/billboard.dart';
+import '/res/app_colors.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/my_divider.dart';
+import '/controllers/size_controller.dart';
+import '/models/comment.dart';
+import '/screens/master_services_screen.dart';
+import '/widgets/home/home_works_item.dart';
+import '/controllers/home_controller.dart';
+import '/widgets/custom_shimmer.dart';
+import '/global_configs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,14 +22,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool? isLoading;
+  bool isLoading = true;
   int? imagesCurrentIndex;
   int? commentsCurrentIndex;
 
   HomeController homeController = HomeController();
 
-  List<String> images = [];
+  List<BillBoard> billboards = [];
+  bool billboardsError = false;
+
   List<Comment> comments = [];
+  bool commentsError = false;
 
   List<String> homeWorkTitles = [
     "استادکار",
@@ -49,21 +55,36 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initImagesAndComments();
+    initImages();
+    initComments();
   }
 
-  Future<void> initImagesAndComments() async {
+  Future<void> initImages() async {
     setState(() {
       isLoading = true;
+      billboardsError = false;
     });
 
-    images = await homeController.fetchImages();
-    comments = await homeController.fetchComments();
+    billboards = await homeController.fetchImages();
+    if(billboards.isEmpty) billboardsError = true;
 
     setState(() {
-      imagesCurrentIndex = (images.length/2).floor();
-      commentsCurrentIndex = (comments.length/2).floor();
+      imagesCurrentIndex = (billboards.length/2).floor();
+      isLoading = false;
+    });
+  }
 
+  Future<void> initComments() async {
+    setState(() {
+      isLoading = true;
+      commentsError = false;
+    });
+
+    comments = await homeController.fetchComments() ?? [];
+    if(comments.isEmpty) commentsError = true;
+
+    setState(() {
+      commentsCurrentIndex = (comments.length/2).floor();
       isLoading = false;
     });
   }
@@ -71,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var width = SizeController.width;
+    var width = SizeController.width(context);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -85,28 +106,62 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(bottom: 24),
           children: [
             const SizedBox(height: 34,),
-            isLoading! ? CustomShimmer(
+            billboardsError ? Container(
+              margin: globalPadding * 6,
+              width: width,
+              height: 200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("تلاش مجدد", style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.error
+                  ),),
+                  IconButton(
+                    onPressed: () async {
+                      await initImages();
+                    },
+                    icon: const Icon(Icons.refresh),
+                  )
+                ],
+              ),
+            ) :
+            isLoading ? CustomShimmer(
+              //FIXME : fix here
               child: Container(
-                margin: globalPadding * 6,
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: globalBorderRadius*5,
-                  color: Colors.black,
-                ),
-                width: SizeController.width(context),
+                  margin: globalPadding * 6,
+                  width: width,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius*5,
+                    color: Colors.blue
+                  ),
                 )
               ) :
             Stack(
               children: [
                 CarouselSlider(
-                  items: List.generate(images.length, (int index){
+                  items: List.generate(billboards.length, (int index){
                     return Container(
                       margin: globalPadding * 10,
                       width: SizeController.width(context),
                       // decoration: BoxDecoration(
                       //   borderRadius: globalBorderRadius * 4
                       // ),
-                      child: Image.asset("assets/images/image.png",fit: BoxFit.fill,),
+                      child: CachedNetworkImage(
+                        imageUrl: billboards[index].url,
+                        placeholder: (context, url) => Container(),
+                        errorWidget: (context, url, error) => Row(
+                          children: [
+                            Text("تلاش مجدد", style: theme.textTheme.bodyLarge,),
+                            IconButton(
+                              onPressed: (){
+                                //FIXME : fix here
+                              },
+                              icon: const Icon(Icons.refresh),
+                            )
+                          ],
+                        ),
+                      ),
                     );
                   }),
                   options: CarouselOptions(
@@ -132,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: List.generate(images.length, (int index){
+                          children: List.generate(billboards.length, (int index){
                             return Container(
                               width: 10,
                               height: 10,
@@ -191,9 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 1, thickness: 1),
             ),
             const SizedBox(height: 16,),
-            isLoading! ? CustomShimmer(
+            isLoading ? CustomShimmer(
               child: Container(
-
                 margin: globalPadding * 6,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius*5,

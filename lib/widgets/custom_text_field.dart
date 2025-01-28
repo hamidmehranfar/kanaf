@@ -92,10 +92,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscuringCharacter: '*',
         maxLength: widget.maxLength,
         maxLines: widget.maxLines,
-        enabled: widget.enabled,
         keyboardType: widget.keyboardType,
         autocorrect: false,
         inputFormatters: widget.inputFormatters,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
           hintText: widget.hintText,
           labelText: widget.labelText,

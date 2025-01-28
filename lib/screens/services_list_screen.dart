@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:kanaf/screens/master_services_screen.dart';
-import 'package:kanaf/screens/search_screen.dart';
-import 'package:kanaf/widgets/custom_appbar.dart';
-import '../controllers/size_controller.dart';
-import '../global_configs.dart';
-import '../models/enums/master_services.dart';
-import '../widgets/my_divider.dart';
 
-import '../models/poster.dart';
-import '../widgets/poster_item.dart';
+import '/widgets/custom_appbar.dart';
+import '/controllers/size_controller.dart';
+import '/global_configs.dart';
+import '/res/enums/master_services.dart';
+import '/widgets/my_divider.dart';
+import '/models/poster.dart';
+import '/widgets/poster_item.dart';
 
 class ServicesListScreen extends StatefulWidget {
   final MasterServices service;

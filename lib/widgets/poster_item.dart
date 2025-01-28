@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kanaf/controllers/size_controller.dart';
+import 'package:kanaf/widgets/small_button.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 import '/../global_configs.dart';
 import '/../models/poster.dart';
@@ -80,30 +81,17 @@ class PosterItem extends StatelessWidget {
                       const SizedBox(height: 6,),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Container(
-                            padding: EdgeInsets.zero,
-                            width : 73,
-                            height: 23,
-                            decoration: BoxDecoration(
-                                color: theme.colorScheme.tertiary.withOpacity(0.75),
-                                borderRadius: globalBorderRadius * 3,
-                                border: Border.all(
-                                    color: theme.colorScheme.onSurface.withOpacity(0.5)
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: theme.colorScheme.onPrimary,
-                                    offset: const Offset(-15, -10),
-                                    blurRadius: 50,
-
-                                  )
-                                ]
-                            ),
-                            child: Center(
-                              child: Text("جزئیات", style: theme.textTheme.labelMedium?.copyWith(
-                                  color: theme.colorScheme.onPrimary
-                              ),),
+                        child: SmallButton(
+                          text: "جزئیات",
+                          textColor: theme.colorScheme.onPrimary,
+                          width: 73, height: 23,
+                          shadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.onPrimary,
+                              offset: const Offset(-15, -10),
+                              blurRadius: 50,
                             )
+                          ],
                         ),
                       )
                     ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/res/app_colors.dart';
-import 'package:kanaf/screens/create_project_screen.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
-import '/../controllers/size_controller.dart';
-import '/../widgets/custom_appbar.dart';
-import '/../widgets/my_divider.dart';
-import '../global_configs.dart';
+
+import '/res/app_colors.dart';
+import '/screens/create_project_screen.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/my_divider.dart';
+import '/global_configs.dart';
 
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({super.key});
@@ -63,8 +63,8 @@ class _DetailsScreenState extends State<DetailsScreen>{
 
     return Scaffold(
       appBar: CustomAppbar(
-        icon: Icons.menu,
-        onTap: ()=>Get.back(),
+        iconAsset: "assets/icons/arrow_back_19.png",
+        onTap: ()=> Get.back(),
       ),
       body: SafeArea(
         child: Padding(

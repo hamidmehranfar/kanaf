@@ -1,6 +1,12 @@
 class Comment{
+  int id;
   String name;
-  String comment;
+  String position;
 
-  Comment({required this.name,required this.comment});
+  Comment(this.id , this.name, this.position);
+
+  Comment.fromJson(Map<String, dynamic> json) :
+    id = json["id"],
+    name = json["name"],
+    position = json["position"];
 }
