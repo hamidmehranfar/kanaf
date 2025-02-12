@@ -1,30 +1,81 @@
 import 'package:get/get.dart';
+import 'package:kanaf/res/enums/master_services.dart';
 
 import '/controllers/api_controller.dart';
 import '/models/master.dart';
 import '/res/enums/api_method.dart';
 
 class MasterController extends GetxController{
-  List<Master> _masters = [];
+  List<Master> _kanafMasters = [];
+  List<Master> _painters = [];
+  List<Master> _lightLines = [];
+  List<Master> _electronics = [];
+
+  Master? _master;
 
   String _apiMessage = "";
 
   String get apiMessage => _apiMessage;
 
-  List<Master> get masters => _masters;
+  List<Master> get kanafMasters => _kanafMasters;
+  List<Master> get painters => _painters;
+  List<Master> get lightLines => _lightLines;
+  List<Master> get electronics => _electronics;
 
-  Future<bool> getMastersList(int pageKey) async {
-    bool result = false;
+  Master? get master => _master;
+
+  void fillMastersList(List<Master> mastersList){
+    _kanafMasters.clear();
+    _painters.clear();
+    _lightLines.clear();
+    _electronics.clear();
+
+    for(var master in mastersList){
+      if(master.isMaster){
+        _kanafMasters.add(master);
+      }
+      else if(master.isPainter){
+        _painters.add(master);
+      }
+      else if(master.isLightLine){
+        _lightLines.add(master);
+      }
+      else if(master.isElectric){
+        _electronics.add(master);
+      }
+    }
+  }
+
+  Future<List<Master>?> getMastersList({required int pageKey,
+    MasterServices? type}) async {
+
+    List<Master>? result;
+
+    String queryParam = '';
+    if(type != null){
+      if(type == MasterServices.kanafWorker){
+        queryParam += '/?is_master=true';
+      }
+      else if(type == MasterServices.lightLineWorker){
+        queryParam += '/?is_light_line=true';
+      }
+      else if(type == MasterServices.painterWorker){
+        queryParam += '/?is_painter=true';
+      }
+      else if(type == MasterServices.electronicWorker){
+        queryParam += '/?is_electric=true';
+      }
+    }
 
     await ApiController.instance.request(
-      url: "master/profile",
+      url: "master/profiles$queryParam",
       method: ApiMethod.get,
       onSuccess: (response){
-        _masters = [];
-        for(var item in response.data){
-          _masters.add(Master.fromJson(item));
+        result = [];
+        for(var item in response.data['results']){
+          result!.add(Master.fromJson(item));
         }
-        result = true;
+        fillMastersList(result!);
       },
       onCatchDioError: (e){
         _apiMessage = e.response?.data["detail"] ?? "";
@@ -37,14 +88,15 @@ class MasterController extends GetxController{
     return result;
   }
 
-  Future<Master?> getMaster(int id) async {
-    Master? master;
+  Future<bool> getMaster(int id) async {
+    bool result = false;
 
     await ApiController.instance.request(
-        url: "master/profile/$id",
+        url: "master/profiles/$id",
         method: ApiMethod.get,
         onSuccess: (response){
-          master = Master.fromJson(response.data);
+          _master = Master.fromJson(response.data);
+          result = true;
         },
         onCatchDioError: (e){
           _apiMessage = e.response?.data["detail"] ?? "";
@@ -54,8 +106,10 @@ class MasterController extends GetxController{
         }
     );
 
-    return master;
+    return result;
   }
+
+
 
   Future<bool> editMaster(Master master) async {
     Map payload = {

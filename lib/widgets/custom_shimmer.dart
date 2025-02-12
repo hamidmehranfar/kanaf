@@ -10,8 +10,8 @@ class CustomShimmer extends StatelessWidget {
     var theme = Theme.of(context);
 
     return Shimmer.fromColors(
-      baseColor: theme.colorScheme.onSurface.withOpacity(0.12),
-      highlightColor: theme.colorScheme.surface.withOpacity(0.1),
+      baseColor: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+      highlightColor: theme.colorScheme.onSurface.withValues(alpha: 0.3),
       direction: ShimmerDirection.rtl,
       enabled: true,
       child: child

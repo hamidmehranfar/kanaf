@@ -18,17 +18,18 @@ class PostController extends GetxController{
   Future<bool> getPosts(int profileId) async {
     bool result = false;
 
-    await ApiController.instance.request(url: "masters/posts/?profile_id=$profileId}",
+    await ApiController.instance.request(
+      url: "master/posts/?profile_id=$profileId",
       method: ApiMethod.get,
       onSuccess: (response){
         _posts = [];
-        for(var item in response.data){
+        for(var item in response.data["results"]){
           _posts.add(Post.fromJson(item));
         }
         result = true;
       },
       onCatchDioError: (e){
-        _apiMessage = e.response?.data['detail'] ?? '';
+        _apiMessage = e.response?.data?['detail'] ?? '';
       },
       onCatchError: (e){
         _apiMessage = 'مشکلی پیش آمده است';

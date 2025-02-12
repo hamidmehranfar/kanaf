@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kanaf/controllers/project_controller.dart';
+import 'package:kanaf/res/controllers_key.dart';
 
 import '/controllers/size_controller.dart';
 import '/widgets/custom_appbar.dart';
@@ -15,6 +18,48 @@ class CreateProjectScreen extends StatefulWidget {
 }
 
 class _CreateProjectScreenState extends State<CreateProjectScreen> {
+  bool isImageUploaded = false;
+  bool isProjectCreate = false;
+
+  TextEditingController priceTextController = TextEditingController();
+  TextEditingController areaTextController = TextEditingController();
+  TextEditingController descriptionTextController = TextEditingController();
+  
+  ProjectController projectController = Get.find(tag: ControllersKey.projectControllerKey);
+  
+  Future<void> createProject() async {
+    bool hasError = false;
+    String message = "";
+    if(areaTextController.text.isEmpty){
+      hasError = true;
+      message = "لطفا متراژ را وارد کنید";
+    }
+    else if(priceTextController.text.isEmpty){
+      hasError = true;
+      message = "لطفا قیمت را وارد کنید";
+    }
+    if(hasError){
+      //FIXME : show error
+      return;
+    }
+
+    setState(() {
+      isProjectCreate = true;
+    });
+
+    //FIXME : here must define fields
+    await projectController.createProject(
+      area: areaTextController.text,
+      address: "address",
+      city: "city"
+    );
+
+    setState(() {
+      isProjectCreate = false;
+    });
+    
+  }
+  
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -92,14 +137,16 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                               )
                           ),
                         ),
-                        const SizedBox(height: 18),
-                        Padding(
-                          padding: globalPadding * 7,
-                          child: ClipRRect(
-                            borderRadius: globalBorderRadius * 5,
-                            child: Image.asset("assets/images/image.png"),
+                        if(isImageUploaded)...[
+                          const SizedBox(height: 18),
+                          Padding(
+                            padding: globalPadding * 7,
+                            child: ClipRRect(
+                              borderRadius: globalBorderRadius * 5,
+                              child: Image.asset("assets/images/image.png"),
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 13,),
@@ -120,6 +167,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                         borderRadius: globalBorderRadius * 4,
                       ),
                       child: TextField(
+
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: theme.colorScheme.surface
                         ),
@@ -171,7 +219,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
               ),
               const SizedBox(height: 12),
               ButtonItem(
-                onTap: (){},
+                onTap: createProject,
+                isButtonDisable: isProjectCreate,
                 title: "ایجاد",
                 color: theme.colorScheme.tertiary,
                 textStyle: theme.textTheme.bodyLarge,

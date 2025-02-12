@@ -11,9 +11,9 @@ class Master{
   bool isElectric;
   String bio;
   DateTime birthDate;
-  int workExperience;
-  int workHourStart;
-  int workHourEnd;
+  int? workExperience;
+  int? workHourStart;
+  int? workHourEnd;
   String payment;
   String degree;
 
@@ -37,7 +37,7 @@ class Master{
   factory Master.fromJson(Map<String, dynamic> json) => Master(
     id: json["id"],
     user: User.fromJson(json["user"]),
-    city: json["city"],
+    city: Address.fromJson(json["city"]),
     isMaster: json["is_master"],
     isPainter: json["is_painter"],
     isLightLine: json["is_light_line"],

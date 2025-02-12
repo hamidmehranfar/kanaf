@@ -24,7 +24,7 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
         onTap: (){
           Navigator.of(context).pop();
         },
-        icon: Icons.menu,
+        iconAsset: "assets/icons/arrow_back_19.png",
       ),
       body: ListView(
         shrinkWrap: true,

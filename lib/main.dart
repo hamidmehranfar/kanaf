@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/controllers/master_controller.dart';
+import 'package:kanaf/controllers/post_controller.dart';
 
 import '/controllers/authentication_controller.dart';
 import '/controllers/project_controller.dart';
@@ -26,9 +28,19 @@ class _MyAppState extends State<MyApp> {
     tag: ControllersKey.authControllerKey
   );
 
-  ProjectController profileController = Get.put(
+  MasterController masterController = Get.put(
+    MasterController(),
+    tag: ControllersKey.masterControllerKey,
+  );
+
+  ProjectController projectController = Get.put(
     ProjectController(),
-    tag: ControllersKey.profileControllerKey,
+    tag: ControllersKey.projectControllerKey,
+  );
+
+  PostController postController = Get.put(
+    PostController(),
+    tag: ControllersKey.postControllerKey,
   );
 
   @override

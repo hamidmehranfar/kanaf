@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/controllers/authentication_controller.dart';
+import 'package:kanaf/res/controllers_key.dart';
+import 'package:kanaf/widgets/custom_cached_image.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '/screens/profile/create_post_story_screen.dart';
@@ -18,6 +21,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin{
   TabController? tabController;
+
+  AuthenticationController authenticationController = Get.find(
+    tag: ControllersKey.authControllerKey,
+  );
 
   @override
   void initState() {
@@ -38,7 +45,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
             children: [
               const SizedBox(height: 25,),
               Center(
-                child: Text("احمد احمدی", style: theme.textTheme.headlineLarge?.copyWith(
+                child: Text('${authenticationController.user?.firstName ?? ''} ${authenticationController.user?.lastName ?? ''}',
+                  style: theme.textTheme.headlineLarge?.copyWith(
                   color: theme.colorScheme.tertiary,
                   fontWeight: FontWeight.w300
                 ),),
@@ -56,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius * 10,
                 ),
-                child: Image.asset("assets/images/master_profile.png",
+                child: CustomCachedImage(url: authenticationController.user?.avatar ?? '',
                   width: 150,height: 150),
               ),
               const SizedBox(height: 7,),

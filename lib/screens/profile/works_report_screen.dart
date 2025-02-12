@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:kanaf/widgets/custom_error_widget.dart';
+import 'package:kanaf/widgets/custom_shimmer.dart';
 
 import '/controllers/project_controller.dart';
 import '/models/project.dart';
@@ -23,7 +25,7 @@ class _WorksReportScreenState extends State<WorksReportScreen> {
   bool isLoading = true;
 
   ProjectController profileController = Get.find(
-    tag: ControllersKey.profileControllerKey,
+    tag: ControllersKey.projectControllerKey,
   );
 
   PagingController<int, Project> _pagingController = PagingController(firstPageKey: 1);
@@ -90,7 +92,9 @@ class _WorksReportScreenState extends State<WorksReportScreen> {
               const SizedBox(height: 14,),
               ButtonItem(
                 width: 250,
-                onTap: (){},
+                onTap: (){
+
+                },
                 title: "ثبت گزارش کار جدید",
                 color: theme.colorScheme.tertiary,
               ),
@@ -102,17 +106,22 @@ class _WorksReportScreenState extends State<WorksReportScreen> {
                       return ProjectsItem(project: item,);
                     },
                     firstPageErrorIndicatorBuilder: (context){
-                      return Center(
+                      return CustomErrorWidget(onTap: (){
+                        _pagingController.refresh();
+                      });
+                    },
+                    firstPageProgressIndicatorBuilder: (context){
+                      return CustomShimmer(
                         child: Column(
                           children: [
-                            const Text("مشکلی پیش آمده است"),
-                            const SizedBox(height: 16),
-                            IconButton(
-                              onPressed: (){
-                                _pagingController.refresh();
-                              },
-                              icon: const Icon(Icons.refresh)
-                            )
+                            Container(
+                              margin: globalPadding * 6,
+                              height: 400,
+                              decoration: BoxDecoration(
+                              borderRadius: globalBorderRadius * 3,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                                                  ),
                           ],
                         ),
                       );

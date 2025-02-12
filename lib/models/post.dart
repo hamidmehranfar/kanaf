@@ -16,7 +16,8 @@ class Post{
 
   Post.fromJson(Map<String , dynamic> json) :
     id = json["id"],
-    items = json["items"].map((item)=> PostItem.fromJson(item)).toList(),
+    items = json["items"] == null ? [] :
+    json["items"].map<PostItem>((item)=> PostItem.fromJson(item)).toList(),
     likeCount = json["like_count"],
     commentCount = json["comment_count"],
     profileId = json["profile"]["id"],

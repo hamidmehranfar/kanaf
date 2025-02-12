@@ -36,9 +36,10 @@ class HomeController{
       method: ApiMethod.get,
       onSuccess: (response){
         comments = [];
-        for(var item in response.data){
+        for(var item in response.data["results"]){
           comments?.add(Comment.fromJson(item));
         }
+        print(response.data["results"]);
       },
       onCatchDioError: (error){
         _apiMessage = error.response?.data["detail"];

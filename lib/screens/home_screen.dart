@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kanaf/controllers/authentication_controller.dart';
+import 'package:kanaf/res/controllers_key.dart';
+import 'package:kanaf/widgets/custom_error_widget.dart';
 
 import '/models/billboard.dart';
 import '/res/app_colors.dart';
@@ -22,7 +26,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoading = true;
+  bool isBillboardsLoading = true;
+  bool isCommentsLoading = true;
+
   int? imagesCurrentIndex;
   int? commentsCurrentIndex;
 
@@ -55,13 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initImages();
-    initComments();
+    fetchImages();
+    fetchComments();
   }
 
-  Future<void> initImages() async {
+  Future<void> fetchImages() async {
     setState(() {
-      isLoading = true;
+      isBillboardsLoading = true;
       billboardsError = false;
     });
 
@@ -70,22 +76,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       imagesCurrentIndex = (billboards.length/2).floor();
-      isLoading = false;
+      isBillboardsLoading = false;
     });
   }
 
-  Future<void> initComments() async {
+  Future<void> fetchComments() async {
     setState(() {
-      isLoading = true;
+      isCommentsLoading = true;
       commentsError = false;
     });
 
-    comments = await homeController.fetchComments() ?? [];
-    if(comments.isEmpty) commentsError = true;
+    List<Comment>? response = await homeController.fetchComments();
+    if(response == null) {
+      commentsError = true;
+    } else {
+      comments = response;
+    }
 
     setState(() {
       commentsCurrentIndex = (comments.length/2).floor();
-      isLoading = false;
+      isCommentsLoading = false;
     });
   }
 
@@ -98,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.transparent,
       appBar: CustomAppbar(
         onTap: (){},
-        iconAsset: "assets/icons/arrow_back_19.png",
+        icon: Icons.menu,
       ),
       body: SafeArea(
         child: ListView(
@@ -106,37 +116,19 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(bottom: 24),
           children: [
             const SizedBox(height: 34,),
-            billboardsError ? Container(
-              margin: globalPadding * 6,
-              width: width,
-              height: 200,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("تلاش مجدد", style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.error
-                  ),),
-                  IconButton(
-                    onPressed: () async {
-                      await initImages();
-                    },
-                    icon: const Icon(Icons.refresh),
-                  )
-                ],
-              ),
-            ) :
-            isLoading ? CustomShimmer(
-              //FIXME : fix here
+            isBillboardsLoading ? CustomShimmer(
               child: Container(
                   margin: globalPadding * 6,
                   width: width,
                   height: 200,
                   decoration: BoxDecoration(
                     borderRadius: globalBorderRadius*5,
-                    color: Colors.blue
+                    color: theme.colorScheme.onSurface,
                   ),
                 )
-              ) :
+              ) : billboardsError ? CustomErrorWidget(onTap: () async {
+              await fetchImages();
+            }) :
             Stack(
               children: [
                 CarouselSlider(
@@ -246,15 +238,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 1, thickness: 1),
             ),
             const SizedBox(height: 16,),
-            isLoading ? CustomShimmer(
+            isCommentsLoading ? CustomShimmer(
               child: Container(
                 margin: globalPadding * 6,
+                height: 150,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius*5,
-                  color: Colors.black,
+                  color: theme.colorScheme.onSurface,
                 ),
               )
-            ) :
+            ) : commentsError ? CustomErrorWidget(onTap: () async {
+              await fetchComments();
+            }) :
             CarouselSlider(
               items: List.generate(comments.length, (int index){
                 return Container(
@@ -284,22 +279,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       const SizedBox(width: 8,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 25,),
-                          Row(
-                            children: [
-                              Text("6.5", style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.tertiary
-                              ),),
-                              const SizedBox(width: 2,),
-                              Icon(Icons.star, color: AppColors.sideColor,size: 10,)
-                            ],
-                          ),
-                          Text("برنامه خوبی است")
-                        ],
-                      )
+                      //FIXME : ask this
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     const SizedBox(height: 25,),
+                      //     Row(
+                      //       children: [
+                      //         Text("6.5", style: theme.textTheme.labelMedium?.copyWith(
+                      //           color: theme.colorScheme.tertiary
+                      //         ),),
+                      //         const SizedBox(width: 2,),
+                      //         Icon(Icons.star, color: AppColors.sideColor,size: 10,)
+                      //       ],
+                      //     ),
+                      //     Text("برنامه خوبی است")
+                      //   ],
+                      // )
                     ],
                   ) : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

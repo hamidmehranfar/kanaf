@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../screens/details_screen.dart';
+import 'package:kanaf/models/master.dart';
+import 'package:kanaf/widgets/custom_cached_image.dart';
+
+import '/screens/details_screen.dart';
 import '/global_configs.dart';
 import '/res/enums/master_services.dart';
 
 class MasterServicesItems extends StatelessWidget {
   final MasterServices service;
-  const MasterServicesItems({super.key, required this.service});
+  final Master master;
+  const MasterServicesItems({super.key,
+    required this.service, required this.master,
+  });
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return InkWell(
       onTap: (){
-        Get.to(const DetailsScreen());
+        Get.to(DetailsScreen(id: master.id,));
       },
       child: Container(
         width: 100,
@@ -24,12 +30,10 @@ class MasterServicesItems extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: Image.asset("assets/images/master_user.png",
-                width: 95,height: 87,fit: BoxFit.fill,)
+            ClipOval(
+              child:
+                  CustomCachedImage(url: master.user.avatar ?? '',
+                    width: 95,height: 87,),
             ),
             const SizedBox(height: 6,),
             Row(
@@ -41,7 +45,7 @@ class MasterServicesItems extends StatelessWidget {
              }),
             ),
             const SizedBox(height: 6,),
-            Text("علی موحدی", style: theme.textTheme.labelMedium?.copyWith(
+            Text(master.user.firstName ?? '', style: theme.textTheme.labelMedium?.copyWith(
               color: theme.colorScheme.onPrimary
             ),),
             Container(

@@ -1,6 +1,6 @@
 enum MasterServices{
   kanafWorker,
-  opticalLineWorker,
+  lightLineWorker,
   painterWorker,
   electronicWorker,
 }
@@ -9,7 +9,7 @@ String convertServiceToString(MasterServices service){
   if(service == MasterServices.kanafWorker){
     return "کناف کار";
   }
-  else if(service == MasterServices.opticalLineWorker){
+  else if(service == MasterServices.lightLineWorker){
     return "لاین نور";
   }
   else if(service == MasterServices.painterWorker){

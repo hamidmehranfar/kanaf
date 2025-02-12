@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '/controllers/master_controller.dart';
+import '/models/master.dart';
+import '/res/controllers_key.dart';
 import '/widgets/custom_appbar.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
 import '/res/enums/master_services.dart';
 import '/widgets/my_divider.dart';
-import '/models/poster.dart';
 import '/widgets/poster_item.dart';
 
 class ServicesListScreen extends StatefulWidget {
@@ -18,27 +21,36 @@ class ServicesListScreen extends StatefulWidget {
 }
 
 class _ServicesListScreenState extends State<ServicesListScreen> {
-  final PagingController<int, Poster> _pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, Master> _pagingController = PagingController(firstPageKey: 1);
+
+  MasterController masterController = Get.find(
+    tag: ControllersKey.masterControllerKey,
+  );
 
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey){
-      pagingControllerListener(pageKey);
+    _pagingController.addPageRequestListener((pageKey) async {
+      await _fetchData(pageKey);
     });
   }
   
-  Future<void> pagingControllerListener(pageKey)async{
-    _pagingController.appendLastPage(
-      List.generate(20, (int index){
-        return Poster(
-            title: "استاد کار",
-            num: 17,
-            imageUrl: "",
-            rating: 6.5
-        );
-      })
-    );
+  Future<void> _fetchData(int pageKey) async {
+    List<Master>? newItems = await masterController.getMastersList(
+        pageKey: pageKey,type: widget.service);
+
+    if(newItems!=null){
+      bool isLastPage = newItems.length < 10;
+      if(isLastPage){
+        _pagingController.appendLastPage(newItems);
+      }
+      else{
+        _pagingController.appendPage(newItems, pageKey + 1);
+      }
+    }
+    else{
+      _pagingController.error = masterController.apiMessage;
+    }
   }
 
   @override
@@ -91,8 +103,8 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                     return const SizedBox(height: 10,);
                   },
                   builderDelegate: PagedChildBuilderDelegate(
-                    itemBuilder: (BuildContext context, Poster item, int index){
-                      return PosterItem(poster : item);
+                    itemBuilder: (BuildContext context, Master item, int index){
+                      return PosterItem(master : item);
                     }
                   ),
                 ),

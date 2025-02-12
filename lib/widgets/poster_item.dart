@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/widgets/small_button.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
+
+import '/controllers/size_controller.dart';
+import '/models/master.dart';
+import '/widgets/small_button.dart';
 import '/../global_configs.dart';
-import '/../models/poster.dart';
 import '/../screens/details_screen.dart';
 import '/../widgets/my_divider.dart';
 
 class PosterItem extends StatelessWidget {
-  final Poster poster;
-  const PosterItem({super.key, required this.poster});
+  final Master master;
+  const PosterItem({super.key, required this.master});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class PosterItem extends StatelessWidget {
 
     return InkWell(
       onTap: (){
-        Get.to(const DetailsScreen());
+        Get.to(DetailsScreen(id: master.id,));
       },
       child: Container(
         width: SizeController.width(context),
@@ -42,7 +43,7 @@ class PosterItem extends StatelessWidget {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "استادکار",
+                              '${master.user.firstName ?? ''} ${master.user.lastName ?? ''}',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: theme.colorScheme.onPrimary,
                                 fontWeight: FontWeight.w400,
@@ -52,7 +53,13 @@ class PosterItem extends StatelessWidget {
                           const SizedBox(height: 4,),
                           Row(
                             children: [
-                              Text(poster.num.toString().toPersianDigit(),
+                              //FIXME : fix here
+                              // Text(poster.num.toString().toPersianDigit(),
+                              //   style: theme.textTheme.labelMedium?.copyWith(
+                              //     color: theme.colorScheme.tertiary,
+                              //   ),
+                              // ),
+                              Text(master.workHourEnd.toString().toPersianDigit(),
                                 style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.tertiary,
                                 ),
@@ -61,7 +68,13 @@ class PosterItem extends StatelessWidget {
                               Icon(Icons.stacked_bar_chart_outlined,
                                 size: 13,color: theme.colorScheme.secondary,),
                               const SizedBox(width: 9,),
-                              Text(poster.rating.toString().toPersianDigit(),
+                              //FIXME : fix here
+                              // Text(poster.rating.toString().toPersianDigit(),
+                              //   style: theme.textTheme.labelMedium?.copyWith(
+                              //     color: theme.colorScheme.tertiary,
+                              //   ),
+                              // ),
+                              Text(master.workHourStart.toString().toPersianDigit(),
                                 style: theme.textTheme.labelMedium?.copyWith(
                                   color: theme.colorScheme.tertiary,
                                 ),
