@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '/global_configs.dart';
@@ -12,6 +15,34 @@ class StorySection extends StatefulWidget {
 }
 
 class _StorySectionState extends State<StorySection> {
+  bool pictureLoading = false;
+  File? pickedFile;
+
+  Future<void> onPickFile() async {
+    if (pickedFile == null) {
+      setState(() {
+        pictureLoading = true;
+      });
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(allowMultiple: true);
+
+      if (result != null) {
+        List<File> files = result.paths.map((path) => File(path!)).toList();
+        pickedFile = files.isNotEmpty ? files[0] : null;
+      } else {
+        // User canceled the picker
+      }
+
+      setState(() {
+        pictureLoading = false;
+      });
+    } else {
+      setState(() {
+        pickedFile = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -19,14 +50,31 @@ class _StorySectionState extends State<StorySection> {
     return Column(
       children: [
         const SizedBox(height: 30),
-        Container(
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: globalBorderRadius * 10,
-            color: theme.colorScheme.secondary.withValues(alpha: 0.4),
-          ),
+        InkWell(
+          onTap: () async {
+            await onPickFile();
+          },
+          child: pictureLoading
+              ? CircularProgressIndicator(
+                  color: theme.colorScheme.onPrimary,
+                )
+              : pickedFile != null
+                  ? Image.file(
+                      pickedFile!,
+                      height: 200,
+                    )
+                  : Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: globalBorderRadius * 10,
+                        color:
+                            theme.colorScheme.secondary.withValues(alpha: 0.4),
+                      ),
+                    ),
         ),
-        const SizedBox(height: 18,),
+        const SizedBox(
+          height: 18,
+        ),
         SmallButton(
           text: "آپلود عکس یا ویدئو",
           textColor: theme.colorScheme.onSecondary,
@@ -46,9 +94,7 @@ class _StorySectionState extends State<StorySection> {
               spreadRadius: -5,
             ),
           ],
-          onTap: (){
-
-          },
+          onTap: () {},
         ),
         const SizedBox(height: 25),
         Container(
@@ -61,24 +107,25 @@ class _StorySectionState extends State<StorySection> {
           ),
           child: Row(
             children: [
-              const SizedBox(width: 15,),
+              const SizedBox(
+                width: 15,
+              ),
               Expanded(
                   child: TextField(
-                    style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.surface
-                    ),
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        hintText: "کپشن",
-                        hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.onPrimary.withValues(alpha: 0.38)
-                        )
-                    ),
-                  )
-              ),
-              const SizedBox(width: 8,)
+                style: theme.textTheme.labelLarge
+                    ?.copyWith(color: theme.colorScheme.surface),
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    hintText: "کپشن",
+                    hintStyle: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.onPrimary
+                            .withValues(alpha: 0.38))),
+              )),
+              const SizedBox(
+                width: 8,
+              )
             ],
           ),
         ),

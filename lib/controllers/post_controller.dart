@@ -6,7 +6,7 @@ import '/models/post.dart';
 import '/models/post_comment.dart';
 import '/res/enums/api_method.dart';
 
-class PostController extends GetxController{
+class PostController extends GetxController {
   List<Post> _posts = [];
 
   String _apiMessage = "";
@@ -19,22 +19,21 @@ class PostController extends GetxController{
     bool result = false;
 
     await ApiController.instance.request(
-      url: "master/posts/?profile_id=$profileId",
-      method: ApiMethod.get,
-      onSuccess: (response){
-        _posts = [];
-        for(var item in response.data["results"]){
-          _posts.add(Post.fromJson(item));
-        }
-        result = true;
-      },
-      onCatchDioError: (e){
-        _apiMessage = e.response?.data?['detail'] ?? '';
-      },
-      onCatchError: (e){
-        _apiMessage = 'مشکلی پیش آمده است';
-      }
-    );
+        url: "master/posts/?profile_id=$profileId",
+        method: ApiMethod.get,
+        onSuccess: (response) {
+          _posts = [];
+          for (var item in response.data["results"]) {
+            _posts.add(Post.fromJson(item));
+          }
+          result = true;
+        },
+        onCatchDioError: (e) {
+          _apiMessage = e.response?.data?['detail'] ?? '';
+        },
+        onCatchError: (e) {
+          _apiMessage = 'مشکلی پیش آمده است';
+        });
 
     return result;
   }
@@ -43,18 +42,17 @@ class PostController extends GetxController{
     Post? post;
 
     await ApiController.instance.request(
-      url: "master/posts/$postId",
-      method: ApiMethod.get,
-      onSuccess: (response){
-        post = Post.fromJson(response.data);
-      },
-      onCatchDioError: (e){
-        _apiMessage = e.response?.data['detail'] ?? '';
-      },
-      onCatchError: (e){
-        _apiMessage = 'مشکلی پیش آمده است';
-      }
-    );
+        url: "master/posts/$postId",
+        method: ApiMethod.get,
+        onSuccess: (response) {
+          post = Post.fromJson(response.data);
+        },
+        onCatchDioError: (e) {
+          _apiMessage = e.response?.data['detail'] ?? '';
+        },
+        onCatchError: (e) {
+          _apiMessage = 'مشکلی پیش آمده است';
+        });
 
     return post;
   }
@@ -69,17 +67,16 @@ class PostController extends GetxController{
     await ApiController.instance.request(
         url: "master/posts/$postId/",
         method: ApiMethod.patch,
-        data: caption!=null ? payload : null,
-        onSuccess: (response){
+        data: caption != null ? payload : null,
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -90,16 +87,15 @@ class PostController extends GetxController{
     await ApiController.instance.request(
         url: "master/posts/$postId/",
         method: ApiMethod.delete,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -107,47 +103,44 @@ class PostController extends GetxController{
   Future<List<PostComment>?> getPostComments(int postId) async {
     List<PostComment>? postComments;
     await ApiController.instance.request(
-      url: "master/comments/?profile_post_id=$postId",
-      method: ApiMethod.get,
-      onSuccess: (response){
-        postComments = [];
-        for(var item in response.data){
-          postComments?.add(PostComment.fromJson(item));
-        }
-      },
-      onCatchDioError: (e){
-        _apiMessage = e.response?.data['detail'] ?? '';
-      },
-      onCatchError: (e){
-        _apiMessage = 'مشکلی پیش آمده است';
-      }
-    );
+        url: "master/comments/?profile_post_id=$postId",
+        method: ApiMethod.get,
+        onSuccess: (response) {
+          postComments = [];
+          for (var item in response.data) {
+            postComments?.add(PostComment.fromJson(item));
+          }
+        },
+        onCatchDioError: (e) {
+          _apiMessage = e.response?.data['detail'] ?? '';
+        },
+        onCatchError: (e) {
+          _apiMessage = 'مشکلی پیش آمده است';
+        });
 
     return postComments;
   }
 
   Future<PostComment?> getCommentDetail(int commentId) async {
     PostComment? postComment;
-    
+
     await ApiController.instance.request(
-      url: "master/comments/$commentId",
-      method: ApiMethod.get,
-      onSuccess: (response){
-        postComment = PostComment.fromJson(response.data);
-      },
-      onCatchDioError: (e){
-        _apiMessage = e.response?.data['detail'] ?? '';
-      },
-      onCatchError: (e){
-        _apiMessage = 'مشکلی پیش آمده است';
-      }
-    );
+        url: "master/comments/$commentId",
+        method: ApiMethod.get,
+        onSuccess: (response) {
+          postComment = PostComment.fromJson(response.data);
+        },
+        onCatchDioError: (e) {
+          _apiMessage = e.response?.data['detail'] ?? '';
+        },
+        onCatchError: (e) {
+          _apiMessage = 'مشکلی پیش آمده است';
+        });
 
     return postComment;
   }
 
-  Future<bool> create(
-      int postId, String comment) async {
+  Future<bool> createComments(int postId, String comment) async {
     bool result = false;
 
     await ApiController.instance.request(
@@ -157,24 +150,21 @@ class PostController extends GetxController{
           "post": postId,
           "comment": comment,
         },
-        onSuccess: (response){
+        onSuccess: (response) {
           _apiMessage = response.data["detail"];
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
 
-  Future<bool> editPostComments(
-      int commentId, String comment) async {
-
+  Future<bool> editPostComments(int commentId, String comment) async {
     bool result = false;
     await ApiController.instance.request(
         url: "master/comments/$commentId/",
@@ -182,16 +172,15 @@ class PostController extends GetxController{
         data: {
           "comment": comment,
         },
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -201,17 +190,16 @@ class PostController extends GetxController{
     await ApiController.instance.request(
         url: "master/comments/$commentId/",
         method: ApiMethod.delete,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
           _apiMessage = response.data["detail"] ?? '';
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -221,19 +209,18 @@ class PostController extends GetxController{
     await ApiController.instance.request(
         url: "master/likes/?profile_post_id=$postId",
         method: ApiMethod.get,
-        onSuccess: (response){
+        onSuccess: (response) {
           postLikes = [];
-          for(var item in response.data){
+          for (var item in response.data) {
             postLikes?.add(Like.fromJson(item));
           }
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return postLikes;
   }
@@ -246,16 +233,15 @@ class PostController extends GetxController{
           "post": postId,
         },
         method: ApiMethod.post,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -265,16 +251,15 @@ class PostController extends GetxController{
     await ApiController.instance.request(
         url: "master/likes/$postId/",
         method: ApiMethod.delete,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
