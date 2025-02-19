@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart' as dio;
 
 import '/controllers/api_controller.dart';
 import '/models/like.dart';
@@ -14,6 +16,28 @@ class PostController extends GetxController {
   String get apiMessage => _apiMessage;
 
   List<Post> get posts => _posts;
+
+  List<String> _networkImages = [];
+  List<File?> _images = List.generate(6, (index) => null);
+  List<bool> _picturesLoading = List.generate(6, (index) => false);
+
+  bool _createPostLoading = false;
+
+  List<String> get networkImages => _networkImages;
+  List<File?> get images => _images;
+  List<bool> get picturesLoading => _picturesLoading;
+
+  bool get createPostLoading => _createPostLoading;
+
+  set createPostLoading(bool loading) => _createPostLoading = loading;
+
+  void initPostValues(){
+    _images = List.generate(6, (index) => null);
+    _picturesLoading = List.generate(6, (index) => false);
+    _networkImages = [];
+
+    _createPostLoading = false;
+  }
 
   Future<bool> getPosts(int profileId) async {
     bool result = false;
@@ -55,6 +79,76 @@ class PostController extends GetxController {
         });
 
     return post;
+  }
+  
+  Future<bool> createPost() async {
+    bool result = false;
+
+    List<File> selectedImages = [];
+    for(var image in _images){
+      if(image!=null){
+        selectedImages.add(image);
+      }
+    }
+
+    List<Map<String, dynamic>> items = [];
+    for (int i = 0; i < selectedImages.length; i++) {
+      items.add({
+        "item_type": "Text",
+        "file": await dio.MultipartFile.fromFile(
+          selectedImages[i].path,
+          filename: selectedImages[i].path.split('/').last,
+        ),
+      });
+    }
+
+    dio.FormData formData = dio.FormData.fromMap({
+      "caption": 'test',
+    });
+
+    // Append each item separately (Alternative API Structure)
+    for (int i = 0; i < items.length; i++) {
+      formData.fields.add(MapEntry("items[$i]item_type", "0"));
+      formData.files.add(
+        MapEntry(
+          "items[$i]file",
+          await dio.MultipartFile.fromFile(selectedImages[i].path, filename: images[i]?.path.split('/').last),
+        ),
+      );
+    }
+
+    // dio.FormData formData = dio.FormData.fromMap({
+    //   "caption": 'test',
+    //   if(selectedImages.isNotEmpty)
+    //   "items": [
+    //     for (int i = 0; i < selectedImages.length; i++)
+    //       {
+    //         "item_type": "0",
+    //         "file": await dio.MultipartFile.fromFile(
+    //           selectedImages[i].path,
+    //           filename: selectedImages[i].path.split('/').last,
+    //         ),
+    //       }
+    //   ],
+    // });
+    
+    await ApiController.instance.request(
+      url: 'master/posts/',
+      method: ApiMethod.post,
+      data: formData,
+      isMultipleFiles: true,
+      onSuccess: (response){
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
   }
 
   Future<bool> editPost(int postId, String? caption) async {

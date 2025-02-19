@@ -19,7 +19,7 @@ class MasterServicesItems extends StatelessWidget {
     var theme = Theme.of(context);
     return InkWell(
       onTap: (){
-        Get.to(DetailsScreen(id: master.id,));
+        Get.to(DetailsScreen(id: master.id,isComeFromProfile: false,));
       },
       child: Container(
         width: 100,

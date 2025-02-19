@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kanaf/global_configs.dart';
+import '/global_configs.dart';
 
 class CustomTextField extends StatefulWidget {
   final String? labelText;
@@ -8,6 +8,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextDirection? textDirection;
   final TextInputAction? textInputAction;
+  final TextAlign textAlign;
   final bool obscureText;
   final int? maxLength;
   final int? maxLines;
@@ -30,6 +31,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textDirection,
     this.textInputAction,
+    this.textAlign = TextAlign.start,
     this.obscureText = false,
     this.maxLength,
     this.maxLines = 1,
@@ -85,7 +87,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: controller,
         focusNode: focusNode,
         readOnly: widget.readOnly,
-        textAlign: TextAlign.center,
+        textAlign: widget.textAlign,
         textDirection: widget.textDirection,
         textInputAction: widget.textInputAction,
         obscureText: widget.obscureText,
@@ -101,7 +103,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           labelText: widget.labelText,
           errorText: widget.errorText,
           suffixIcon: widget.suffixIcon,
-          fillColor: themeColors.tertiary.withOpacity(0.21),
+          fillColor: themeColors.tertiary.withValues(alpha: 0.21),
           filled: true,
           focusedBorder: OutlineInputBorder(
             borderRadius: globalBorderRadius * 3,
@@ -112,7 +114,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           disabledBorder: OutlineInputBorder(
             borderRadius: globalBorderRadius * 3,
             borderSide: BorderSide(
-              color: themeColors.inverseSurface.withOpacity(0.7),
+              color: themeColors.inverseSurface.withValues(alpha: 0.7),
             ),
           ),
           errorBorder: OutlineInputBorder(
@@ -125,10 +127,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: globalBorderRadius * 3,
           ),
           hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: themeColors.onSecondary.withOpacity(0.5),
+            color: themeColors.onSecondary.withValues(alpha: 0.5),
           ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: !widget.enabled ? themeColors.inverseSurface.withOpacity(0.7):
+            color: !widget.enabled ? themeColors.inverseSurface.withValues(alpha: 0.7):
                 focusNode.hasFocus ? themeColors.primary : themeColors.onSurface,
           ),
         ),

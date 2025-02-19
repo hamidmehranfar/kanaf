@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 
+import 'package:dio/dio.dart' as dio;
 import '/controllers/api_controller.dart';
 import '/models/project.dart';
 import '/res/enums/api_method.dart';
@@ -34,25 +37,39 @@ class ProjectController extends GetxController{
     return projects;
   }
 
-  Future<Project?> createProject({
+  Future<bool> createProject({
     required String area,
-    String? description,
+    required String description,
     required String address,
     required String city,
+    File? image,
   }) async {
-    Project? project;
+    bool result = false;
+
+    // dio.FormData formData = dio.FormData();
+    //
+    // formData.fields.add(MapEntry('area', area));
+    // formData.fields.add(MapEntry('address', address));
+    // formData.fields.add(MapEntry('city', city));
+    //
+    // if(description !=null) {
+    //   formData.fields.add(
+    //     MapEntry('description', description)
+    //   );
+    // }
 
     await ApiController.instance.request(
         url: "master/projects/",
         method: ApiMethod.post,
         data: {
-          "area": area,
-          "description": description,
-          "address": address,
-          "city": city,
+          'area' : area,
+          'address': address,
+          'description' : description,
+          // 'city' : city,
+          'city': '2',
         },
         onSuccess: (response){
-          project = Project.fromJson(response.data);
+          result = true;
         },
         onCatchDioError: (e){
           _apiMessage = e.response?.data['detail'] ?? '';
@@ -62,7 +79,7 @@ class ProjectController extends GetxController{
         }
     );
 
-    return project;
+    return result;
   }
 
   Future<Project?> updateProject(int projectId) async {

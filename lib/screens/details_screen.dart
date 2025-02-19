@@ -5,6 +5,7 @@ import 'package:kanaf/controllers/master_controller.dart';
 import 'package:kanaf/controllers/post_controller.dart';
 import 'package:kanaf/controllers/project_controller.dart';
 import 'package:kanaf/models/post_item.dart';
+import 'package:kanaf/screens/profile/create_post_story_screen.dart';
 import 'package:kanaf/widgets/custom_cached_image.dart';
 import 'package:kanaf/widgets/custom_error_widget.dart';
 import 'package:kanaf/widgets/custom_shimmer.dart';
@@ -19,7 +20,10 @@ import '/global_configs.dart';
 
 class DetailsScreen extends StatefulWidget {
   final int id;
-  const DetailsScreen({super.key, required this.id});
+  final bool isComeFromProfile;
+  const DetailsScreen({super.key,
+    required this.id,required this.isComeFromProfile,
+  });
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -353,25 +357,25 @@ class _DetailsScreenState extends State<DetailsScreen>{
                   ],
                 ),
                 const SizedBox(height: 20,),
-                MyDivider(
-                  color: theme.colorScheme.onSurface,
-                  height: 1,
-                  thickness: 1,
-                ),
-                const SizedBox(height: 6,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(4, (index){
-                    return Container(
-                      width: 55,
-                      height: 55,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: theme.colorScheme.inverseSurface
-                      ),
-                    );
-                  }),
-                ),
+                // MyDivider(
+                //   color: theme.colorScheme.onSurface,
+                //   height: 1,
+                //   thickness: 1,
+                // ),
+                // const SizedBox(height: 6,),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //   children: List.generate(4, (index){
+                //     return Container(
+                //       width: 55,
+                //       height: 55,
+                //       decoration: BoxDecoration(
+                //           shape: BoxShape.circle,
+                //           color: theme.colorScheme.inverseSurface
+                //       ),
+                //     );
+                //   }),
+                // ),
               ],
               const SizedBox(height: 10,),
               MyDivider(
@@ -404,10 +408,45 @@ class _DetailsScreenState extends State<DetailsScreen>{
                   mainAxisSpacing: 10,
                   itemCount: postController.posts.length,
                   itemBuilder: (BuildContext context, int index) {
-                      PostItem? item = postController.posts[index].items.isNotEmpty ?
-                      postController.posts[index].items[0] : null;
-                      
-                      return CustomCachedImage(url: item?.file ?? '',);
+                    PostItem? item = postController.posts[index].items.isNotEmpty ?
+                    postController.posts[index].items[0] : null;
+
+                    Widget itemImage = CustomCachedImage(url: item?.file ?? '',);
+
+                    if(widget.isComeFromProfile){
+                      return InkWell(
+                        onTap: (){
+                          Get.to(CreatePostStoryScreen(
+                            isStory: false,
+                            post: postController.posts[index],
+                          ));
+                        },
+                        child: Stack(
+                          children: [
+                            itemImage,
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.primary,
+                                  borderRadius: globalBorderRadius * 2,
+                                ),
+                                child: Image.asset("assets/images/edit-pen.png",
+                                  width: 30,height: 30,),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return InkWell(
+                      onTap: (){},
+                      child: itemImage
+                    );
                   },
                 ),
               ),

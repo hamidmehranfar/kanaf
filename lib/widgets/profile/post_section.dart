@@ -1,65 +1,78 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/post_controller.dart';
-import 'package:kanaf/res/controllers_key.dart';
 
+import '/controllers/post_controller.dart';
+import '/models/post.dart';
+import '/res/controllers_key.dart';
+import '/widgets/custom_cached_image.dart';
+import '/models/post_item.dart';
 import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '../small_button.dart';
 
 class PostSection extends StatefulWidget {
-  const PostSection({super.key});
+  final Post? post;
+  const PostSection({super.key, this.post});
 
   @override
   State<PostSection> createState() => _PostSectionState();
 }
 
 class _PostSectionState extends State<PostSection> {
-  List<File?> images = List.generate(6, (index) => null);
-  List<bool> picturesLoading = List.generate(6, (index) => false);
-
-  bool createPostLoading = false;
-  bool createPostFailed = false;
-
   PostController postController = Get.find(
     tag: ControllersKey.postControllerKey,
   );
 
-  Future<void> createPost() async {
-    setState(() {
-      createPostLoading = true;
-      createPostFailed = false;
-    });
+  TextEditingController captionTextController = TextEditingController();
 
-    setState(() {
-      createPostLoading = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    if(widget.post != null){
+      initEditValues();
+    }
+  }
+
+  void initEditValues(){
+    List<PostItem> items = widget.post!.items;
+    for(int i=0;i<items.length;i++){
+      postController.networkImages.add(items[i].file);
+      postController.picturesLoading[i] = true;
+    }
+
+    captionTextController.text = widget.post!.caption;
   }
 
   Future<void> onPickFile(int index) async {
-    if (images[index] == null) {
+    if (postController.images[index] == null &&
+        postController.networkImages.length <= index) {
       setState(() {
-        picturesLoading[index] = true;
+        postController.picturesLoading[index] = true;
       });
       FilePickerResult? result =
           await FilePicker.platform.pickFiles(allowMultiple: true);
 
       if (result != null) {
         List<File> files = result.paths.map((path) => File(path!)).toList();
-        images[index] = files.isNotEmpty ? files[0] : null;
+        postController.images[index] = files.isNotEmpty ? files[0] : null;
       } else {
         // User canceled the picker
       }
 
       setState(() {
-        picturesLoading[index] = false;
+        postController.picturesLoading[index] = false;
       });
-    } else {
+    } else if(postController.networkImages.length > index) {
       setState(() {
-        images[index] = null;
+        postController.networkImages.removeAt(index);
+      });
+    }
+    else{
+      setState(() {
+        postController.images[index] = null;
       });
     }
   }
@@ -85,19 +98,23 @@ class _PostSectionState extends State<PostSection> {
             itemBuilder: (context, index) {
               return Stack(
                 children: [
-                  picturesLoading[index]
+                  postController.picturesLoading[index]
                       ? Center(
                           child: CircularProgressIndicator(
                             color: theme.colorScheme.onPrimary,
                           ),
                         )
-                      : images[index] != null
+                      : postController.images[index] != null
                           ? Image.file(
-                              images[index]!,
+                              postController.images[index]!,
                               width: 150,
                               height: 100,
                             )
-                          : InkWell(
+                          : postController.networkImages.length > index ?
+                            CustomCachedImage(
+                              url: postController.networkImages[index],
+                              width: 150, height: 100,) :
+                            InkWell(
                               onTap: () async {
                                 await onPickFile(index);
                               },
@@ -131,7 +148,8 @@ class _PostSectionState extends State<PostSection> {
                             await onPickFile(index);
                           },
                           child: Icon(
-                            images[index] == null ? Icons.add : Icons.close,
+                            (postController.images[index] == null || postController.networkImages.length <= index) ?
+                              Icons.add : Icons.close,
                             size: 14,
                           ),
                         ),
@@ -146,6 +164,12 @@ class _PostSectionState extends State<PostSection> {
         const SizedBox(
           height: 18,
         ),
+        if(postController.createPostLoading)
+          SpinKitThreeBounce(
+            size: 14,
+            color: theme.colorScheme.onSecondary,
+          )
+        else
         SmallButton(
           text: "آپلود عکس یا ویدئو",
           textColor: theme.colorScheme.onSecondary,
@@ -165,7 +189,8 @@ class _PostSectionState extends State<PostSection> {
               spreadRadius: -5,
             ),
           ],
-          onTap: () {},
+          onTap: () async {
+          },
         ),
         const SizedBox(height: 25),
         Container(
@@ -183,6 +208,7 @@ class _PostSectionState extends State<PostSection> {
               ),
               Expanded(
                   child: TextField(
+                    controller: captionTextController,
                 style: theme.textTheme.labelLarge
                     ?.copyWith(color: theme.colorScheme.surface),
                 decoration: InputDecoration(

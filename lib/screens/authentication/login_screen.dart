@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/authentication_controller.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/res/controllers_key.dart';
-import 'package:kanaf/screens/home_screen.dart';
-import 'package:kanaf/widgets/custom_text_field.dart';
-import 'package:kanaf/widgets/login_button.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
-import '../../res/app_strings.dart';
-import '../main_screen.dart';
+import '/screens/authentication/otp_screen.dart';
+import '/controllers/authentication_controller.dart';
+import '/controllers/size_controller.dart';
+import '/global_configs.dart';
+import '/res/controllers_key.dart';
+import '/screens/authentication/signup_screen.dart';
+import '/widgets/custom_text_field.dart';
+import '/widgets/login_button.dart';
+import '/res/app_strings.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({
+    super.key,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,30 +24,47 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
-  TextEditingController controller = TextEditingController();
-
   AuthenticationController authController = Get.find(
     tag: ControllersKey.authControllerKey,
   );
 
-  Future<void> login() async{
+  TextEditingController textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> login() async {
     setState(() {
       isLoading = true;
     });
 
-    if(controller.text.isEmpty){
-      //FIXME : ask this for its error type
+    if (textController.text.isEmpty) {
+      // FIXME : ask this for its error type
       return;
     }
 
-    bool result = await authController.login(controller.text.toEnglishDigit());
-    result = await authController.verifyOtp(controller.text.toEnglishDigit(), "1111");
-
-    if(result){
-      Get.offAll(()=> const MainScreen());
-    }
-    else{
-      //FIXME : ask this
+    var result =
+        await authController.login(textController.text.toEnglishDigit());
+    if (result.$2) {
+      if (result.$1) {
+        Get.to(
+          OtpScreen(
+            username: textController.text,
+          ),
+        );
+      } else {
+        Get.to(SignupScreen(
+          username: textController.text,
+        ));
+      }
+    } else {
+      Get.showSnackbar(GetSnackBar(
+        title: 'خطا',
+        message: authController.apiMessage,
+        duration: const Duration(seconds: 2),
+      ));
     }
 
     setState(() {
@@ -67,27 +86,41 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 140),
-                Image.asset("assets/images/start_screen/person.png", width: 115,height: 335,),
-                const SizedBox(height: 16,),
-                Text(AppStrings.welcomeText,
+                Image.asset(
+                  "assets/images/start_screen/person.png",
+                  width: 115,
+                  height: 335,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                  ),),
-                const SizedBox(height: 18,),
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(
+                  height: 18,
+                ),
                 CustomTextField(
-                  onChanged: (value){
-                    controller.text = value.toPersianDigit();
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    textController.text = value.toPersianDigit();
                   },
                   hintText: "شماره همراه",
-                  controller: controller,
+                  controller: textController,
+                  keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 25,),
+                const SizedBox(
+                  height: 25,
+                ),
                 LoginButton(
-                  isLoading : isLoading,
-                  onTap: (){
-                    Get.offAll(const MainScreen());
+                  isLoading: isLoading,
+                  onTap: () async {
+                    await login();
                   },
-                  // onTap: login,
+                  buttonText: "وارد شوید",
                 )
               ],
             ),

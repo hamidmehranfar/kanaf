@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 
+import '/models/post.dart';
+import '/controllers/post_controller.dart';
+import '/res/controllers_key.dart';
 import '/widgets/button_item.dart';
 import '/widgets/profile/story_section.dart';
 import '/global_configs.dart';
@@ -9,13 +14,56 @@ import '/widgets/profile/post_section.dart';
 
 class CreatePostStoryScreen extends StatefulWidget {
   final bool isStory;
-  const CreatePostStoryScreen({super.key, required this.isStory});
+  final Post? post;
+  const CreatePostStoryScreen({super.key,
+    required this.isStory, this.post});
 
   @override
   State<CreatePostStoryScreen> createState() => _CreatePostStoryScreenState();
 }
 
 class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
+  PostController postController = Get.find(
+    tag: ControllersKey.postControllerKey,
+  );
+
+  @override
+  void initState(){
+    super.initState();
+    postController.initPostValues();
+  }
+
+  Future<void> createPost() async {
+    setState(() {
+      postController.createPostLoading = true;
+    });
+
+    await postController.createPost().then((value){
+      if(!value){
+        Get.showSnackbar(GetSnackBar(
+          title: "خطا",
+          message: postController.apiMessage,
+          duration: const Duration(seconds: 2),
+        ));
+      }
+    });
+
+    setState(() {
+      postController.createPostLoading = false;
+    });
+  }
+
+  bool isLoading(){
+    bool isImagesLoading = false;
+    for(bool loading in postController.picturesLoading){
+      if(loading){
+        isImagesLoading = true;
+        break;
+      }
+    }
+    return isImagesLoading || postController.createPostLoading;
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -54,8 +102,8 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
               color: theme.colorScheme.primary,
             ),
             child: widget.isStory ?
-              const StorySection() :
-              const PostSection()
+              StorySection(post: widget.post,) :
+              PostSection(post: widget.post)
           ),
           const SizedBox(height: 9),
           Padding(
@@ -66,14 +114,18 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
             ),
           ),
           const SizedBox(height: 12),
+          isLoading() ? SpinKitThreeBounce(
+            size: 14,
+            color: theme.colorScheme.onSecondary,
+          ) :
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ButtonItem(
                 width: 200,
                 height: 50,
-                onTap: (){
-
+                onTap: () async {
+                  await createPost();
                 },
                 title: "ایجاد",
                 color: theme.colorScheme.tertiary,

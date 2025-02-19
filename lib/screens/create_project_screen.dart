@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:kanaf/controllers/project_controller.dart';
 import 'package:kanaf/res/controllers_key.dart';
@@ -18,14 +22,35 @@ class CreateProjectScreen extends StatefulWidget {
 }
 
 class _CreateProjectScreenState extends State<CreateProjectScreen> {
-  bool isImageUploaded = false;
-  bool isProjectCreate = false;
+  bool isImageLoading = false;
+  bool isProjectCreateLoading = false;
+  File? image;
 
-  TextEditingController priceTextController = TextEditingController();
+  TextEditingController cityTextController = TextEditingController();
   TextEditingController areaTextController = TextEditingController();
+  TextEditingController addressTextController = TextEditingController();
   TextEditingController descriptionTextController = TextEditingController();
   
   ProjectController projectController = Get.find(tag: ControllersKey.projectControllerKey);
+
+  Future<void> onPickFile() async {
+    setState(() {
+      isImageLoading = true;
+    });
+    FilePickerResult? result =
+    await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result != null) {
+      List<File> files = result.paths.map((path) => File(path!)).toList();
+      image = files.isNotEmpty ? files[0] : null;
+    } else {
+      // User canceled the picker
+    }
+
+    setState(() {
+      isImageLoading = false;
+    });
+  }
   
   Future<void> createProject() async {
     bool hasError = false;
@@ -34,30 +59,51 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       hasError = true;
       message = "لطفا متراژ را وارد کنید";
     }
-    else if(priceTextController.text.isEmpty){
+    else if(cityTextController.text.isEmpty){
       hasError = true;
-      message = "لطفا قیمت را وارد کنید";
+      message = "لطفا شهر را وارد کنید";
     }
+    else if(addressTextController.text.isEmpty){
+      hasError = true;
+      message = "لطفا آدرس را وارد کنید";
+    }
+    else if(descriptionTextController.text.isEmpty){
+      hasError = true;
+      message = "لطفا توضیحات را وارد کنید";
+    }
+    print(hasError);
     if(hasError){
       //FIXME : show error
       return;
     }
 
     setState(() {
-      isProjectCreate = true;
+      isProjectCreateLoading = true;
     });
 
     //FIXME : here must define fields
     await projectController.createProject(
+      description: descriptionTextController.text,
       area: areaTextController.text,
-      address: "address",
-      city: "city"
-    );
+      address: addressTextController.text,
+      city: cityTextController.text,
+    ).then((value){
+      if(!value){
+
+      }
+      else{
+        Get.back();
+        Get.showSnackbar(const GetSnackBar(
+          title: "ایجاد",
+          message: "پروژه با موفقیت ایجاد شد",
+          duration: Duration(seconds: 2),
+        ));
+      }
+    });
 
     setState(() {
-      isProjectCreate = false;
+      isProjectCreateLoading = false;
     });
-    
   }
   
   @override
@@ -104,8 +150,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       verticalDirection: VerticalDirection.up,
                       children: [
                         InkWell(
-                          onTap: (){
-          
+                          onTap: () async {
+                            await onPickFile();
                           },
                           child: Container(
                               width: 100,
@@ -137,13 +183,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                               )
                           ),
                         ),
-                        if(isImageUploaded)...[
+                        if(image != null)...[
                           const SizedBox(height: 18),
                           Padding(
                             padding: globalPadding * 7,
                             child: ClipRRect(
                               borderRadius: globalBorderRadius * 5,
-                              child: Image.asset("assets/images/image.png"),
+                              child: Image.file(image!,width: 260,height: 180,),
                             ),
                           ),
                         ],
@@ -167,7 +213,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                         borderRadius: globalBorderRadius * 4,
                       ),
                       child: TextField(
-
+                        controller: addressTextController,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: theme.colorScheme.surface
                         ),
@@ -175,7 +221,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
-                          hintText: "قیمت",
+                          hintText: "آدرس",
                           hintStyle: theme.textTheme.labelMedium?.copyWith(
                               color: theme.colorScheme.surface.withOpacity(0.5)
                           )
@@ -191,6 +237,31 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                         borderRadius: globalBorderRadius * 4,
                       ),
                       child: TextField(
+                        controller: cityTextController,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.surface
+                        ),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "شهر",
+                            hintStyle: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface.withOpacity(0.5)
+                            )
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Container(
+                      margin: globalPadding * 10,
+                      padding: const EdgeInsets.only(bottom: 5, right: 9,left: 9),
+                      decoration: BoxDecoration(
+                        color: AppColors.textFieldColor,
+                        borderRadius: globalBorderRadius * 4,
+                      ),
+                      child: TextField(
+                        controller: areaTextController,
                         style: theme.textTheme.labelLarge?.copyWith(
                             color: theme.colorScheme.surface
                         ),
@@ -199,6 +270,30 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
                             hintText: "متراژ",
+                            hintStyle: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface.withOpacity(0.5)
+                            )
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 7,),
+                    Container(
+                      margin: globalPadding * 10,
+                      padding: const EdgeInsets.only(bottom: 5, right: 9,left: 9),
+                      decoration: BoxDecoration(
+                        color: AppColors.textFieldColor,
+                        borderRadius: globalBorderRadius * 4,
+                      ),
+                      child: TextField(
+                        controller: descriptionTextController,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.surface
+                        ),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "توضیحات",
                             hintStyle: theme.textTheme.labelMedium?.copyWith(
                                 color: theme.colorScheme.surface.withOpacity(0.5)
                             )
@@ -218,13 +313,19 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                 ),
               ),
               const SizedBox(height: 12),
+              (isProjectCreateLoading || isImageLoading) ?
+              SpinKitThreeBounce(
+                size: 14,
+                color: theme.colorScheme.onSecondary,
+              ) :
               ButtonItem(
-                onTap: createProject,
-                isButtonDisable: isProjectCreate,
+                onTap: () async => await createProject(),
+                isButtonDisable: isProjectCreateLoading,
                 title: "ایجاد",
                 color: theme.colorScheme.tertiary,
                 textStyle: theme.textTheme.bodyLarge,
-              )
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

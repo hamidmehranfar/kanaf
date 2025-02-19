@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/controllers/home_controller.dart';
 import 'package:kanaf/controllers/master_controller.dart';
 import 'package:kanaf/controllers/post_controller.dart';
 
@@ -23,10 +24,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AuthenticationController authController = Get.put(
-    AuthenticationController(),
-    tag: ControllersKey.authControllerKey
-  );
+  AuthenticationController authController = Get.put(AuthenticationController(),
+      tag: ControllersKey.authControllerKey);
 
   MasterController masterController = Get.put(
     MasterController(),
@@ -43,6 +42,11 @@ class _MyAppState extends State<MyApp> {
     tag: ControllersKey.postControllerKey,
   );
 
+  HomeController homeController = Get.put(
+    HomeController(),
+    tag: ControllersKey.homeControllerKey,
+  );
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -56,9 +60,7 @@ class _MyAppState extends State<MyApp> {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
-        iconTheme: const IconThemeData(
-            size: 20
-        ),
+        iconTheme: const IconThemeData(size: 20),
         fontFamily: "YekanBakh",
       ),
       darkTheme: ThemeData(

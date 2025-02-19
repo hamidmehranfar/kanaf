@@ -47,7 +47,7 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
     List<Master>? response = await masterController.getMastersList(pageKey: 1);
     if(response == null){
       isFailed = true;
-      Get.showSnackbar(GetSnackBar(
+      Get.showSnackbar(const GetSnackBar(
         title: "خطا",
         message: "خطایی رخ داده است",
         duration: Duration(seconds: 2),

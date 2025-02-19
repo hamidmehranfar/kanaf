@@ -2,13 +2,15 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:kanaf/models/post.dart';
 
 import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '../small_button.dart';
 
 class StorySection extends StatefulWidget {
-  const StorySection({super.key});
+  final Post? post;
+  const StorySection({super.key, this.post});
 
   @override
   State<StorySection> createState() => _StorySectionState();

@@ -19,7 +19,7 @@ class PosterItem extends StatelessWidget {
 
     return InkWell(
       onTap: (){
-        Get.to(DetailsScreen(id: master.id,));
+        Get.to(DetailsScreen(id: master.id,isComeFromProfile: false,));
       },
       child: Container(
         width: SizeController.width(context),

@@ -12,7 +12,7 @@ class ButtonItem extends StatelessWidget {
 
   const ButtonItem({super.key, required this.onTap,
     required this.title, required this.color,
-    this.width = 200, this.height = 50, this.textStyle,
+    this.width = 250, this.height = 50, this.textStyle,
     this.isButtonDisable = false,
   });
 

@@ -36,12 +36,13 @@ class ApiController{
   Future<void> request({
     required String url,
     required ApiMethod method,
-    Map? data,
+    var data,
     required void Function(Response response) onSuccess,
     required void Function(DioException error) onCatchDioError,
     required void Function(Exception error) onCatchError,
     bool needAuth = true,
     Options? options,
+    bool isMultipleFiles = false,
     })async {
     Response? response;
 
@@ -49,10 +50,13 @@ class ApiController{
       AuthenticationController authController = g.Get.find(
         tag: ControllersKey.authControllerKey
       );
-      options = Options(headers: {
-        //FIXME : fix here
-        "Authorization" : "Token 1210724a9a057abc24c24f675392eba9d1139465"
-      });
+      options = Options(
+        headers: {
+          //FIXME : fix here
+          "Authorization" : "Token 1210724a9a057abc24c24f675392eba9d1139465",
+        },
+        contentType: isMultipleFiles ? 'multipart/form-data' : null,
+      );
     }
 
     String fullUrl = "$_baseUrl$url";

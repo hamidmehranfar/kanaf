@@ -24,7 +24,7 @@ class ProjectsItem extends StatelessWidget {
           const SizedBox(height: 10,),
           Image.asset("assets/images/image.png",),
           const SizedBox(height: 36,),
-          Text(project.profileUser.firstName ?? "", style: theme.textTheme.titleMedium?.copyWith(
+          Text(project.profileUser?.firstName ?? "", style: theme.textTheme.titleMedium?.copyWith(
             color: theme.colorScheme.onPrimary,
           ),),
           const SizedBox(height: 6,),
