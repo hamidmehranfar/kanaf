@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '/widgets/choose_profile_image.dart';
+import '/res/app_colors.dart';
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
 import '../main_screen.dart';
@@ -13,6 +16,7 @@ import '/widgets/custom_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
   final String username;
+
   const SignupScreen({super.key, required this.username});
 
   @override
@@ -21,6 +25,9 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
+
+  String? avatarImage;
+  int? defaultIndex;
 
   List<String> introductionTypes = [
     'نحوه ی آشنایی(اختیاری)',
@@ -43,7 +50,8 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController jobTextController = TextEditingController();
 
   Future<void> signup() async {
-    if(firstNameTextController.text.isEmpty || lastNameTextController.text.isEmpty){
+    if (firstNameTextController.text.isEmpty ||
+        lastNameTextController.text.isEmpty) {
       //FIXME : show error
       // message = "لطفا نام خود را وارد کنید";
     }
@@ -59,15 +67,16 @@ class _SignupScreenState extends State<SignupScreen> {
       lastName: lastNameTextController.text,
       email: emailTextController.text,
       job: jobTextController.text,
-      type: convertToIntroductionType(selectedValue)
+      type: convertToIntroductionType(selectedValue),
+      selectedAvatar: defaultIndex,
+      avatar: avatarImage,
     );
 
-    if(response!=null){
+    if (response != null) {
       bool result = await authController.getUser(response);
-      if(result){
+      if (result) {
         Get.offAll(const MainScreen());
-      }
-      else{
+      } else {
         //FIXME : show error
       }
     }
@@ -93,51 +102,72 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: SizeController.width(context),
           height: SizeController.height(context),
-          padding: globalPadding * 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 140,),
-              CustomTextField(
-                labelText: "نام",
-                enabled: !isLoading,
-                controller: firstNameTextController,
+              const SizedBox(height: 140),
+              Padding(
+                padding: globalPadding * 4,
+                child: CustomTextField(
+                  labelText: "نام",
+                  enabled: !isLoading,
+                  controller: firstNameTextController,
+                  scrollPadding: const EdgeInsets.only(bottom: 450),
+                ),
               ),
-              const SizedBox(height: 16,),
-              CustomTextField(
-                labelText: "نام خانوادگی",
-                enabled: !isLoading,
-                controller: lastNameTextController,
+              const SizedBox(height: 16),
+              Padding(
+                padding: globalPadding * 4,
+                child: CustomTextField(
+                  labelText: "نام خانوادگی",
+                  enabled: !isLoading,
+                  controller: lastNameTextController,
+                  scrollPadding: const EdgeInsets.only(bottom: 400),
+                ),
               ),
-              const SizedBox(height: 16,),
-              CustomTextField(
-                labelText: "ایمیل (اختیاری)",
-                enabled: !isLoading,
-                controller: emailTextController,
+              const SizedBox(height: 16),
+              Padding(
+                padding: globalPadding * 4,
+                child: CustomTextField(
+                  labelText: "ایمیل (اختیاری)",
+                  enabled: !isLoading,
+                  controller: emailTextController,
+                  scrollPadding: const EdgeInsets.only(bottom: 350),
+                ),
               ),
-              const SizedBox(height: 16,),
-              CustomTextField(
-                labelText: "شغل (اختیاری)",
-                enabled: !isLoading,
-                controller: jobTextController,
+              const SizedBox(height: 16),
+              Padding(
+                padding: globalPadding * 4,
+                child: CustomTextField(
+                  labelText: "شغل (اختیاری)",
+                  enabled: !isLoading,
+                  controller: jobTextController,
+                  scrollPadding: const EdgeInsets.only(bottom: 280),
+                ),
               ),
-              const SizedBox(height: 16,),
+              const SizedBox(height: 16),
               Container(
                 height: 52,
                 padding: globalPadding * 3,
+                margin: globalPadding * 4,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.tertiary.withValues(alpha: 0.21),
-                  borderRadius: globalBorderRadius * 4,
+                  borderRadius: globalBorderRadius * 3,
                   border: Border.all(),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: selectedValue,
+                    dropdownColor: AppColors.sideColor,
                     isExpanded: true,
-                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black87),
+                    borderRadius: globalBorderRadius * 3,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.black87,
+                    ),
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedValue = newValue ?? '';
@@ -150,9 +180,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: Text(
                           value,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSecondary.withValues(
-                                alpha: 0.9
-                            ),
+                            color: theme.colorScheme.onSecondary
+                                .withValues(alpha: 0.9),
                           ),
                           textDirection: TextDirection.rtl,
                         ),
@@ -161,12 +190,86 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24,),
-              AuthenticationBottomSheet(
+              const SizedBox(height: 16),
+              InkWell(
                 onTap: () async {
-                  await signup();
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const Dialog(
+                        child: ChooseProfileImage(),
+                      );
+                    },
+                  ).then((value) {
+                    if (value is String) {
+                      setState(() {
+                        avatarImage = value;
+                        defaultIndex = null;
+                      });
+                    } else if (value is int) {
+                      setState(() {
+                        avatarImage =
+                            "assets/images/default_avatar_$value.jpeg";
+                        defaultIndex = value;
+                      });
+                    }
+                  });
                 },
-                isLoading: isLoading,
+                child: Container(
+                  height: 52,
+                  margin: globalPadding * 4,
+                  padding: const EdgeInsets.only(bottom: 5, right: 9, left: 9),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.tertiary.withValues(alpha: 0.21),
+                    border: Border.all(),
+                    borderRadius: globalBorderRadius * 3,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        avatarImage == null
+                            ? 'عکس پروفایل'
+                            : avatarImage!.split('/').last,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSecondary
+                              .withValues(alpha: 0.9),
+                        ),
+                        overflow: TextOverflow.fade,
+                      ),
+                      InkWell(
+                        child: Row(
+                          children: [
+                            Text(
+                              "انتخاب",
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSecondary
+                                    .withValues(alpha: 0.9),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 14,
+                              color: theme.colorScheme.onSecondary
+                                  .withValues(alpha: 0.9),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: globalPadding * 4,
+                child: AuthenticationBottomSheet(
+                  onTap: () async {
+                    await signup();
+                  },
+                  isLoading: isLoading,
+                ),
               ),
             ],
           ),

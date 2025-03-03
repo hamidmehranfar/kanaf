@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/authentication_controller.dart';
-import 'package:kanaf/res/controllers_key.dart';
-import 'package:kanaf/screens/tips_screen.dart';
-import 'package:kanaf/widgets/custom_error_widget.dart';
 
+import '/res/controllers_key.dart';
+import '/screens/tips_screen.dart';
+import '/widgets/custom_cached_image.dart';
+import '/widgets/custom_error_widget.dart';
+import '/widgets/step_widget.dart';
 import '/models/billboard.dart';
 import '/res/app_colors.dart';
 import '/widgets/custom_appbar.dart';
@@ -37,37 +39,59 @@ class _HomeScreenState extends State<HomeScreen> {
     tag: ControllersKey.homeControllerKey,
   );
 
-  List<BillBoard> billboards = [];
+  List<BillBoard>? billboards;
   bool billboardsError = false;
 
-  List<Comment> comments = [];
+  List<Comment>? comments;
   bool commentsError = false;
+
+  String? tip;
+  bool tipLoading = false;
+  bool tipFailed = false;
 
   List<String> homeWorkTitles = [
     "استادکار",
     "محاسبه",
     "نظارت",
     "آموزش",
+    "محاسبه",
+    "نظارت",
+    "آموزش",
   ];
 
-  List<Image> homeWorkIcons = [
-    Image.asset(
-      "assets/icons/user_icon.png",
+  List<SvgPicture> homeWorkIcons = [
+    SvgPicture.asset(
+      'assets/icons/user.svg',
       width: 32,
       height: 36,
     ),
-    Image.asset(
-      "assets/icons/pen_icon.png",
+    SvgPicture.asset(
+      'assets/icons/pen.svg',
       width: 31,
       height: 30,
     ),
-    Image.asset(
-      "assets/icons/supervision_icon.png",
+    SvgPicture.asset(
+      'assets/icons/supervision.svg',
       width: 40,
       height: 32,
     ),
-    Image.asset(
-      "assets/icons/learn_icon.png",
+    SvgPicture.asset(
+      "assets/icons/learn.svg",
+      width: 33,
+      height: 39,
+    ),
+    SvgPicture.asset(
+      'assets/icons/pen.svg',
+      width: 31,
+      height: 30,
+    ),
+    SvgPicture.asset(
+      'assets/icons/supervision.svg',
+      width: 40,
+      height: 32,
+    ),
+    SvgPicture.asset(
+      "assets/icons/learn.svg",
       width: 33,
       height: 39,
     ),
@@ -78,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     fetchImages();
     fetchComments();
+    fetchTips();
   }
 
   Future<void> fetchImages() async {
@@ -87,11 +112,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     billboards = await homeController.fetchImages();
-    if (billboards.isEmpty) billboardsError = true;
+    if (billboards == null) {
+      billboardsError = true;
+    }
 
     setState(() {
-      imagesCurrentIndex = (billboards.length / 2).floor();
-      isBillboardsLoading = false;
+      if (billboards != null) {
+        imagesCurrentIndex = (billboards!.length / 2).floor();
+        isBillboardsLoading = false;
+      }
     });
   }
 
@@ -109,8 +138,27 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     setState(() {
-      commentsCurrentIndex = (comments.length / 2).floor();
-      isCommentsLoading = false;
+      if (comments != null) {
+        commentsCurrentIndex = (comments!.length / 2).floor();
+        isCommentsLoading = false;
+      }
+    });
+  }
+
+  Future<void> fetchTips() async {
+    setState(() {
+      tipLoading = true;
+      tipFailed = false;
+    });
+
+    tip = await homeController.getTips();
+
+    if (tip == null) {
+      tipFailed = true;
+    }
+
+    setState(() {
+      tipLoading = false;
     });
   }
 
@@ -130,371 +178,479 @@ class _HomeScreenState extends State<HomeScreen> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(bottom: 24),
           children: [
-            const SizedBox(
-              height: 34,
-            ),
-            isBillboardsLoading
-                ? CustomShimmer(
-                    child: Container(
-                    margin: globalPadding * 6,
-                    width: width,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: globalBorderRadius * 5,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ))
-                : billboardsError
-                    ? CustomErrorWidget(onTap: () async {
-                        await fetchImages();
-                      })
-                    : Stack(
-                        children: [
-                          CarouselSlider(
-                              items:
-                                  List.generate(billboards.length, (int index) {
-                                return Container(
-                                  margin: globalPadding * 10,
-                                  width: SizeController.width(context),
-                                  // decoration: BoxDecoration(
-                                  //   borderRadius: globalBorderRadius * 4
-                                  // ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: billboards[index].url,
-                                    placeholder: (context, url) => Container(),
-                                    errorWidget: (context, url, error) => Row(
-                                      children: [
-                                        Text(
-                                          "تلاش مجدد",
-                                          style: theme.textTheme.bodyLarge,
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            //FIXME : fix here
-                                          },
-                                          icon: const Icon(Icons.refresh),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                              options: CarouselOptions(
-                                  height: 200,
-                                  viewportFraction: 1,
-                                  initialPage: imagesCurrentIndex ?? 0,
-                                  autoPlay: true,
-                                  enableInfiniteScroll: true,
-                                  onPageChanged: (index, changeReason) {
-                                    setState(() {
-                                      imagesCurrentIndex = index;
-                                    });
-                                  })),
-                          Positioned(
-                              bottom: 0,
-                              right: 0,
-                              left: 0,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: List.generate(billboards.length,
-                                          (int index) {
-                                        return Container(
-                                          width: 10,
-                                          height: 10,
-                                          margin: globalPadding,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: index == imagesCurrentIndex
-                                                  ? theme.colorScheme.secondary
-                                                  : theme
-                                                      .colorScheme.onSecondary),
-                                        );
-                                      }),
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    )
-                                  ],
-                                ),
-                              ))
-                        ],
-                      ),
-            const SizedBox(
-              height: 18,
-            ),
-            Padding(
-              padding: globalPadding * 11,
-              child: MyDivider(
-                  color: AppColors.dividerColor, height: 1, thickness: 1),
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            Padding(
-              padding: globalPadding * 8,
-              child: Wrap(
-                spacing: 8,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: List.generate(4, (index) {
-                  return HomeWorksItem(
-                    text: homeWorkTitles[index],
-                    imageIcon: homeWorkIcons[index],
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            if (index == 0) {
-                              return const MasterServicesScreen();
-                            } else if (index == 3) {
-                              return const TipsScreen();
-                            }
-                            return const MasterServicesScreen();
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Center(
-              child: Text(
-                "نظرات کاربران",
-                style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w300,
-                    color: theme.colorScheme.tertiary),
-              ),
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Padding(
-              padding: globalPadding * 11,
-              child: MyDivider(
-                  color: AppColors.dividerColor, height: 1, thickness: 1),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            isCommentsLoading
-                ? CustomShimmer(
-                    child: Container(
-                    margin: globalPadding * 6,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: globalBorderRadius * 5,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ))
-                : commentsError
-                    ? CustomErrorWidget(onTap: () async {
-                        await fetchComments();
-                      })
-                    : CarouselSlider(
-                        items: List.generate(comments.length, (int index) {
-                          return Container(
-                            width: commentsCurrentIndex == index ? 210 : 100,
-                            padding: globalPadding * 5,
-                            decoration: BoxDecoration(
-                              borderRadius: globalBorderRadius * 5,
-                              color: commentsCurrentIndex == index
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.secondary,
-                            ),
-                            child: commentsCurrentIndex == index
-                                ? Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const SizedBox(
-                                            height: 23,
-                                          ),
-                                          Image.asset(
-                                              "assets/images/user_ava.png"),
-                                          Expanded(
-                                            child: Text(
-                                              comments[index].name,
-                                              style: theme.textTheme.titleLarge
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                color: commentsCurrentIndex ==
-                                                        index
-                                                    ? theme
-                                                        .colorScheme.onPrimary
-                                                    : theme.colorScheme
-                                                        .onSecondary,
-                                              ),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      //FIXME : ask this
-                                      // Column(
-                                      //   crossAxisAlignment: CrossAxisAlignment.start,
-                                      //   children: [
-                                      //     const SizedBox(height: 25,),
-                                      //     Row(
-                                      //       children: [
-                                      //         Text("6.5", style: theme.textTheme.labelMedium?.copyWith(
-                                      //           color: theme.colorScheme.tertiary
-                                      //         ),),
-                                      //         const SizedBox(width: 2,),
-                                      //         Icon(Icons.star, color: AppColors.sideColor,size: 10,)
-                                      //       ],
-                                      //     ),
-                                      //     Text("برنامه خوبی است")
-                                      //   ],
-                                      // )
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Center(
-                                        child: Image.asset(
-                                          "assets/images/user_ava.png",
-                                          width: 60,
-                                          height: 60,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Center(
-                                          child: Align(
-                                            alignment: Alignment.topCenter,
-                                            child: Text(
-                                              comments[index].name,
-                                              style: theme.textTheme.titleLarge
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                color: commentsCurrentIndex ==
-                                                        index
-                                                    ? theme
-                                                        .colorScheme.onPrimary
-                                                    : theme.colorScheme
-                                                        .onSecondary,
-                                              ),
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                    ],
-                                  ),
-                          );
-                        }),
-                        options: CarouselOptions(
-                            height: 130,
-                            initialPage: commentsCurrentIndex ?? 0,
-                            // enlargeCenterPage: true,
-                            viewportFraction: 0.5,
-                            enableInfiniteScroll: false,
-                            // disableCenter: true,
-                            onPageChanged:
-                                (int index, CarouselPageChangedReason reason) {
-                              setState(() {
-                                commentsCurrentIndex = index;
-                              });
-                            })),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: globalPadding * 11,
-              child: MyDivider(
-                  color: AppColors.dividerColor, height: 1, thickness: 1),
-            ),
-            const SizedBox(
-              height: 13,
-            ),
-            Padding(
-              padding: globalPadding * 18,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SizedBox(height: 34),
+            if (isBillboardsLoading)
+              CustomShimmer(
+                child: Container(
+                  margin: globalPadding * 6,
+                  width: width,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 5,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              )
+            else if (billboardsError)
+              CustomErrorWidget(
+                onTap: () async {
+                  await fetchImages();
+                },
+              )
+            else if (billboards?.isNotEmpty ?? false) ...[
+              Stack(
                 children: [
-                  Container(
-                    width: 105,
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        borderRadius: globalBorderRadius * 3),
-                    child: Center(
-                      child: Text(
-                        "چت",
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(color: theme.colorScheme.onPrimary),
-                      ),
+                  CarouselSlider(
+                    items: List.generate(
+                      billboards?.length ?? 0,
+                      (int index) {
+                        return Padding(
+                          padding: globalPadding * 5,
+                          child: ClipRRect(
+                            borderRadius: globalBorderRadius * 4,
+                            child: CachedNetworkImage(
+                              imageUrl: billboards?[index].url ?? '',
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(),
+                              errorWidget: (context, url, error) => Row(
+                                children: [
+                                  Text(
+                                    "تلاش مجدد",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      //FIXME : fix here
+                                    },
+                                    icon: const Icon(Icons.refresh),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    options: CarouselOptions(
+                      height: 200,
+                      viewportFraction: 1,
+                      initialPage: imagesCurrentIndex ?? 0,
+                      autoPlay: true,
+                      enableInfiniteScroll: true,
+                      onPageChanged: (index, changeReason) {
+                        setState(() {
+                          imagesCurrentIndex = index;
+                        });
+                      },
                     ),
                   ),
-                  Container(
-                    width: 105,
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        borderRadius: globalBorderRadius * 3),
-                    child: Center(
-                      child: Text(
-                        "تالار گفتگو",
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(color: theme.colorScheme.onPrimary),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          StepWidget(
+                            width: 37,
+                            height: 8,
+                            selectedIndex: imagesCurrentIndex ?? 0,
+                            length: billboards?.length ?? 0,
+                          ),
+                          const SizedBox(height: 16)
+                        ],
                       ),
                     ),
                   )
                 ],
               ),
+              const SizedBox(height: 18),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: AppColors.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 18),
+            ],
+            Center(
+              child: SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  padding: globalPadding * 2,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 4,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return HomeWorksItem(
+                      text: homeWorkTitles[index],
+                      imageIcon: homeWorkIcons[index],
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              if (index == 0) {
+                                return const MasterServicesScreen();
+                              } else if (index == 3) {
+                                return const TipsScreen();
+                              }
+                              return const MasterServicesScreen();
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(width: 8);
+                  },
+                ),
+              ),
             ),
-            const SizedBox(
-              height: 20,
+            Center(
+              child: SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  padding: globalPadding * 2,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return HomeWorksItem(
+                      text: homeWorkTitles[index + 4],
+                      imageIcon: homeWorkIcons[index + 4],
+                      onTap: () {
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) {
+                        //       if (index == 0) {
+                        //         return const MasterServicesScreen();
+                        //       } else if (index == 3) {
+                        //         return const TipsScreen();
+                        //       }
+                        //       return const MasterServicesScreen();
+                        //     },
+                        //   ),
+                        // );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(width: 8);
+                  },
+                ),
+              ),
             ),
+            const SizedBox(height: 10),
+            if (isCommentsLoading)
+              CustomShimmer(
+                child: Container(
+                  margin: globalPadding * 6,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 5,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              )
+            else if (commentsError)
+              CustomErrorWidget(
+                onTap: () async {
+                  await fetchComments();
+                },
+              )
+            else if (comments?.isNotEmpty ?? false) ...[
+              Center(
+                child: Text(
+                  "نظرات کاربران",
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w300,
+                    color: theme.colorScheme.tertiary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Padding(
+                padding: globalPadding * 11,
+                child: MyDivider(
+                  color: AppColors.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+              ),
+              const SizedBox(height: 16),
+              CarouselSlider(
+                items: List.generate(
+                  comments?.length ?? 0,
+                  (int index) {
+                    return Container(
+                      width: commentsCurrentIndex == index ? 210 : 100,
+                      padding: globalPadding * 5,
+                      decoration: BoxDecoration(
+                        borderRadius: globalBorderRadius * 5,
+                        color: commentsCurrentIndex == index
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.secondary,
+                      ),
+                      child: commentsCurrentIndex == index
+                          ? Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 23),
+                                    CircleAvatar(
+                                      child: comments?[index].imageUrl == null
+                                          ? Image.asset(
+                                              "assets/images/user_ava.png",
+                                              width: 60,
+                                              height: 60,
+                                            )
+                                          : CustomCachedImage(
+                                              url: comments?[index].imageUrl ??
+                                                  '',
+                                              width: 60,
+                                              height: 60,
+                                            ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Expanded(
+                                      child: SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          comments?[index].name ?? '',
+                                          style: theme.textTheme.titleLarge
+                                              ?.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: commentsCurrentIndex == index
+                                                ? theme.colorScheme.onPrimary
+                                                : theme.colorScheme.onSecondary,
+                                          ),
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 100,
+                                    child: Text(
+                                      comments?[index].text ?? '',
+                                      style:
+                                          theme.textTheme.bodyMedium?.copyWith(
+                                        color: theme.colorScheme.onPrimary,
+                                      ),
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                CircleAvatar(
+                                  child: comments?[index].imageUrl == null
+                                      ? Image.asset(
+                                          "assets/images/user_ava.png",
+                                          width: 60,
+                                          height: 60,
+                                        )
+                                      : CustomCachedImage(
+                                          url: comments?[index].imageUrl ?? '',
+                                          width: 60,
+                                          height: 60,
+                                        ),
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Text(
+                                        comments?[index].name ?? '',
+                                        style: theme.textTheme.titleLarge
+                                            ?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: commentsCurrentIndex == index
+                                              ? theme.colorScheme.onPrimary
+                                              : theme.colorScheme.onSecondary,
+                                        ),
+                                        textDirection: TextDirection.rtl,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                            ),
+                    );
+                  },
+                ),
+                options: CarouselOptions(
+                  height: 130,
+                  initialPage: commentsCurrentIndex ?? 0,
+                  // enlargeCenterPage: true,
+                  viewportFraction: 0.5,
+                  enableInfiniteScroll: false,
+                  // disableCenter: true,
+                  onPageChanged: (int index, CarouselPageChangedReason reason) {
+                    setState(() {
+                      commentsCurrentIndex = index;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
             Padding(
               padding: globalPadding * 11,
               child: MyDivider(
-                  color: AppColors.dividerColor, height: 1, thickness: 1),
+                color: AppColors.dividerColor,
+                height: 1,
+                thickness: 1,
+              ),
             ),
-            const SizedBox(
-              height: 13,
-            ),
-            CarouselSlider(
-                items: List.generate(comments.length, (int index) {
-                  return Container(
-                    width: SizeController.width(context),
-                    margin: globalPadding,
+            const SizedBox(height: 13),
+            Padding(
+              padding: globalPadding * 18,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 105,
+                    height: 90,
                     decoration: BoxDecoration(
-                        borderRadius: globalBorderRadius * 4,
-                        border: Border.all(color: theme.colorScheme.primary)),
-                    child: const Center(
-                      child: Text("تبلیغات"),
+                      color: theme.colorScheme.primary,
+                      borderRadius: globalBorderRadius * 3,
                     ),
-                  );
-                }),
-                options: CarouselOptions(
-                  height: 120,
-                  initialPage: 2,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false,
-                )),
-            const SizedBox(
-              height: 120,
-            )
+                    child: Center(
+                      child: Text(
+                        "تالار گفتگو",
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 18),
+                  Container(
+                    width: 105,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      borderRadius: globalBorderRadius * 3,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "چت",
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: globalPadding * 11,
+              child: MyDivider(
+                color: AppColors.dividerColor,
+                height: 1,
+                thickness: 1,
+              ),
+            ),
+            const SizedBox(height: 13),
+            if (tipLoading)
+              CustomShimmer(
+                child: Container(
+                  margin: globalPadding * 12,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: globalBorderRadius * 3,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              )
+            else if (tipFailed)
+              CustomErrorWidget(
+                onTap: () async {
+                  await fetchTips();
+                },
+              )
+            else
+              Container(
+                margin: globalPadding * 7,
+                padding: globalPadding * 2,
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius * 4,
+                  color: Colors.grey[300],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      offset: const Offset(3, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'هزینه استادکار مورد نظرتون رو پیدا کنید\nلورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی ',
+                      style: theme.textTheme.labelMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 13),
+            Container(
+              margin: globalPadding * 7,
+              height: 135,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: globalBorderRadius * 4,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.tertiary,
+                    offset: const Offset(-3, -3),
+                  ),
+                  BoxShadow(
+                    color: theme.colorScheme.onSecondary,
+                    offset: const Offset(3, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  SvgPicture.asset(
+                    "assets/icons/chat.svg",
+                    width: 55,
+                    height: 55,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "برای چت با پشتیبانی کنافکار کلیک کنید",
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontSize: 17,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                ],
+              ),
+            ),
+            const SizedBox(height: 120)
           ],
         ),
       ),

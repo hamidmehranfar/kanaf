@@ -48,6 +48,9 @@ dependencies:
   cached_network_image: 3.4.1
   flutter_staggered_grid_view: ^0.7.0
   file_picker: 8.3.5
+  flutter_svg: ^2.0.17
+  mime: ^1.0.6
+  video_player: 2.9.2
 
 dev_dependencies:
   flutter_test:
@@ -106,60 +109,60 @@ flutter:
           weight: 800
         - asset: assets/fonts/YekanBakh/YekanBakh-ExtraBlack.ttf
           weight: 900
-#    - family: LexendDeca
-#      fonts:
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraLight.ttf
-#          weight: 200
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Light.ttf
-#          weight: 300
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Regular.ttf
-#          weight: 400
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Medium.ttf
-#          weight: 500
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-SemiBold.ttf
-#          weight: 600
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Bold.ttf
-#          weight: 700
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraBold.ttf
-#          weight: 800
-#        - asset: assets/fonts/Lexend_Deca/LexendDeca-Black.ttf
-#          weight: 900
-#    - family: Roboto
-#      fonts:
-#        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
-#          weight: 200
-#        - asset: assets/fonts/Roboto/Roboto-Light.ttf
-#          weight: 300
-#        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
-#          weight: 400
-#        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
-#          weight: 500
-#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-#          weight: 600
-#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-#          weight: 700
-#        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
-#          weight: 800
-#        - asset: assets/fonts/Roboto/Roboto-Black.ttf
-#          weight: 900
-#    - family: Quicksand
-#      fonts:
-#        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
-#          weight: 200
-#        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
-#          weight: 300
-#        - asset: assets/fonts/Quicksand/Quicksand-Regular.ttf
-#          weight: 400
-#        - asset: assets/fonts/Quicksand/Quicksand-Medium.ttf
-#          weight: 500
-#        - asset: assets/fonts/Quicksand/Quicksand-SemiBold.ttf
-#          weight: 600
-#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-#          weight: 700
-#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-#          weight: 800
-#        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
-#          weight: 900
+  #    - family: LexendDeca
+  #      fonts:
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraLight.ttf
+  #          weight: 200
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-Light.ttf
+  #          weight: 300
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-Regular.ttf
+  #          weight: 400
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-Medium.ttf
+  #          weight: 500
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-SemiBold.ttf
+  #          weight: 600
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-Bold.ttf
+  #          weight: 700
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-ExtraBold.ttf
+  #          weight: 800
+  #        - asset: assets/fonts/Lexend_Deca/LexendDeca-Black.ttf
+  #          weight: 900
+  #    - family: Roboto
+  #      fonts:
+  #        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
+  #          weight: 200
+  #        - asset: assets/fonts/Roboto/Roboto-Light.ttf
+  #          weight: 300
+  #        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+  #          weight: 400
+  #        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+  #          weight: 500
+  #        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+  #          weight: 600
+  #        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+  #          weight: 700
+  #        - asset: assets/fonts/Roboto/Roboto-Bold.ttf
+  #          weight: 800
+  #        - asset: assets/fonts/Roboto/Roboto-Black.ttf
+  #          weight: 900
+  #    - family: Quicksand
+  #      fonts:
+  #        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
+  #          weight: 200
+  #        - asset: assets/fonts/Quicksand/Quicksand-Light.ttf
+  #          weight: 300
+  #        - asset: assets/fonts/Quicksand/Quicksand-Regular.ttf
+  #          weight: 400
+  #        - asset: assets/fonts/Quicksand/Quicksand-Medium.ttf
+  #          weight: 500
+  #        - asset: assets/fonts/Quicksand/Quicksand-SemiBold.ttf
+  #          weight: 600
+  #        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+  #          weight: 700
+  #        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+  #          weight: 800
+  #        - asset: assets/fonts/Quicksand/Quicksand-Bold.ttf
+  #          weight: 900
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

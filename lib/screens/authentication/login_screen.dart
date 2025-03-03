@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/widgets/step_widget.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '/screens/authentication/otp_screen.dart';
@@ -55,16 +56,24 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       } else {
-        Get.to(SignupScreen(
-          username: textController.text,
-        ));
+        Get.to(
+          SignupScreen(
+            username: textController.text,
+          ),
+        );
       }
     } else {
-      Get.showSnackbar(GetSnackBar(
-        title: 'خطا',
-        message: authController.apiMessage,
-        duration: const Duration(seconds: 2),
-      ));
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'خطا',
+          message: authController.apiMessage != null
+              ? authController.apiMessage!.isEmpty
+                  ? 'خطایی رخ داده است'
+                  : authController.apiMessage
+              : 'خطایی رخ داده است',
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
 
     setState(() {
@@ -91,37 +100,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 115,
                   height: 335,
                 ),
-                const SizedBox(
-                  height: 16,
+                const SizedBox(height: 10),
+                const StepWidget(
+                  selectedIndex: 1,
+                  length: 3,
                 ),
+                const SizedBox(height: 16),
                 Text(
                   AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(
-                  height: 18,
-                ),
+                const SizedBox(height: 18),
                 CustomTextField(
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     textController.text = value.toPersianDigit();
                   },
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
                   hintText: "شماره همراه",
                   controller: textController,
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
+                const SizedBox(height: 30),
                 LoginButton(
                   isLoading: isLoading,
                   onTap: () async {
                     await login();
                   },
                   buttonText: "وارد شوید",
-                )
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

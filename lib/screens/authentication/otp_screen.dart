@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '../../widgets/step_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
@@ -82,36 +83,37 @@ class _OtpScreenState extends State<OtpScreen> {
                   width: 115,
                   height: 335,
                 ),
-                const SizedBox(
-                  height: 16,
+                const SizedBox(height: 10),
+                const StepWidget(
+                  selectedIndex: 2,
+                  length: 3,
                 ),
+                const SizedBox(height: 16),
                 Text(
                   AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(
-                  height: 18,
-                ),
+                const SizedBox(height: 18),
                 CustomTextField(
                   onChanged: (value) {
                     textController.text = value.toPersianDigit();
                   },
                   hintText: "کد تأیید",
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
                   controller: textController,
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
+                const SizedBox(height: 30),
                 LoginButton(
                   isLoading: isLoading,
                   onTap: () async {
                     await otpVerification();
                   },
                   buttonText: "ارسال کد",
-                )
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

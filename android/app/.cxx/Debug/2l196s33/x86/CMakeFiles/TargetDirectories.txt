@@ -1,0 +1,2 @@
+E:/kanaf-project/kanaf/android/app/.cxx/Debug/2l196s33/x86/CMakeFiles/edit_cache.dir
+E:/kanaf-project/kanaf/android/app/.cxx/Debug/2l196s33/x86/CMakeFiles/rebuild_cache.dir

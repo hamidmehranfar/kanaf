@@ -15,8 +15,8 @@ import '/widgets/profile/post_section.dart';
 class CreatePostStoryScreen extends StatefulWidget {
   final bool isStory;
   final Post? post;
-  const CreatePostStoryScreen({super.key,
-    required this.isStory, this.post});
+
+  const CreatePostStoryScreen({super.key, required this.isStory, this.post});
 
   @override
   State<CreatePostStoryScreen> createState() => _CreatePostStoryScreenState();
@@ -28,7 +28,7 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
   );
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     postController.initPostValues();
   }
@@ -38,25 +38,28 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
       postController.createPostLoading = true;
     });
 
-    await postController.createPost().then((value){
-      if(!value){
-        Get.showSnackbar(GetSnackBar(
-          title: "خطا",
-          message: postController.apiMessage,
-          duration: const Duration(seconds: 2),
-        ));
-      }
-    });
+    await postController.createPost().then(
+      (value) {
+        if (!value) {
+          //FIXME : show error
+          print(postController.apiMessage);
+        } else {
+          //FIXME : show error
+          print(postController.apiMessage);
+          Navigator.of(context).pop();
+        }
+      },
+    );
 
     setState(() {
       postController.createPostLoading = false;
     });
   }
 
-  bool isLoading(){
+  bool isLoading() {
     bool isImagesLoading = false;
-    for(bool loading in postController.picturesLoading){
-      if(loading){
+    for (bool loading in postController.picturesLoading) {
+      if (loading) {
         isImagesLoading = true;
         break;
       }
@@ -69,7 +72,7 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: CustomAppbar(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).pop();
         },
         iconAsset: "assets/icons/arrow_back_19.png",
@@ -79,21 +82,24 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
         children: [
           const SizedBox(height: 25),
           Center(
-            child: Text(widget.isStory ? "استوری جدید" : "پست جدید",
+            child: Text(
+              widget.isStory ? "استوری جدید" : "پست جدید",
               style: theme.textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.w300,
-                color: theme.colorScheme.tertiary
-            ),),
+                color: theme.colorScheme.tertiary,
+              ),
+            ),
           ),
           const SizedBox(height: 14),
           Padding(
             padding: globalPadding * 11,
             child: MyDivider(
               color: theme.colorScheme.onSecondary,
-              height: 1,thickness: 1,
+              height: 1,
+              thickness: 1,
             ),
           ),
-          const SizedBox(height: 17,),
+          const SizedBox(height: 17),
           Container(
             margin: globalPadding * 6,
             padding: globalPadding * 7.5,
@@ -101,38 +107,42 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
               borderRadius: globalBorderRadius * 6,
               color: theme.colorScheme.primary,
             ),
-            child: widget.isStory ?
-              StorySection(post: widget.post,) :
-              PostSection(post: widget.post)
+            child: widget.isStory
+                ? StorySection(
+                    post: widget.post,
+                  )
+                : const PostSection(),
           ),
           const SizedBox(height: 9),
           Padding(
             padding: globalPadding * 11,
             child: MyDivider(
               color: theme.colorScheme.onSecondary,
-              height: 1,thickness: 1,
+              height: 1,
+              thickness: 1,
             ),
           ),
           const SizedBox(height: 12),
-          isLoading() ? SpinKitThreeBounce(
-            size: 14,
-            color: theme.colorScheme.onSecondary,
-          ) :
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ButtonItem(
-                width: 200,
-                height: 50,
-                onTap: () async {
-                  await createPost();
-                },
-                title: "ایجاد",
-                color: theme.colorScheme.tertiary,
-              ),
-            ],
-          ),
-          const SizedBox(height: 200,)
+          isLoading()
+              ? SpinKitThreeBounce(
+                  size: 14,
+                  color: theme.colorScheme.onSecondary,
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonItem(
+                      width: 200,
+                      height: 50,
+                      onTap: () async {
+                        await createPost();
+                      },
+                      title: "ایجاد",
+                      color: theme.colorScheme.tertiary,
+                    ),
+                  ],
+                ),
+          const SizedBox(height: 200)
         ],
       ),
     );

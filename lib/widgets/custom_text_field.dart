@@ -24,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final FloatingLabelBehavior? floatingLabelBehavior;
   final List<TextInputFormatter>? inputFormatters;
   final String? errorText;
+  final EdgeInsets? scrollPadding;
 
   const CustomTextField({
     this.labelText,
@@ -47,6 +48,7 @@ class CustomTextField extends StatefulWidget {
     this.floatingLabelBehavior,
     this.inputFormatters,
     this.errorText,
+    this.scrollPadding,
     super.key,
   });
 
@@ -60,7 +62,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   void initState() {
-    focusNode.addListener((){
+    focusNode.addListener(() {
       setState(() {});
     });
     if (widget.controller == null) {
@@ -72,7 +74,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     focusNode.dispose();
     super.dispose();
   }
@@ -96,6 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         maxLines: widget.maxLines,
         keyboardType: widget.keyboardType,
         autocorrect: false,
+        scrollPadding: widget.scrollPadding ?? const EdgeInsets.all(20),
         inputFormatters: widget.inputFormatters,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
@@ -127,12 +130,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: globalBorderRadius * 3,
           ),
           hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: themeColors.onSecondary.withValues(alpha: 0.5),
-          ),
+                color: themeColors.onSecondary.withValues(alpha: 0.5),
+              ),
           labelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: !widget.enabled ? themeColors.inverseSurface.withValues(alpha: 0.7):
-                focusNode.hasFocus ? themeColors.primary : themeColors.onSurface,
-          ),
+                color: !widget.enabled
+                    ? themeColors.inverseSurface.withValues(alpha: 0.7)
+                    : focusNode.hasFocus
+                        ? themeColors.primary
+                        : themeColors.onSurface,
+              ),
         ),
       ),
     );

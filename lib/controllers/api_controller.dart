@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as g;
+import 'package:kanaf/models/user.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
 import '/res/enums/api_method.dart';
 
-
-class ApiController{
+class ApiController {
   late Dio _dio;
-  final String _baseUrl = "https://server2.webravo.ir/api/v1/";
+  final String _baseUrl = "http://kanafkar.behnagroup.ir/api/v1/";
 
   ApiController._singleton() {
     _dio = Dio(
@@ -27,6 +27,8 @@ class ApiController{
         requestBody: true,
         responseHeader: false,
         responseBody: false,
+        request: true,
+        error: true,
       ),
     );
   }
@@ -43,17 +45,16 @@ class ApiController{
     bool needAuth = true,
     Options? options,
     bool isMultipleFiles = false,
-    })async {
+  }) async {
     Response? response;
 
-    if(needAuth){
-      AuthenticationController authController = g.Get.find(
-        tag: ControllersKey.authControllerKey
-      );
+    if (needAuth) {
+      AuthenticationController authController =
+          g.Get.find(tag: ControllersKey.authControllerKey);
+
       options = Options(
         headers: {
-          //FIXME : fix here
-          "Authorization" : "Token 1210724a9a057abc24c24f675392eba9d1139465",
+          "Authorization": "Token ${authController.user?.token ?? ''}",
         },
         contentType: isMultipleFiles ? 'multipart/form-data' : null,
       );
@@ -61,8 +62,8 @@ class ApiController{
 
     String fullUrl = "$_baseUrl$url";
 
-    try{
-      switch(method){
+    try {
+      switch (method) {
         case ApiMethod.get:
           response = await _dio.get(
             fullUrl,
@@ -100,11 +101,9 @@ class ApiController{
           break;
       }
       onSuccess(response);
-    }
-    on DioException catch(e){
+    } on DioException catch (e) {
       onCatchDioError(e);
-    }
-    on Exception catch(e){
+    } on Exception catch (e) {
       onCatchError(e);
     }
   }

@@ -3,19 +3,17 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/res/enums/media_type.dart';
+import 'package:mime/mime.dart';
 
 import '/controllers/post_controller.dart';
-import '/models/post.dart';
 import '/res/controllers_key.dart';
-import '/widgets/custom_cached_image.dart';
-import '/models/post_item.dart';
 import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '../small_button.dart';
 
 class PostSection extends StatefulWidget {
-  final Post? post;
-  const PostSection({super.key, this.post});
+  const PostSection({super.key});
 
   @override
   State<PostSection> createState() => _PostSectionState();
@@ -31,33 +29,36 @@ class _PostSectionState extends State<PostSection> {
   @override
   void initState() {
     super.initState();
-    if(widget.post != null){
-      initEditValues();
-    }
-  }
-
-  void initEditValues(){
-    List<PostItem> items = widget.post!.items;
-    for(int i=0;i<items.length;i++){
-      postController.networkImages.add(items[i].file);
-      postController.picturesLoading[i] = true;
-    }
-
-    captionTextController.text = widget.post!.caption;
   }
 
   Future<void> onPickFile(int index) async {
-    if (postController.images[index] == null &&
-        postController.networkImages.length <= index) {
+    if (postController.createPostLoading) return;
+    if (postController.images[index].$1 == null) {
       setState(() {
         postController.picturesLoading[index] = true;
       });
-      FilePickerResult? result =
-          await FilePicker.platform.pickFiles(allowMultiple: true);
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.any,
+      );
 
       if (result != null) {
         List<File> files = result.paths.map((path) => File(path!)).toList();
-        postController.images[index] = files.isNotEmpty ? files[0] : null;
+
+        File? selectedFile = files.isNotEmpty ? files[0] : null;
+        MediaType? type;
+        String? filePath = selectedFile?.path;
+
+        if (filePath != null) {
+          String? mimeType = lookupMimeType(filePath);
+          if (mimeType?.startsWith('image/') ?? false) {
+            type = MediaType.image;
+          } else if (mimeType?.startsWith('video/') ?? false) {
+            type = MediaType.video;
+          }
+        }
+
+        postController.images[index] = (selectedFile, type);
       } else {
         // User canceled the picker
       }
@@ -65,14 +66,9 @@ class _PostSectionState extends State<PostSection> {
       setState(() {
         postController.picturesLoading[index] = false;
       });
-    } else if(postController.networkImages.length > index) {
+    } else {
       setState(() {
-        postController.networkImages.removeAt(index);
-      });
-    }
-    else{
-      setState(() {
-        postController.images[index] = null;
+        postController.images[index] = (null, null);
       });
     }
   }
@@ -104,17 +100,26 @@ class _PostSectionState extends State<PostSection> {
                             color: theme.colorScheme.onPrimary,
                           ),
                         )
-                      : postController.images[index] != null
-                          ? Image.file(
-                              postController.images[index]!,
-                              width: 150,
-                              height: 100,
-                            )
-                          : postController.networkImages.length > index ?
-                            CustomCachedImage(
-                              url: postController.networkImages[index],
-                              width: 150, height: 100,) :
-                            InkWell(
+                      : postController.images[index].$1 != null
+                          ? postController.images[index].$2 == MediaType.image
+                              ? ClipRRect(
+                                  borderRadius: globalBorderRadius * 10,
+                                  child: Image.file(
+                                    postController.images[index].$1!,
+                                    width: 150,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Text(
+                                  postController.images[index].$1?.path
+                                          .split('/')
+                                          .last ??
+                                      '',
+                                  style: theme.textTheme.bodyLarge,
+                                  textAlign: TextAlign.center,
+                                )
+                          : InkWell(
                               onTap: () async {
                                 await onPickFile(index);
                               },
@@ -148,8 +153,9 @@ class _PostSectionState extends State<PostSection> {
                             await onPickFile(index);
                           },
                           child: Icon(
-                            (postController.images[index] == null || postController.networkImages.length <= index) ?
-                              Icons.add : Icons.close,
+                            (postController.images[index].$1 == null)
+                                ? Icons.add
+                                : Icons.close,
                             size: 14,
                           ),
                         ),
@@ -161,37 +167,34 @@ class _PostSectionState extends State<PostSection> {
             },
           ),
         ),
-        const SizedBox(
-          height: 18,
-        ),
-        if(postController.createPostLoading)
+        const SizedBox(height: 18),
+        if (postController.createPostLoading)
           SpinKitThreeBounce(
             size: 14,
             color: theme.colorScheme.onSecondary,
           )
         else
-        SmallButton(
-          text: "آپلود عکس یا ویدئو",
-          textColor: theme.colorScheme.onSecondary,
-          width: 142,
-          height: 27,
-          shadow: [
-            BoxShadow(
-              color: theme.colorScheme.onPrimary,
-              offset: const Offset(-20, -10),
-              blurRadius: 25,
-              spreadRadius: -10,
-            ),
-            BoxShadow(
-              color: theme.colorScheme.onSecondary,
-              offset: const Offset(20, 10),
-              blurRadius: 20,
-              spreadRadius: -5,
-            ),
-          ],
-          onTap: () async {
-          },
-        ),
+          SmallButton(
+            text: "آپلود عکس یا ویدئو",
+            textColor: theme.colorScheme.onSecondary,
+            width: 142,
+            height: 27,
+            shadow: [
+              BoxShadow(
+                color: theme.colorScheme.onPrimary,
+                offset: const Offset(-20, -10),
+                blurRadius: 25,
+                spreadRadius: -10,
+              ),
+              BoxShadow(
+                color: theme.colorScheme.onSecondary,
+                offset: const Offset(20, 10),
+                blurRadius: 20,
+                spreadRadius: -5,
+              ),
+            ],
+            onTap: () async {},
+          ),
         const SizedBox(height: 25),
         Container(
           height: 51,
@@ -203,26 +206,27 @@ class _PostSectionState extends State<PostSection> {
           ),
           child: Row(
             children: [
-              const SizedBox(
-                width: 15,
-              ),
+              const SizedBox(width: 15),
               Expanded(
-                  child: TextField(
-                    controller: captionTextController,
-                style: theme.textTheme.labelLarge
-                    ?.copyWith(color: theme.colorScheme.surface),
-                decoration: InputDecoration(
+                child: TextField(
+                  controller: captionTextController,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: theme.colorScheme.surface,
+                  ),
+                  scrollPadding: const EdgeInsets.only(bottom: 200),
+                  decoration: InputDecoration(
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     hintText: "کپشن",
                     hintStyle: theme.textTheme.labelMedium?.copyWith(
-                        color: theme.colorScheme.onPrimary
-                            .withValues(alpha: 0.38))),
-              )),
-              const SizedBox(
-                width: 8,
-              )
+                      color:
+                          theme.colorScheme.onPrimary.withValues(alpha: 0.38),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8)
             ],
           ),
         ),

@@ -5,7 +5,7 @@ import '/controllers/api_controller.dart';
 import '/models/master.dart';
 import '/res/enums/api_method.dart';
 
-class MasterController extends GetxController{
+class MasterController extends GetxController {
   List<Master> _kanafMasters = [];
   List<Master> _painters = [];
   List<Master> _lightLines = [];
@@ -18,51 +18,47 @@ class MasterController extends GetxController{
   String get apiMessage => _apiMessage;
 
   List<Master> get kanafMasters => _kanafMasters;
+
   List<Master> get painters => _painters;
+
   List<Master> get lightLines => _lightLines;
+
   List<Master> get electronics => _electronics;
 
   Master? get master => _master;
 
-  void fillMastersList(List<Master> mastersList){
+  void fillMastersList(List<Master> mastersList) {
     _kanafMasters.clear();
     _painters.clear();
     _lightLines.clear();
     _electronics.clear();
 
-    for(var master in mastersList){
-      if(master.isMaster){
+    for (var master in mastersList) {
+      if (master.isMaster) {
         _kanafMasters.add(master);
-      }
-      else if(master.isPainter){
+      } else if (master.isPainter) {
         _painters.add(master);
-      }
-      else if(master.isLightLine){
+      } else if (master.isLightLine) {
         _lightLines.add(master);
-      }
-      else if(master.isElectric){
+      } else if (master.isElectric) {
         _electronics.add(master);
       }
     }
   }
 
-  Future<List<Master>?> getMastersList({required int pageKey,
-    MasterServices? type}) async {
-
+  Future<List<Master>?> getMastersList(
+      {required int pageKey, MasterServices? type}) async {
     List<Master>? result;
 
     String queryParam = '';
-    if(type != null){
-      if(type == MasterServices.kanafWorker){
+    if (type != null) {
+      if (type == MasterServices.kanafWorker) {
         queryParam += '/?is_master=true';
-      }
-      else if(type == MasterServices.lightLineWorker){
+      } else if (type == MasterServices.lightLineWorker) {
         queryParam += '/?is_light_line=true';
-      }
-      else if(type == MasterServices.painterWorker){
+      } else if (type == MasterServices.painterWorker) {
         queryParam += '/?is_painter=true';
-      }
-      else if(type == MasterServices.electronicWorker){
+      } else if (type == MasterServices.electronicWorker) {
         queryParam += '/?is_electric=true';
       }
     }
@@ -70,19 +66,19 @@ class MasterController extends GetxController{
     await ApiController.instance.request(
       url: "master/profiles$queryParam",
       method: ApiMethod.get,
-      onSuccess: (response){
+      onSuccess: (response) {
         result = [];
-        for(var item in response.data['results']){
+        for (var item in response.data['results']) {
           result!.add(Master.fromJson(item));
         }
         fillMastersList(result!);
       },
-      onCatchDioError: (e){
+      onCatchDioError: (e) {
         _apiMessage = e.response?.data["detail"] ?? "";
       },
-      onCatchError: (e){
+      onCatchError: (e) {
         _apiMessage = "مشکلی پیش امده است";
-      }
+      },
     );
 
     return result;
@@ -94,22 +90,20 @@ class MasterController extends GetxController{
     await ApiController.instance.request(
         url: "master/profiles/$id",
         method: ApiMethod.get,
-        onSuccess: (response){
+        needAuth: false,
+        onSuccess: (response) {
           _master = Master.fromJson(response.data);
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data["detail"] ?? "";
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = "مشکلی پیش امده است";
-        }
-    );
+        });
 
     return result;
   }
-
-
 
   Future<bool> editMaster(Master master) async {
     Map payload = {
@@ -133,16 +127,15 @@ class MasterController extends GetxController{
         url: "master/profile/${master.id}/",
         data: payload,
         method: ApiMethod.patch,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data["detail"] ?? "";
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = "مشکلی پیش امده است";
-        }
-    );
+        });
 
     return result;
   }
@@ -153,16 +146,15 @@ class MasterController extends GetxController{
     await ApiController.instance.request(
         url: "master/profile/$id/",
         method: ApiMethod.delete,
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data["detail"] ?? "";
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = "مشکلی پیش امده است";
-        }
-    );
+        });
 
     return result;
   }

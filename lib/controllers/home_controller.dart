@@ -9,14 +9,15 @@ class HomeController {
 
   String? get apiMessage => _apiMessage;
 
-  Future<List<BillBoard>> fetchImages() async {
-    List<BillBoard> result = [];
+  Future<List<BillBoard>?> fetchImages() async {
+    List<BillBoard>? result;
     await ApiController.instance.request(
       url: "home/billboards/",
       method: ApiMethod.get,
       onSuccess: (response) {
+        result = [];
         for (int i = 0; i < response.data["results"].length; i++) {
-          result.add(BillBoard.fromJson(response.data["results"][i]));
+          result!.add(BillBoard.fromJson(response.data["results"][i]));
         }
       },
       onCatchDioError: (error) {
@@ -40,7 +41,6 @@ class HomeController {
         for (var item in response.data["results"]) {
           comments?.add(Comment.fromJson(item));
         }
-        print(response.data["results"]);
       },
       onCatchDioError: (error) {
         _apiMessage = error.response?.data["detail"];
@@ -53,16 +53,14 @@ class HomeController {
     return comments;
   }
 
-  Future<List<Tip>?> getTips(int pageKey) async {
-    List<Tip>? tips;
+  Future<String?> getTips() async {
+    String? result;
     await ApiController.instance.request(
-      url: 'home/tips/?pageKey=$pageKey',
+      url: 'home/tips/',
       method: ApiMethod.get,
       onSuccess: (response) {
-        tips = [];
-        for (var item in response.data['results']) {
-          tips!.add(Tip.fromJson(item));
-        }
+        // result = response.data['results'];
+        result = '';
       },
       onCatchDioError: (error) {
         _apiMessage = error.response?.data["detail"];
@@ -72,6 +70,6 @@ class HomeController {
       },
     );
 
-    return tips;
+    return result;
   }
 }

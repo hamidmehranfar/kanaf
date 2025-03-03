@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:kanaf/controllers/home_controller.dart';
-import 'package:kanaf/models/tip.dart';
-import 'package:kanaf/widgets/tips_item.dart';
 
-import '../controllers/size_controller.dart';
-import '../global_configs.dart';
-import '../res/controllers_key.dart';
-import '../widgets/custom_appbar.dart';
-import '../widgets/custom_error_widget.dart';
-import '../widgets/custom_shimmer.dart';
-import '../widgets/my_divider.dart';
+import '/controllers/home_controller.dart';
+import '/models/tip.dart';
+import '/widgets/tips_item.dart';
+import '/controllers/size_controller.dart';
+import '/global_configs.dart';
+import '/res/controllers_key.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/custom_error_widget.dart';
+import '/widgets/custom_shimmer.dart';
+import '/widgets/my_divider.dart';
 
 class TipsScreen extends StatefulWidget {
   const TipsScreen({super.key});
@@ -25,7 +25,7 @@ class _TipsScreenState extends State<TipsScreen> {
     tag: ControllersKey.homeControllerKey,
   );
 
-  PagingController<int, Tip> _pagingController =
+  final PagingController<int, Tip> _pagingController =
       PagingController(firstPageKey: 1);
 
   @override
@@ -37,18 +37,18 @@ class _TipsScreenState extends State<TipsScreen> {
   }
 
   Future<void> _fetchTips(int pageKey) async {
-    final newItems = await homeController.getTips(pageKey);
-    if (newItems == null) {
-      _pagingController.error = homeController.apiMessage;
-    } else {
-      final lastPage = newItems.length < 10;
-      if (lastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    }
+    // final newItems = await homeController.getTips(pageKey);
+    // if (newItems == null) {
+    //   _pagingController.error = homeController.apiMessage;
+    // } else {
+    //   final lastPage = newItems.length < 10;
+    //   if (lastPage) {
+    //     _pagingController.appendLastPage(newItems);
+    //   } else {
+    //     final nextPageKey = pageKey + 1;
+    //     _pagingController.appendPage(newItems, nextPageKey);
+    //   }
+    // }
   }
 
   @override
@@ -99,6 +99,11 @@ class _TipsScreenState extends State<TipsScreen> {
                       itemBuilder: (BuildContext context, Tip item, int index) {
                         return TipsItem(
                           item: item,
+                        );
+                      },
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return const Center(
+                          child: Text("موردی یافت نشد"),
                         );
                       },
                       firstPageErrorIndicatorBuilder: (context) {
