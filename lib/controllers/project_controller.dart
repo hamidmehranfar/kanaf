@@ -3,35 +3,71 @@ import 'dart:io';
 import 'package:get/get.dart';
 
 import 'package:dio/dio.dart' as dio;
+import '../res/enums/media_type.dart';
 import '/controllers/api_controller.dart';
 import '/models/project.dart';
 import '/res/enums/api_method.dart';
 
-class ProjectController extends GetxController{
+class ProjectController extends GetxController {
   String _apiMessage = '';
+
+  List<(File?, MediaType?)> _images = List.generate(6, (index) => (null, null));
+
+  List<bool> _picturesLoading = List.generate(6, (index) => false);
+
+  List<(File?, MediaType?)> get images => _images;
+
+  List<bool> get picturesLoading => _picturesLoading;
 
   get apiMessage {
     return _apiMessage;
+  }
+
+  void initPostValues() {
+    _images = List.generate(6, (index) => (null, null));
+    _picturesLoading = List.generate(6, (index) => false);
   }
 
   Future<List<Project>?> getProjects(int pageKey) async {
     List<Project>? projects;
 
     await ApiController.instance.request(
-      url: "master/projects/?kind=sent&pageKey=$pageKey",
+        url: "master/projects/?kind=sent&pageKey=$pageKey",
+        method: ApiMethod.get,
+        onSuccess: (response) {
+          projects = [];
+          for (var item in response.data["results"]) {
+            projects!.add(Project.fromJson(item));
+          }
+        },
+        onCatchDioError: (e) {
+          _apiMessage = e.response?.data['detail'] ?? '';
+        },
+        onCatchError: (e) {
+          _apiMessage = 'مشکلی پیش آمده است';
+        });
+
+    return projects;
+  }
+
+  Future<List<Project>?> getEmployerProjects() async {
+    List<Project>? projects;
+
+    await ApiController.instance.request(
+      url: "master/projects/?kind=sent",
       method: ApiMethod.get,
-      onSuccess: (response){
+      onSuccess: (response) {
         projects = [];
-        for(var item in response.data["results"]){
+        for (var item in response.data["results"]) {
           projects!.add(Project.fromJson(item));
         }
       },
-      onCatchDioError: (e){
+      onCatchDioError: (e) {
         _apiMessage = e.response?.data['detail'] ?? '';
       },
-      onCatchError: (e){
+      onCatchError: (e) {
         _apiMessage = 'مشکلی پیش آمده است';
-      }
+      },
     );
 
     return projects;
@@ -62,22 +98,21 @@ class ProjectController extends GetxController{
         url: "master/projects/",
         method: ApiMethod.post,
         data: {
-          'area' : area,
+          'area': area,
           'address': address,
-          'description' : description,
+          'description': description,
           // 'city' : city,
           'city': '2',
         },
-        onSuccess: (response){
+        onSuccess: (response) {
           result = true;
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return result;
   }
@@ -88,33 +123,32 @@ class ProjectController extends GetxController{
     await ApiController.instance.request(
         url: "master/projects/$projectId/",
         method: ApiMethod.patch,
-        onSuccess: (response){
+        onSuccess: (response) {
           project = Project.fromJson(response.data);
         },
-        onCatchDioError: (e){
+        onCatchDioError: (e) {
           _apiMessage = e.response?.data['detail'] ?? '';
         },
-        onCatchError: (e){
+        onCatchError: (e) {
           _apiMessage = 'مشکلی پیش آمده است';
-        }
-    );
+        });
 
     return project;
   }
 
   Future<void> deleteProject(int projectId) async {
     await ApiController.instance.request(
-        url: "master/projects/$projectId/",
-        method: ApiMethod.delete,
-        onSuccess: (response){
-          _apiMessage = "پروژه با موفقیت حذف شد";
-        },
-        onCatchDioError: (e){
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e){
-          _apiMessage = 'مشکلی پیش آمده است';
-        }
+      url: "master/projects/$projectId/",
+      method: ApiMethod.delete,
+      onSuccess: (response) {
+        _apiMessage = "پروژه با موفقیت حذف شد";
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
     );
   }
 }

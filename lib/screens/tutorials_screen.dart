@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '/controllers/home_controller.dart';
-import '/models/tip.dart';
-import '/widgets/tips_item.dart';
+import '/models/tutorial.dart';
+import '/widgets/tutorial_item.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
 import '/res/controllers_key.dart';
@@ -25,7 +25,7 @@ class _TipsScreenState extends State<TipsScreen> {
     tag: ControllersKey.homeControllerKey,
   );
 
-  final PagingController<int, Tip> _pagingController =
+  final PagingController<int, Tutorial> _pagingController =
       PagingController(firstPageKey: 1);
 
   @override
@@ -37,18 +37,18 @@ class _TipsScreenState extends State<TipsScreen> {
   }
 
   Future<void> _fetchTips(int pageKey) async {
-    // final newItems = await homeController.getTips(pageKey);
-    // if (newItems == null) {
-    //   _pagingController.error = homeController.apiMessage;
-    // } else {
-    //   final lastPage = newItems.length < 10;
-    //   if (lastPage) {
-    //     _pagingController.appendLastPage(newItems);
-    //   } else {
-    //     final nextPageKey = pageKey + 1;
-    //     _pagingController.appendPage(newItems, nextPageKey);
-    //   }
-    // }
+    final newItems = await homeController.getTutorials(pageKey);
+    if (newItems == null) {
+      _pagingController.error = homeController.apiMessage;
+    } else {
+      final lastPage = newItems.length < 10;
+      if (lastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    }
   }
 
   @override
@@ -93,12 +93,22 @@ class _TipsScreenState extends State<TipsScreen> {
                   child: PagedListView.separated(
                     pagingController: _pagingController,
                     separatorBuilder: (context, index) {
-                      return const SizedBox(height: 16);
+                      return const SizedBox(height: 20);
                     },
                     builderDelegate: PagedChildBuilderDelegate(
-                      itemBuilder: (BuildContext context, Tip item, int index) {
-                        return TipsItem(
+                      itemBuilder:
+                          (BuildContext context, Tutorial item, int index) {
+                        return TutorialItem(
                           item: item,
+                        );
+                      },
+                      noMoreItemsIndicatorBuilder: (context) {
+                        return const Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("موردی یافت نشد"),
+                            SizedBox(height: 36),
+                          ],
                         );
                       },
                       noItemsFoundIndicatorBuilder: (context) {

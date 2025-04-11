@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:kanaf/screens/post_screen.dart';
 import 'package:get/get.dart';
 
+import '/widgets/shadow_button.dart';
+import '/screens/post_screen.dart';
 import '/widgets/profile/edit_post_section.dart';
 import '/controllers/master_controller.dart';
 import '/controllers/post_controller.dart';
@@ -21,11 +22,13 @@ import '/global_configs.dart';
 class DetailsScreen extends StatefulWidget {
   final int id;
   final bool isComeFromProfile;
+  final bool? isMaster;
 
   const DetailsScreen({
     super.key,
     required this.id,
     required this.isComeFromProfile,
+    this.isMaster,
   });
 
   @override
@@ -64,13 +67,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
       isPostsFailed = false;
     });
 
-    await masterController.getMaster(widget.id).then((value) async {
+    String urlRequest = "";
+    if (widget.isMaster ?? true) {
+      urlRequest = "master";
+    } else {
+      urlRequest = "employer";
+    }
+
+    await masterController
+        .getMasterOrEmployer(
+      id: widget.id,
+      urlRequest: urlRequest,
+    )
+        .then((value) async {
       if (!value) {
         isProfileFailed = true;
       }
     });
 
-    await postController.getPosts(widget.id).then((value) {
+    await postController
+        .getPosts(
+      profileId: widget.id,
+      urlRequest: urlRequest,
+    )
+        .then((value) {
       if (!value) {
         isPostsFailed = true;
       }
@@ -79,44 +99,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  Widget getButtons({
-    required String text,
-    required Function() onTap,
-    double? width,
-  }) {
-    var theme = Theme.of(context);
-
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.tertiary.withValues(alpha: 0.75),
-          borderRadius: globalBorderRadius * 3,
-          border: Border(
-            top: BorderSide(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.onPrimary,
-              offset: const Offset(-15, -10),
-              blurRadius: 50,
-            )
-          ],
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: theme.textTheme.labelSmall,
-          ),
-        ),
-      ),
-    );
   }
 
   TextStyle? getStyle(ThemeData theme) {
@@ -331,17 +313,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  getButtons(
-                                    text: "ارتباط با کارفرما",
+                                  ShadowButton(
                                     onTap: () {},
                                     width: 100,
+                                    text: "ارتباط با استاد کار",
                                   ),
-                                  getButtons(
-                                    text: "ثبت پروژه با کنافکار",
+                                  ShadowButton(
                                     onTap: () {
                                       Get.to(const CreateProjectScreen());
                                     },
                                     width: 100,
+                                    text: "ثبت پروژه با استادکار",
                                   ),
                                 ],
                               ),
@@ -352,86 +334,33 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       const SizedBox(width: 11),
                       Column(
                         children: [
-                          Stack(
-                            children: [
-                              Container(
-                                padding: globalAllPadding,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: widget.isComeFromProfile
-                                        ? AppColors.avatarBorderColor
-                                        : AppColors.sideColor,
-                                    width: 5,
-                                  ),
-                                ),
-                                child: ClipOval(
-                                  child: CustomCachedImage(
-                                    url: masterController.master?.user.avatar ??
-                                        '',
-                                    width: 88,
-                                    height: 88,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 5,
-                                right: 5,
-                                child: widget.isComeFromProfile
-                                    ? Image.asset(
-                                        "assets/images/edit-pen.png",
-                                        width: 30,
-                                        height: 30,
-                                      )
-                                    : Container(
-                                        padding: globalAllPadding,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: AppColors.sideColor,
-                                          ),
-                                          child: const Icon(
-                                            Icons.add,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ),
-                              ),
-                            ],
+                          ClipOval(
+                            child: CustomCachedImage(
+                              url: masterController.master?.user.avatar ?? '',
+                              width: 88,
+                              height: 88,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
-                            masterController.master?.bio ?? '',
-                            style: theme.textTheme.titleMedium,
+                          SizedBox(
+                            width: 90,
+                            child: Text(
+                              "${masterController.master?.user.firstName ?? ''} ${masterController.master?.user.lastName ?? ''}",
+                              style: theme.textTheme.titleMedium,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  // MyDivider(
-                  //   color: theme.colorScheme.onSurface,
-                  //   height: 1,
-                  //   thickness: 1,
-                  // ),
-                  // const SizedBox(height: 6,),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: List.generate(4, (index){
-                  //     return Container(
-                  //       width: 55,
-                  //       height: 55,
-                  //       decoration: BoxDecoration(
-                  //           shape: BoxShape.circle,
-                  //           color: theme.colorScheme.inverseSurface
-                  //       ),
-                  //     );
-                  //   }),
-                  // ),
+                ],
+                if (masterController.master?.bio?.isNotEmpty ?? false) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    masterController.master?.bio ?? '',
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ],
                 const SizedBox(height: 10),
                 MyDivider(
@@ -490,6 +419,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                             backgroundColor:
                                                 theme.colorScheme.primary,
                                             child: EditPostSection(
+                                              isMaster:
+                                                  widget.isMaster ?? false,
                                               post: postController.posts[index],
                                             ),
                                           );

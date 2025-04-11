@@ -1,9 +1,9 @@
-import 'package:kanaf/models/address.dart';
+import 'package:kanaf/models/city.dart';
 import 'package:kanaf/models/user.dart';
 
 import '../res/enums/project_type.dart';
 
-class Project{
+class Project {
   int id;
   ProjectType type;
   User user;
@@ -17,7 +17,7 @@ class Project{
   String? description;
   User? profileUser;
   int? profileUserId;
-  Address? address;
+  City? address;
 
   Project({
     required this.id,
@@ -36,21 +36,21 @@ class Project{
     this.address,
   });
 
-  Project.fromJson(Map<String, dynamic> json):
-    id = json['id'],
-    type = convertToProjectType(json['kind']),
-    user = User.fromJson(json['user']),
-    createdTime = DateTime.tryParse(json['created_time']) ?? DateTime.now(),
-    endedTime = DateTime.tryParse(json['ended_time'] ?? ''),
-    state = json['state']['display'],
-    price = json['price'],
-    area = json['area'],
-    userAddress = json['address'],
-    rating = json['rating'],
-    description = json['description'],
-    profileUserId = json['profile'] == null ? null
-        : json['profile']['id'],
-    profileUser = json['profile'] == null ? null
-        : User.fromJson(json['profile']['user']),
-    address = Address.fromJson(json['city']);
+  Project.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        type = convertToProjectType(json['kind']),
+        user = User.fromJson(json['user']),
+        createdTime = DateTime.tryParse(json['created_time']) ?? DateTime.now(),
+        endedTime = DateTime.tryParse(json['ended_time'] ?? ''),
+        state = json['state']['display'],
+        price = json['price'],
+        area = json['area'],
+        userAddress = json['address'],
+        rating = json['rating'],
+        description = json['description'],
+        profileUserId = json['profile'] == null ? null : json['profile']['id'],
+        profileUser = json['profile'] == null
+            ? null
+            : User.fromJson(json['profile']['user']),
+        address = City.fromJson(json['city']);
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
@@ -108,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 140),
+              const SizedBox(height: 100),
               Padding(
                 padding: globalPadding * 4,
                 child: CustomTextField(
@@ -196,8 +197,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return const Dialog(
-                        child: ChooseProfileImage(),
+                      return Dialog(
+                        backgroundColor: theme.colorScheme.primary,
+                        child: const ChooseProfileImage(),
                       );
                     },
                   ).then((value) {
@@ -227,36 +229,52 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        avatarImage == null
-                            ? 'عکس پروفایل'
-                            : avatarImage!.split('/').last,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onSecondary
-                              .withValues(alpha: 0.9),
-                        ),
-                        overflow: TextOverflow.fade,
-                      ),
-                      InkWell(
-                        child: Row(
-                          children: [
-                            Text(
-                              "انتخاب",
-                              style: theme.textTheme.bodySmall?.copyWith(
+                      avatarImage == null
+                          ? Text(
+                              'عکس پروفایل',
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 color: theme.colorScheme.onSecondary
                                     .withValues(alpha: 0.9),
                               ),
+                              overflow: TextOverflow.fade,
+                            )
+                          : SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: ClipOval(
+                                child: defaultIndex != null
+                                    ? Image.asset(
+                                        avatarImage!,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.file(
+                                        File(avatarImage!),
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
                             ),
-                            const SizedBox(width: 5),
-                            Icon(
-                              Icons.arrow_forward,
-                              size: 14,
+                      Row(
+                        children: [
+                          Text(
+                            "انتخاب",
+                            style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSecondary
                                   .withValues(alpha: 0.9),
                             ),
-                          ],
-                        ),
-                      )
+                          ),
+                          const SizedBox(width: 5),
+                          Icon(
+                            Icons.arrow_forward,
+                            size: 14,
+                            color: theme.colorScheme.onSecondary
+                                .withValues(alpha: 0.9),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

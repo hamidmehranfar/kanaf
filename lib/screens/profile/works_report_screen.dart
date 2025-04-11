@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:kanaf/widgets/custom_error_widget.dart';
-import 'package:kanaf/widgets/custom_shimmer.dart';
 
+import '/widgets/custom_error_widget.dart';
+import '/widgets/custom_shimmer.dart';
 import '/controllers/project_controller.dart';
 import '/models/project.dart';
 import '/res/controllers_key.dart';

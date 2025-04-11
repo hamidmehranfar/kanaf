@@ -14,10 +14,12 @@ import '../custom_cached_image.dart';
 
 class EditPostSection extends StatefulWidget {
   final Post post;
+  final bool isMaster;
 
   const EditPostSection({
     super.key,
     required this.post,
+    required this.isMaster,
   });
 
   @override
@@ -97,8 +99,9 @@ class _EditPostSectionState extends State<EditPostSection> {
 
     await postController
         .editPostCaption(
-      widget.post.id,
-      captionTextController.text,
+      urlRequest: widget.isMaster ? "master" : "employer",
+      postId: widget.post.id,
+      caption: captionTextController.text,
     )
         .then(
       (value) {
@@ -120,7 +123,12 @@ class _EditPostSectionState extends State<EditPostSection> {
       isLoading = true;
     });
 
-    await postController.deletePost(widget.post.id).then((value) {
+    await postController
+        .deletePost(
+      postId: widget.post.id,
+      urlRequest: widget.isMaster ? "master" : "employer",
+    )
+        .then((value) {
       if (value) {
         Get.back(result: true);
       }

@@ -9,7 +9,7 @@ import '/res/enums/api_method.dart';
 
 class ApiController {
   late Dio _dio;
-  final String _baseUrl = "http://kanafkar.behnagroup.ir/api/v1/";
+  final String _baseUrl = "https://kanafkar.behnagroup.ir/api/v1/";
 
   ApiController._singleton() {
     _dio = Dio(

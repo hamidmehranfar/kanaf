@@ -25,8 +25,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "app.kanaf.com.kanaf"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk 34
+    ndkVersion = '26.3.11579264'
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

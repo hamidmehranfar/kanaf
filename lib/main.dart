@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/home_controller.dart';
-import 'package:kanaf/controllers/master_controller.dart';
-import 'package:kanaf/controllers/post_controller.dart';
 
+import '/controllers/calculate_controller.dart';
+import '/controllers/city_controller.dart';
+import '/controllers/home_controller.dart';
+import '/controllers/master_controller.dart';
+import '/controllers/post_controller.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/project_controller.dart';
 import '/res/controllers_key.dart';
@@ -45,6 +47,16 @@ class _MyAppState extends State<MyApp> {
   HomeController homeController = Get.put(
     HomeController(),
     tag: ControllersKey.homeControllerKey,
+  );
+
+  CalculateController calculateController = Get.put(
+    CalculateController(),
+    tag: ControllersKey.calculateControllerKey,
+  );
+
+  CityController cityController = Get.put(
+    CityController(),
+    tag: ControllersKey.cityControllerKey,
   );
 
   @override

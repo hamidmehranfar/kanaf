@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 
-import '../res/enums/media_type.dart';
+import '/res/enums/media_type.dart';
 import '/controllers/api_controller.dart';
 import '/models/like.dart';
 import '/models/post.dart';
@@ -42,11 +42,14 @@ class PostController extends GetxController {
     _createPostLoading = false;
   }
 
-  Future<bool> getPosts(int profileId) async {
+  Future<bool> getPosts({
+    required int profileId,
+    required String urlRequest,
+  }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/posts/?profile_id=$profileId",
+        url: "$urlRequest/posts/?profile_id=$profileId",
         method: ApiMethod.get,
         onSuccess: (response) {
           _posts = [];
@@ -65,13 +68,15 @@ class PostController extends GetxController {
     return result;
   }
 
-  Future<Post?> getPostDetails(int postId) async {
+  Future<(Post?, bool)> getPostDetails(int postId) async {
     Post? post;
+    bool isPostLike = false;
 
     await ApiController.instance.request(
         url: "master/posts/$postId",
         method: ApiMethod.get,
         onSuccess: (response) {
+          isPostLike = response.data["current_user_like"] != null;
           post = Post.fromJson(response.data);
         },
         onCatchDioError: (e) {
@@ -81,10 +86,10 @@ class PostController extends GetxController {
           _apiMessage = 'مشکلی پیش آمده است';
         });
 
-    return post;
+    return (post, isPostLike);
   }
 
-  Future<bool> createPost() async {
+  Future<bool> createPost(String urlRequest) async {
     bool result = false;
 
     List<(File, MediaType)> selectedImages = [];
@@ -126,7 +131,7 @@ class PostController extends GetxController {
     // });
 
     await ApiController.instance.request(
-      url: 'master/posts/',
+      url: '$urlRequest/posts/',
       method: ApiMethod.post,
       data: formData,
       isMultipleFiles: true,
@@ -222,7 +227,11 @@ class PostController extends GetxController {
   //   return result;
   // }
 
-  Future<bool> editPostCaption(int postId, String? caption) async {
+  Future<bool> editPostCaption({
+    required int postId,
+    String? caption,
+    required String urlRequest,
+  }) async {
     Map payload = {
       "caption": caption,
     };
@@ -230,7 +239,7 @@ class PostController extends GetxController {
     bool result = false;
 
     await ApiController.instance.request(
-      url: "master/posts/$postId/",
+      url: "$urlRequest/posts/$postId/",
       method: ApiMethod.patch,
       data: caption != null ? payload : null,
       onSuccess: (response) {
@@ -247,11 +256,14 @@ class PostController extends GetxController {
     return result;
   }
 
-  Future<bool> deletePost(int postId) async {
+  Future<bool> deletePost({
+    required int postId,
+    required String urlRequest,
+  }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/posts/$postId/",
+        url: "$urlRequest/posts/$postId/",
         method: ApiMethod.delete,
         onSuccess: (response) {
           result = true;
@@ -269,20 +281,21 @@ class PostController extends GetxController {
   Future<List<PostComment>?> getPostComments(int postId) async {
     List<PostComment>? postComments;
     await ApiController.instance.request(
-        url: "master/comments/?profile_post_id=$postId",
-        method: ApiMethod.get,
-        onSuccess: (response) {
-          postComments = [];
-          for (var item in response.data) {
-            postComments?.add(PostComment.fromJson(item));
-          }
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/comments/?profile_post_id=$postId",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        postComments = [];
+        for (var item in response.data["results"]) {
+          postComments?.add(PostComment.fromJson(item));
+        }
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return postComments;
   }
@@ -311,22 +324,22 @@ class PostController extends GetxController {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/comments/",
-        method: ApiMethod.post,
-        data: {
-          "post": postId,
-          "comment": comment,
-        },
-        onSuccess: (response) {
-          _apiMessage = response.data["detail"];
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/comments/",
+      method: ApiMethod.post,
+      data: {
+        "post": postId,
+        "comment": comment,
+      },
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return result;
   }
@@ -374,59 +387,65 @@ class PostController extends GetxController {
   Future<List<Like>?> getPostLikes(int postId) async {
     List<Like>? postLikes;
     await ApiController.instance.request(
-        url: "master/likes/?profile_post_id=$postId",
-        method: ApiMethod.get,
-        onSuccess: (response) {
-          postLikes = [];
-          for (var item in response.data) {
-            postLikes?.add(Like.fromJson(item));
-          }
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/likes/?profile_post_id=$postId",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        postLikes = [];
+        for (var item in response.data["results"]) {
+          postLikes?.add(Like.fromJson(item));
+        }
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return postLikes;
   }
 
-  Future<bool> createPostLikes(int postId) async {
+  Future<(bool, int?)> createPostLikes(int postId) async {
     bool result = false;
-    await ApiController.instance.request(
-        url: "master/likes/",
-        data: {
-          "post": postId,
-        },
-        method: ApiMethod.post,
-        onSuccess: (response) {
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+    int? likeId;
 
-    return result;
+    await ApiController.instance.request(
+      url: "master/likes/",
+      data: {
+        "post": postId,
+      },
+      method: ApiMethod.post,
+      onSuccess: (response) {
+        likeId = response.data["id"];
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return (result, likeId);
   }
 
   Future<bool> deletePostLikes(int postId) async {
     bool result = false;
     await ApiController.instance.request(
-        url: "master/likes/$postId/",
-        method: ApiMethod.delete,
-        onSuccess: (response) {
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/likes/$postId/",
+      method: ApiMethod.delete,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return result;
   }

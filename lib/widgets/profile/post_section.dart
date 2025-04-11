@@ -3,9 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/res/enums/media_type.dart';
 import 'package:mime/mime.dart';
 
+import '/res/enums/media_type.dart';
 import '/controllers/post_controller.dart';
 import '/res/controllers_key.dart';
 import '/global_configs.dart';

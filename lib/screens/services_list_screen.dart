@@ -14,6 +14,7 @@ import '/widgets/poster_item.dart';
 
 class ServicesListScreen extends StatefulWidget {
   final MasterServices service;
+
   const ServicesListScreen({super.key, required this.service});
 
   @override
@@ -21,7 +22,8 @@ class ServicesListScreen extends StatefulWidget {
 }
 
 class _ServicesListScreenState extends State<ServicesListScreen> {
-  final PagingController<int, Master> _pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, Master> _pagingController =
+      PagingController(firstPageKey: 1);
 
   MasterController masterController = Get.find(
     tag: ControllersKey.masterControllerKey,
@@ -34,27 +36,25 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
       await _fetchData(pageKey);
     });
   }
-  
+
   Future<void> _fetchData(int pageKey) async {
     List<Master>? newItems = await masterController.getMastersList(
-        pageKey: pageKey,type: widget.service);
+        pageKey: pageKey, type: widget.service);
 
-    if(newItems!=null){
+    if (newItems != null) {
       bool isLastPage = newItems.length < 10;
-      if(isLastPage){
+      if (isLastPage) {
         _pagingController.appendLastPage(newItems);
-      }
-      else{
+      } else {
         _pagingController.appendPage(newItems, pageKey + 1);
       }
-    }
-    else{
+    } else {
       _pagingController.error = masterController.apiMessage;
     }
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
     // SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
@@ -63,7 +63,7 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
 
     return Scaffold(
       appBar: CustomAppbar(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).pop();
         },
         iconAsset: "assets/icons/arrow_back_19.png",
@@ -72,19 +72,25 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
         width: SizeController.width(context),
         height: SizeController.height(context),
         child: RefreshIndicator(
-          onRefresh: () async{
+          onRefresh: () async {
             _pagingController.refresh();
           },
           child: Column(
             children: [
-              const SizedBox(height: 14,),
-              Center(
-                child: Text("استادکارها", style: theme.textTheme.headlineLarge?.copyWith(
-                    color: theme.colorScheme.tertiary,
-                    fontWeight: FontWeight.w300
-                ),),
+              const SizedBox(
+                height: 14,
               ),
-              const SizedBox(height: 5,),
+              Center(
+                child: Text(
+                  convertServiceToString(widget.service),
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                      color: theme.colorScheme.tertiary,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
               Padding(
                 padding: globalPadding * 11,
                 child: MyDivider(
@@ -93,20 +99,23 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                   thickness: 1,
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Expanded(
                 child: PagedListView.separated(
                   shrinkWrap: true,
                   padding: allPadding * 5,
                   pagingController: _pagingController,
-                  separatorBuilder: (context, index){
-                    return const SizedBox(height: 10,);
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 10,
+                    );
                   },
-                  builderDelegate: PagedChildBuilderDelegate(
-                    itemBuilder: (BuildContext context, Master item, int index){
-                      return PosterItem(master : item);
-                    }
-                  ),
+                  builderDelegate: PagedChildBuilderDelegate(itemBuilder:
+                      (BuildContext context, Master item, int index) {
+                    return PosterItem(master: item);
+                  }),
                 ),
               ),
             ],

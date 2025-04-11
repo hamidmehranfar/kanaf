@@ -47,7 +47,7 @@ class MasterController extends GetxController {
   }
 
   Future<List<Master>?> getMastersList(
-      {required int pageKey, MasterServices? type}) async {
+      {required int pageKey, MasterServices? type, int? cityId}) async {
     List<Master>? result;
 
     String queryParam = '';
@@ -61,6 +61,16 @@ class MasterController extends GetxController {
       } else if (type == MasterServices.electronicWorker) {
         queryParam += '/?is_electric=true';
       }
+    }
+
+    if (cityId != null) {
+      if (queryParam.isEmpty) {
+        queryParam = '/?';
+      } else {
+        queryParam += '&';
+      }
+
+      queryParam += 'city=$cityId';
     }
 
     await ApiController.instance.request(
@@ -84,23 +94,27 @@ class MasterController extends GetxController {
     return result;
   }
 
-  Future<bool> getMaster(int id) async {
+  Future<bool> getMasterOrEmployer({
+    required int id,
+    required String urlRequest,
+  }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/profiles/$id",
-        method: ApiMethod.get,
-        needAuth: false,
-        onSuccess: (response) {
-          _master = Master.fromJson(response.data);
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data["detail"] ?? "";
-        },
-        onCatchError: (e) {
-          _apiMessage = "مشکلی پیش امده است";
-        });
+      url: "$urlRequest/profiles/$id",
+      method: ApiMethod.get,
+      needAuth: false,
+      onSuccess: (response) {
+        _master = Master.fromJson(response.data);
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data["detail"] ?? "";
+      },
+      onCatchError: (e) {
+        _apiMessage = "مشکلی پیش امده است";
+      },
+    );
 
     return result;
   }

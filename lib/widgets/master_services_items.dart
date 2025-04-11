@@ -32,8 +32,9 @@ class MasterServicesItems extends StatelessWidget {
       child: Container(
         width: 100,
         decoration: BoxDecoration(
-            borderRadius: globalBorderRadius * 10,
-            color: theme.colorScheme.primary),
+          borderRadius: globalBorderRadius * 10,
+          color: theme.colorScheme.primary,
+        ),
         child: Column(
           children: [
             ClipOval(
@@ -41,6 +42,7 @@ class MasterServicesItems extends StatelessWidget {
                 url: master.user.avatar ?? '',
                 width: 95,
                 height: 87,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(height: 6),

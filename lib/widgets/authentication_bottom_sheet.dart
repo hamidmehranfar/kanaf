@@ -7,11 +7,9 @@ import '../global_configs.dart';
 class AuthenticationBottomSheet extends StatelessWidget {
   final bool isLoading;
   final Function() onTap;
-  const AuthenticationBottomSheet({
-    super.key,
-    required this.isLoading,
-    required this.onTap
-  });
+
+  const AuthenticationBottomSheet(
+      {super.key, required this.isLoading, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,22 +21,23 @@ class AuthenticationBottomSheet extends StatelessWidget {
         FilledButton(
           onPressed: onTap,
           style: FilledButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: globalBorderRadius,
-            ),
-            fixedSize: Size((SizeController.width(context) ?? 100) - 32, 50)
-          ),
-          child:
-            isLoading ? SizedBox(
-              height: 20,
-              child: SpinKitThreeBounce(
-                color: theme.colorScheme.surface,
-                size: 20,
+              shape: RoundedRectangleBorder(
+                borderRadius: globalBorderRadius,
               ),
-            ) :
-          Text("وارد شوید", style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onPrimary
-          ),)
+              fixedSize: Size((SizeController.width(context) ?? 100) - 32, 50)),
+          child: isLoading
+              ? SizedBox(
+                  height: 20,
+                  child: SpinKitThreeBounce(
+                    color: theme.colorScheme.surface,
+                    size: 20,
+                  ),
+                )
+              : Text(
+                  "ثبت نام",
+                  style: theme.textTheme.bodyLarge
+                      ?.copyWith(color: theme.colorScheme.onPrimary),
+                ),
         ),
       ],
     );

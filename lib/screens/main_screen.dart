@@ -8,6 +8,7 @@ import 'profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
@@ -16,35 +17,34 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 2;
   List<Widget> screens = [
     Navigator(
-      onGenerateRoute: (RouteSettings settings){
-        return MaterialPageRoute(
-            builder:(context){
-              return const ProfileScreen();
-            }
-        );
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(builder: (context) {
+          return const ProfileScreen();
+        });
       },
     ),
-    Center(child: Text("chat page"),),
+    Center(
+      child: Text("chat page"),
+    ),
     Navigator(
-      onGenerateRoute: (RouteSettings settings){
-        return MaterialPageRoute(
-            builder:(context){
-              return const HomeScreen();
-            }
-        );
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(builder: (context) {
+          return const HomeScreen();
+        });
       },
     ),
     Scaffold(
         backgroundColor: Colors.green,
-        body: Center(child: Text("talar page"),)
-    ),
+        body: Center(
+          child: Text("talar page"),
+        )),
     Navigator(
-      onGenerateRoute: (RouteSettings settings){
-        return MaterialPageRoute(
-            builder:(context){
-              return const SearchScreen(isMainScreen: true,);
-            }
-        );
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(builder: (context) {
+          return const SearchScreen(
+            isMainScreen: true,
+          );
+        });
       },
     ),
   ];
@@ -55,24 +55,26 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      body: SizedBox(
-        width: SizeController.width(context),
-        height: SizeController.height(context),
-        child: Stack(
-          children: [
+      body: SafeArea(
+        top: false,
+        child: SizedBox(
+          width: SizeController.width(context),
+          height: SizeController.height(context),
+          child: Stack(children: [
             IndexedStack(
               index: currentIndex,
               children: screens,
             ),
             Positioned(
-              bottom: 0,
-              child: CustomBottomNavBar(onTap: (int index){
-                setState(() {
-                  currentIndex = index;
-                });
-              },)
-            ),
-          ]
+                bottom: 0,
+                child: CustomBottomNavBar(
+                  onTap: (int index) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                )),
+          ]),
         ),
       ),
     );

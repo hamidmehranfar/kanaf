@@ -146,13 +146,7 @@ class _ActivateMasterProfileSectionState
             else
               InkWell(
                 onTap: () async {
-                  if (nationalCardImage == null) {
-                    await pickFile(true);
-                  } else {
-                    setState(() {
-                      nationalCardImage = null;
-                    });
-                  }
+                  await pickFile(true);
                 },
                 child: Container(
                   height: 50,
@@ -162,19 +156,40 @@ class _ActivateMasterProfileSectionState
                     color: AppColors.textFieldColor,
                     borderRadius: globalBorderRadius * 3,
                   ),
-                  child: Center(
-                    child: Text(
-                      nationalCardImage == null
-                          ? 'عکس کارت ملی'
-                          : nationalCardImage!.path.split('/').last,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: nationalCardImage == null
-                            ? theme.colorScheme.surface.withValues(alpha: 0.5)
-                            : AppColors.sideColor,
-                      ),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
+                  child: nationalCardImage == null
+                      ? Center(
+                          child: Text(
+                            'عکس کارت ملی',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.5)),
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: ClipOval(
+                                child: Image.file(
+                                  nationalCardImage!,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              'انتخاب',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.7),
+                              ),
+                            )
+                          ],
+                        ),
                 ),
               ),
             const SizedBox(height: 7),
@@ -183,13 +198,7 @@ class _ActivateMasterProfileSectionState
             else
               InkWell(
                 onTap: () async {
-                  if (jobImage == null) {
-                    await pickFile(false);
-                  } else {
-                    setState(() {
-                      jobImage = null;
-                    });
-                  }
+                  await pickFile(false);
                 },
                 child: Container(
                   height: 50,
@@ -199,19 +208,40 @@ class _ActivateMasterProfileSectionState
                     color: AppColors.textFieldColor,
                     borderRadius: globalBorderRadius * 3,
                   ),
-                  child: Center(
-                    child: Text(
-                      jobImage == null
-                          ? 'عکس محل کار'
-                          : jobImage!.path.split('/').last,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: jobImage == null
-                            ? theme.colorScheme.surface.withValues(alpha: 0.5)
-                            : AppColors.sideColor,
-                      ),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
+                  child: jobImage == null
+                      ? Center(
+                          child: Text(
+                            'عکس محل کار',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.5)),
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: ClipOval(
+                                child: Image.file(
+                                  jobImage!,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              'انتخاب',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.7),
+                              ),
+                            )
+                          ],
+                        ),
                 ),
               ),
             const SizedBox(height: 7),

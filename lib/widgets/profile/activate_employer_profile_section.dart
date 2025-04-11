@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/models/employer_user.dart';
+import 'package:kanaf/res/enums/api_method.dart';
 
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
@@ -12,7 +14,12 @@ import '/widgets/button_item.dart';
 import '/widgets/my_divider.dart';
 
 class ActivateEmployerProfileSection extends StatefulWidget {
-  const ActivateEmployerProfileSection({super.key});
+  final EmployerUser? employerUser;
+
+  const ActivateEmployerProfileSection({
+    super.key,
+    required this.employerUser,
+  });
 
   @override
   State<ActivateEmployerProfileSection> createState() =>
@@ -51,6 +58,23 @@ class _ActivateEmployerProfileSectionState
   String? selectedPayment;
   String? selectedGrade;
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.employerUser != null) setInitValues();
+  }
+
+  void setInitValues() {
+    selectedGrade = convertDegreeToString(widget.employerUser!.degreeType);
+    selectedPayment = convertPaymentToString(widget.employerUser!.paymentType);
+
+    titleTextController.text = widget.employerUser!.title;
+    cityTextController.text = widget.employerUser!.city.name;
+    bioTextController.text = widget.employerUser!.bio;
+    birthDateTextController.text = widget.employerUser!.birthday;
+  }
+
   Future<void> activateEmployer() async {
     if (titleTextController.text.isEmpty ||
         cityTextController.text.isEmpty ||
@@ -72,6 +96,7 @@ class _ActivateEmployerProfileSectionState
       birthDate: birthDateTextController.text,
       paymentIndex: convertStringToPayment(selectedPayment ?? '').index,
       degreeIndex: convertStringToDegree(selectedGrade ?? '').index,
+      method: widget.employerUser == null ? ApiMethod.post : ApiMethod.patch,
     )
         .then((value) {
       if (value) {

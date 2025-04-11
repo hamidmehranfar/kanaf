@@ -86,34 +86,37 @@ class _LoginScreenState extends State<LoginScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      body: Padding(
-        padding: globalPadding * 12,
-        child: SizedBox(
-          width: SizeController.width(context),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 140),
-                Image.asset(
-                  "assets/images/start_screen/person.png",
-                  width: 115,
-                  height: 335,
-                ),
-                const SizedBox(height: 10),
-                const StepWidget(
-                  selectedIndex: 1,
-                  length: 3,
-                ),
-                const SizedBox(height: 16),
-                Text(
+      body: SizedBox(
+        width: SizeController.width(context),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/start_screen/construction_ruler_pencil.png",
+                width: SizeController.width(context),
+                height: 490,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 10),
+              const StepWidget(
+                selectedIndex: 1,
+                length: 3,
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: globalPadding * 12,
+                child: Text(
                   AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 18),
-                CustomTextField(
+              ),
+              const SizedBox(height: 18),
+              Padding(
+                padding: globalPadding * 12,
+                child: CustomTextField(
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     textController.text = value.toPersianDigit();
@@ -123,17 +126,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: textController,
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 30),
-                LoginButton(
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: globalPadding * 12,
+                child: LoginButton(
                   isLoading: isLoading,
                   onTap: () async {
                     await login();
                   },
                   buttonText: "وارد شوید",
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),

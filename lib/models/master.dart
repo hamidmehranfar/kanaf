@@ -1,10 +1,10 @@
-import 'package:kanaf/models/address.dart';
+import 'package:kanaf/models/city.dart';
 import 'package:kanaf/models/user.dart';
 
 class Master {
   int id;
   User user;
-  Address city;
+  City city;
   bool isMaster;
   bool isPainter;
   bool isLightLine;
@@ -36,7 +36,7 @@ class Master {
   factory Master.fromJson(Map<String, dynamic> json) => Master(
         id: json["id"],
         user: User.fromJson(json["user"]),
-        city: Address.fromJson(json["city"]),
+        city: City.fromJson(json["city"]),
         isMaster: json["is_master"],
         isPainter: json["is_painter"],
         isLightLine: json["is_light_line"],

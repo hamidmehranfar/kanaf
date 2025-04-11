@@ -1,4 +1,4 @@
-import '/models/tip.dart';
+import '/models/tutorial.dart';
 import '/controllers/api_controller.dart';
 import '/models/billboard.dart';
 import '/models/comment.dart';
@@ -59,8 +59,10 @@ class HomeController {
       url: 'home/tips/',
       method: ApiMethod.get,
       onSuccess: (response) {
-        // result = response.data['results'];
-        result = '';
+        result = "";
+        for (var value in response.data['results']) {
+          result = result! + value["text"];
+        }
       },
       onCatchDioError: (error) {
         _apiMessage = error.response?.data["detail"];
@@ -71,5 +73,28 @@ class HomeController {
     );
 
     return result;
+  }
+
+  Future<List<Tutorial>?> getTutorials(int pageKey) async {
+    List<Tutorial>? tutorials;
+    await ApiController.instance.request(
+      url: 'home/tutorials?page=$pageKey',
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        tutorials = [];
+        print(response.data);
+        for (var result in response.data["results"]) {
+          tutorials?.add(Tutorial.fromJson(result));
+        }
+      },
+      onCatchDioError: (error) {
+        _apiMessage = error.response?.data["detail"];
+      },
+      onCatchError: (error) {
+        _apiMessage = "مشکلی پیش امده است";
+      },
+    );
+
+    return tutorials;
   }
 }

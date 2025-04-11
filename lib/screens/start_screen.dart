@@ -13,17 +13,16 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: SizeController.width(context),
-        padding: globalPadding * 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 140),
             Image.asset(
-              "assets/images/start_screen/person.png",
-              width: 115,
-              height: 335,
+              "assets/images/start_screen/construction_ruler_pencil.png",
+              fit: BoxFit.cover,
+              height: 480,
+              width: SizeController.width(context),
             ),
             const SizedBox(height: 10),
             const StepWidget(
@@ -31,29 +30,41 @@ class StartScreen extends StatelessWidget {
               length: 3,
             ),
             const SizedBox(height: 16),
-            Text(
-              AppStrings.welcomeText,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: theme.colorScheme.onSurface,
+            Padding(
+              padding: globalPadding * 5,
+              child: Text(
+                AppStrings.welcomeText,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              AppStrings.appText,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.outline,
+            Padding(
+              padding: globalPadding * 5,
+              child: Text(
+                AppStrings.appText,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.outline,
+                ),
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی ",
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSecondary.withOpacity(0.5),
+            Padding(
+              padding: globalPadding * 5,
+              child: Text(
+                "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی ",
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSecondary.withOpacity(0.5),
+                ),
               ),
             ),
             const Spacer(),
-            const StartScreenButton(),
-            const SizedBox(height: 20),
+            Padding(
+              padding: globalPadding * 5,
+              child: const StartScreenButton(),
+            ),
+            const SizedBox(height: 36),
           ],
         ),
       ),

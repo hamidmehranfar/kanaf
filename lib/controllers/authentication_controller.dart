@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:kanaf/controllers/api_controller.dart';
+import 'package:kanaf/models/employer_user.dart';
 import 'package:kanaf/models/user.dart';
 import 'package:kanaf/res/enums/api_method.dart';
 import 'package:kanaf/res/enums/introduction_type.dart';
@@ -234,12 +235,14 @@ class AuthenticationController extends GetxController {
     required String birthDate,
     required int paymentIndex,
     required int degreeIndex,
+    required ApiMethod method,
   }) async {
     bool result = false;
 
     await ApiController.instance.request(
-      url: "employer/profiles/",
-      method: ApiMethod.post,
+      url:
+          "employer/profiles/${method == ApiMethod.patch ? '${_user?.employerProfileId}/' : ''}",
+      method: method,
       data: {
         'title': title,
         'city': cityId,
@@ -262,6 +265,25 @@ class AuthenticationController extends GetxController {
       },
     );
 
+    return result;
+  }
+
+  Future<EmployerUser?> getEmployerProfile() async {
+    EmployerUser? result;
+
+    await ApiController.instance.request(
+      url: "employer/profiles/${user?.employerProfileId}",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        result = EmployerUser.fromJson(response.data);
+      },
+      onCatchDioError: (error) {
+        _apiMessage = error.response?.data["detail"];
+      },
+      onCatchError: (error) {
+        _apiMessage = "مشکلی پیش امده است";
+      },
+    );
     return result;
   }
 }
