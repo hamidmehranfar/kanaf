@@ -1,9 +1,17 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:kanaf/res/enums/media_type.dart';
+import 'package:mime/mime.dart';
 
+import '/controllers/city_controller.dart';
+import '/models/city.dart';
+import '/widgets/address_dropdown_widget.dart';
 import '/controllers/project_controller.dart';
 import '/res/controllers_key.dart';
 import '/controllers/size_controller.dart';
@@ -14,18 +22,21 @@ import '/res/app_colors.dart';
 import '/widgets/my_divider.dart';
 
 class CreateProjectScreen extends StatefulWidget {
-  const CreateProjectScreen({super.key});
+  final int profileId;
+
+  const CreateProjectScreen({super.key, required this.profileId});
 
   @override
   State<CreateProjectScreen> createState() => _CreateProjectScreenState();
 }
 
 class _CreateProjectScreenState extends State<CreateProjectScreen> {
-  bool isImageLoading = false;
-  bool isProjectCreateLoading = false;
-  File? image;
+  List<bool> isItemsLoading = List.generate(4, (index) => false);
+  List<(File?, MediaType?)> items = List.generate(4, (index) => (null, null));
+  List<Uint8List?> videosFrame = List.generate(4, (index) => null);
 
-  TextEditingController cityTextController = TextEditingController();
+  bool isProjectCreateLoading = false;
+
   TextEditingController areaTextController = TextEditingController();
   TextEditingController addressTextController = TextEditingController();
   TextEditingController descriptionTextController = TextEditingController();
@@ -33,32 +44,77 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   ProjectController projectController =
       Get.find(tag: ControllersKey.projectControllerKey);
 
-  Future<void> onPickFile() async {
-    setState(() {
-      isImageLoading = true;
-    });
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
+  CityController cityController = Get.find(
+    tag: ControllersKey.cityControllerKey,
+  );
+  City? selectedCity;
 
-    if (result != null) {
-      List<File> files = result.paths.map((path) => File(path!)).toList();
-      image = files.isNotEmpty ? files[0] : null;
+  Future<void> onPickFile(int index) async {
+    if (isProjectCreateLoading) return;
+    if (items[index].$1 == null) {
+      setState(() {
+        isItemsLoading[index] = true;
+      });
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.any,
+      );
+
+      if (result != null) {
+        List<File> files = result.paths.map((path) => File(path!)).toList();
+
+        File? selectedFile = files.isNotEmpty ? files[0] : null;
+        MediaType? type;
+        String? filePath = selectedFile?.path;
+
+        if (filePath != null) {
+          String? mimeType = lookupMimeType(filePath);
+          if (mimeType?.startsWith('image/') ?? false) {
+            type = MediaType.image;
+            videosFrame[index] = null;
+          } else if (mimeType?.startsWith('video/') ?? false) {
+            type = MediaType.video;
+            videosFrame[index] = await getFirstFrame(filePath);
+          }
+        }
+
+        if (type != null) {
+          items[index] = (selectedFile, type);
+        }
+      } else {
+        // User canceled the picker
+      }
+
+      setState(() {
+        isItemsLoading[index] = false;
+      });
     } else {
-      // User canceled the picker
+      setState(() {
+        items[index] = (null, null);
+      });
     }
+  }
 
-    setState(() {
-      isImageLoading = false;
-    });
+  Future<Uint8List?> getFirstFrame(String filePath) async {
+    return await VideoThumbnail.thumbnailData(
+      video: filePath,
+      imageFormat: ImageFormat.PNG,
+      maxWidth: 128,
+      quality: 75,
+    );
   }
 
   Future<void> createProject() async {
+    for (var loading in isItemsLoading) {
+      if (loading) return;
+    }
+
     bool hasError = false;
     String message = "";
     if (areaTextController.text.isEmpty) {
       hasError = true;
       message = "لطفا متراژ را وارد کنید";
-    } else if (cityTextController.text.isEmpty) {
+    } else if (selectedCity == null) {
       hasError = true;
       message = "لطفا شهر را وارد کنید";
     } else if (addressTextController.text.isEmpty) {
@@ -68,7 +124,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       hasError = true;
       message = "لطفا توضیحات را وارد کنید";
     }
-    print(hasError);
+
     if (hasError) {
       //FIXME : show error
       return;
@@ -84,7 +140,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       description: descriptionTextController.text,
       area: areaTextController.text,
       address: addressTextController.text,
-      city: cityTextController.text,
+      cityId: selectedCity?.id ?? -1,
+      posts: items,
+      profileId: widget.profileId,
     )
         .then((value) {
       if (!value) {
@@ -123,8 +181,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
               Text(
                 "ایجاد پروژه",
                 style: theme.textTheme.headlineLarge?.copyWith(
-                    fontWeight: FontWeight.w300,
-                    color: theme.colorScheme.tertiary),
+                  fontWeight: FontWeight.w300,
+                  color: theme.colorScheme.tertiary,
+                ),
               ),
               const SizedBox(height: 14),
               Padding(
@@ -148,54 +207,133 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                     Column(
                       verticalDirection: VerticalDirection.up,
                       children: [
-                        InkWell(
-                          onTap: () async {
-                            await onPickFile();
-                          },
-                          child: Container(
-                            width: 100,
-                            padding: const EdgeInsets.only(
-                                top: 3, bottom: 5, left: 8, right: 8),
-                            decoration: BoxDecoration(
-                              color:
-                                  theme.colorScheme.tertiary.withOpacity(0.75),
-                              borderRadius: globalBorderRadius * 3,
-                              border: Border(
-                                top: BorderSide(
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.5),
-                                ),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: theme.colorScheme.onPrimary,
-                                    offset: const Offset(-5, -5),
-                                    blurRadius: 50,
-                                    spreadRadius: 5)
-                              ],
+                        Container(
+                          margin: globalPadding * 5,
+                          height: 220,
+                          child: GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: 4,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 1,
+                              mainAxisExtent: 110,
                             ),
-                            child: Center(
-                              child: Text(
-                                "اپلود عکس",
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
+                            itemBuilder: (context, index) {
+                              return Stack(
+                                children: [
+                                  isItemsLoading[index]
+                                      ? Center(
+                                          child: CircularProgressIndicator(
+                                            color: theme.colorScheme.onPrimary,
+                                          ),
+                                        )
+                                      : items[index].$1 != null
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  globalBorderRadius * 10,
+                                              child: items[index].$2 ==
+                                                      MediaType.image
+                                                  ? Image.file(
+                                                      items[index].$1!,
+                                                      width: 150,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : Image.memory(
+                                                      videosFrame[index] ??
+                                                          Uint8List(0),
+                                                      width: 150,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            )
+                                          : InkWell(
+                                              onTap: () async {
+                                                await onPickFile(index);
+                                              },
+                                              child: Container(
+                                                width: 150,
+                                                height: 100,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      globalBorderRadius * 10,
+                                                  color: theme
+                                                      .colorScheme.secondary
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                            ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 10,
+                                    child: Container(
+                                      width: 27,
+                                      height: 27,
+                                      padding: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: theme.colorScheme.onPrimary),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: theme.colorScheme.secondary,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            await onPickFile(index);
+                                          },
+                                          child: Icon(
+                                            (items[index].$1 == null)
+                                                ? Icons.add
+                                                : Icons.close,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
                           ),
                         ),
-                        if (image != null) ...[
-                          const SizedBox(height: 18),
-                          Padding(
-                            padding: globalPadding * 7,
-                            child: ClipRRect(
-                              borderRadius: globalBorderRadius * 5,
-                              child: Image.file(
-                                image!,
-                                width: 260,
-                                height: 180,
-                              ),
-                            ),
-                          ),
-                        ],
+                        // InkWell(
+                        //   onTap: () async {
+                        //     await onPickFile();
+                        //   },
+                        //   child: Container(
+                        //     width: 100,
+                        //     padding: const EdgeInsets.only(
+                        //         top: 3, bottom: 5, left: 8, right: 8),
+                        //     decoration: BoxDecoration(
+                        //       color: theme.colorScheme.tertiary
+                        //           .withValues(alpha: 0.75),
+                        //       borderRadius: globalBorderRadius * 3,
+                        //       border: Border(
+                        //         top: BorderSide(
+                        //           color: theme.colorScheme.onSurface
+                        //               .withValues(alpha: 0.5),
+                        //         ),
+                        //       ),
+                        //       boxShadow: [
+                        //         BoxShadow(
+                        //           color: theme.colorScheme.onPrimary,
+                        //           offset: const Offset(-5, -5),
+                        //           blurRadius: 50,
+                        //           spreadRadius: 5,
+                        //         )
+                        //       ],
+                        //     ),
+                        //     child: Center(
+                        //       child: Text(
+                        //         "اپلود عکس",
+                        //         style: theme.textTheme.bodyLarge,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 13),
@@ -232,26 +370,18 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 7),
-                    Container(
-                      margin: globalPadding * 10,
-                      padding:
-                          const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                      decoration: BoxDecoration(
-                        color: AppColors.textFieldColor,
-                        borderRadius: globalBorderRadius * 4,
-                      ),
-                      child: TextField(
-                        controller: cityTextController,
-                        style: theme.textTheme.labelLarge
-                            ?.copyWith(color: theme.colorScheme.surface),
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            hintText: "شهر",
-                            hintStyle: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.surface
-                                    .withOpacity(0.5))),
+                    Padding(
+                      padding: globalPadding * 10,
+                      child: AddressDropdownWidget(
+                        cityOnTap: (City city) {
+                          selectedCity = city;
+                        },
+                        itemsDistanceHeight: 7,
+                        fontSize: 16,
+                        dropDownHeight: 52,
+                        dropDownColor: AppColors.sideColor,
+                        selectedColor:
+                            AppColors.sideColor.withValues(alpha: 0.55),
                       ),
                     ),
                     const SizedBox(height: 7),
@@ -265,22 +395,22 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       ),
                       child: TextField(
                         controller: areaTextController,
-                        style: theme.textTheme.labelLarge
-                            ?.copyWith(color: theme.colorScheme.surface),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.surface,
+                        ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           hintText: "متراژ",
                           hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface.withOpacity(0.5),
+                            color: theme.colorScheme.surface
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 7,
-                    ),
+                    const SizedBox(height: 7),
                     Container(
                       margin: globalPadding * 10,
                       padding:
@@ -291,15 +421,17 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       ),
                       child: TextField(
                         controller: descriptionTextController,
-                        style: theme.textTheme.labelLarge
-                            ?.copyWith(color: theme.colorScheme.surface),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.surface,
+                        ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           hintText: "توضیحات",
                           hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface.withOpacity(0.5),
+                            color: theme.colorScheme.surface
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                       ),
@@ -318,7 +450,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              (isProjectCreateLoading || isImageLoading)
+              (isProjectCreateLoading)
                   ? SpinKitThreeBounce(
                       size: 14,
                       color: theme.colorScheme.onSecondary,

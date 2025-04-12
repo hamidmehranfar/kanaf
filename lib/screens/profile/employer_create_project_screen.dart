@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/project_controller.dart';
-import 'package:kanaf/res/controllers_key.dart';
 import 'package:mime/mime.dart';
 
-import '../../global_configs.dart';
-import '../../res/app_colors.dart';
-import '../../res/enums/media_type.dart';
-import '../../widgets/custom_appbar.dart';
-import '../../widgets/my_divider.dart';
+import '/controllers/project_controller.dart';
+import '/res/controllers_key.dart';
+import '/global_configs.dart';
+import '/res/app_colors.dart';
+import '/res/enums/media_type.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/my_divider.dart';
 
 class EmployerCreateProjectScreen extends StatefulWidget {
   const EmployerCreateProjectScreen({super.key});

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
@@ -19,8 +20,9 @@ class PostController extends GetxController {
 
   List<Post> get posts => _posts;
 
-  List<(File?, MediaType?)> _images = List.generate(6, (index) => (null, null));
-  List<bool> _picturesLoading = List.generate(6, (index) => false);
+  List<(File?, MediaType?)> _createdPosts =
+      List.generate(6, (index) => (null, null));
+  List<bool> _createdPostsLoading = List.generate(6, (index) => false);
 
   bool _createPostLoading = false;
 
@@ -28,9 +30,9 @@ class PostController extends GetxController {
 
   TextEditingController? get captionTextController => _captionTextController;
 
-  List<(File?, MediaType?)> get images => _images;
+  List<(File?, MediaType?)> get createdPosts => _createdPosts;
 
-  List<bool> get picturesLoading => _picturesLoading;
+  List<bool> get createdPostsLoading => _createdPostsLoading;
 
   bool get createPostLoading => _createPostLoading;
 
@@ -41,8 +43,8 @@ class PostController extends GetxController {
   }
 
   void initPostValues() {
-    _images = List.generate(6, (index) => (null, null));
-    _picturesLoading = List.generate(6, (index) => false);
+    _createdPosts = List.generate(6, (index) => (null, null));
+    _createdPostsLoading = List.generate(6, (index) => false);
 
     _createPostLoading = false;
   }
@@ -99,7 +101,7 @@ class PostController extends GetxController {
     bool result = false;
 
     List<(File, MediaType)> selectedImages = [];
-    for (var image in _images) {
+    for (var image in _createdPosts) {
       if (image.$1 != null && image.$2 != null) {
         selectedImages.add((image.$1!, image.$2!));
       }
@@ -120,21 +122,6 @@ class PostController extends GetxController {
         ),
       );
     }
-
-    // dio.FormData formData = dio.FormData.fromMap({
-    //   "caption": 'test',
-    //   if(selectedImages.isNotEmpty)
-    //   "items": [
-    //     for (int i = 0; i < selectedImages.length; i++)
-    //       {
-    //         "item_type": "0",
-    //         "file": await dio.MultipartFile.fromFile(
-    //           selectedImages[i].path,
-    //           filename: selectedImages[i].path.split('/').last,
-    //         ),
-    //       }
-    //   ],
-    // });
 
     await ApiController.instance.request(
       url: 'master/posts/',

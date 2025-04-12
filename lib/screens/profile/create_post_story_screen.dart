@@ -64,7 +64,7 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
 
   bool isLoading() {
     bool isImagesLoading = false;
-    for (bool loading in postController.picturesLoading) {
+    for (bool loading in postController.createdPostsLoading) {
       if (loading) {
         isImagesLoading = true;
         break;

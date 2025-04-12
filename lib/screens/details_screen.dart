@@ -369,7 +369,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   ),
                                   ShadowButton(
                                     onTap: () {
-                                      Get.to(const CreateProjectScreen());
+                                      Get.to(CreateProjectScreen(
+                                        profileId: widget.id,
+                                      ));
                                     },
                                     width: 100,
                                     text: "ثبت پروژه با استادکار",

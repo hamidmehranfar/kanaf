@@ -77,33 +77,44 @@ class ProjectController extends GetxController {
     required String area,
     required String description,
     required String address,
-    required String city,
+    required int cityId,
+    required int profileId,
+    required List<(File?, MediaType?)> posts,
     File? image,
   }) async {
     bool result = false;
 
-    // dio.FormData formData = dio.FormData();
-    //
-    // formData.fields.add(MapEntry('area', area));
-    // formData.fields.add(MapEntry('address', address));
-    // formData.fields.add(MapEntry('city', city));
-    //
-    // if(description !=null) {
-    //   formData.fields.add(
-    //     MapEntry('description', description)
-    //   );
-    // }
+    List<(File, MediaType)> selectedImages = [];
+    for (var image in posts) {
+      if (image.$1 != null && image.$2 != null) {
+        selectedImages.add((image.$1!, image.$2!));
+      }
+    }
+
+    dio.FormData formData = dio.FormData.fromMap({
+      'area': area,
+      'address': address,
+      'description': description,
+      'city': cityId,
+      "profile": profileId,
+    });
+
+    for (int i = 0; i < selectedImages.length; i++) {
+      formData.fields.add(MapEntry("items[$i]item_type",
+          selectedImages[i].$2 == MediaType.image ? '0' : '1'));
+      formData.files.add(
+        MapEntry(
+          "items[$i]file",
+          await dio.MultipartFile.fromFile(selectedImages[i].$1.path,
+              filename: selectedImages[i].$1.path.split('/').last),
+        ),
+      );
+    }
 
     await ApiController.instance.request(
         url: "master/projects/",
         method: ApiMethod.post,
-        data: {
-          'area': area,
-          'address': address,
-          'description': description,
-          // 'city' : city,
-          'city': '2',
-        },
+        data: formData,
         onSuccess: (response) {
           result = true;
         },

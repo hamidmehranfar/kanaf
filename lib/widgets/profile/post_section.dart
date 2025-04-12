@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:mime/mime.dart';
 
 import '/res/enums/media_type.dart';
@@ -24,6 +27,8 @@ class _PostSectionState extends State<PostSection> {
     tag: ControllersKey.postControllerKey,
   );
 
+  List<Uint8List?> videosFrame = List.generate(6, (index) => null);
+
   @override
   void initState() {
     super.initState();
@@ -32,9 +37,9 @@ class _PostSectionState extends State<PostSection> {
 
   Future<void> onPickFile(int index) async {
     if (postController.createPostLoading) return;
-    if (postController.images[index].$1 == null) {
+    if (postController.createdPosts[index].$1 == null) {
       setState(() {
-        postController.picturesLoading[index] = true;
+        postController.createdPostsLoading[index] = true;
       });
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
@@ -52,24 +57,37 @@ class _PostSectionState extends State<PostSection> {
           String? mimeType = lookupMimeType(filePath);
           if (mimeType?.startsWith('image/') ?? false) {
             type = MediaType.image;
+            videosFrame[index] = null;
           } else if (mimeType?.startsWith('video/') ?? false) {
             type = MediaType.video;
+            videosFrame[index] = await getFirstFrame(filePath);
           }
         }
 
-        postController.images[index] = (selectedFile, type);
+        if (type != null) {
+          postController.createdPosts[index] = (selectedFile, type);
+        }
       } else {
         // User canceled the picker
       }
 
       setState(() {
-        postController.picturesLoading[index] = false;
+        postController.createdPostsLoading[index] = false;
       });
     } else {
       setState(() {
-        postController.images[index] = (null, null);
+        postController.createdPosts[index] = (null, null);
       });
     }
+  }
+
+  Future<Uint8List?> getFirstFrame(String filePath) async {
+    return await VideoThumbnail.thumbnailData(
+      video: filePath,
+      imageFormat: ImageFormat.PNG,
+      maxWidth: 128,
+      quality: 75,
+    );
   }
 
   @override
@@ -93,31 +111,30 @@ class _PostSectionState extends State<PostSection> {
             itemBuilder: (context, index) {
               return Stack(
                 children: [
-                  postController.picturesLoading[index]
+                  postController.createdPostsLoading[index]
                       ? Center(
                           child: CircularProgressIndicator(
                             color: theme.colorScheme.onPrimary,
                           ),
                         )
-                      : postController.images[index].$1 != null
-                          ? postController.images[index].$2 == MediaType.image
-                              ? ClipRRect(
-                                  borderRadius: globalBorderRadius * 10,
-                                  child: Image.file(
-                                    postController.images[index].$1!,
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Text(
-                                  postController.images[index].$1?.path
-                                          .split('/')
-                                          .last ??
-                                      '',
-                                  style: theme.textTheme.bodyLarge,
-                                  textAlign: TextAlign.center,
-                                )
+                      : postController.createdPosts[index].$1 != null
+                          ? ClipRRect(
+                              borderRadius: globalBorderRadius * 10,
+                              child: postController.createdPosts[index].$2 ==
+                                      MediaType.image
+                                  ? Image.file(
+                                      postController.createdPosts[index].$1!,
+                                      width: 150,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.memory(
+                                      videosFrame[index] ?? Uint8List(0),
+                                      width: 150,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                            )
                           : InkWell(
                               onTap: () async {
                                 await onPickFile(index);
@@ -152,7 +169,7 @@ class _PostSectionState extends State<PostSection> {
                             await onPickFile(index);
                           },
                           child: Icon(
-                            (postController.images[index].$1 == null)
+                            (postController.createdPosts[index].$1 == null)
                                 ? Icons.add
                                 : Icons.close,
                             size: 14,
