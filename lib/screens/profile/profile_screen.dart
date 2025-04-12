@@ -337,6 +337,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                     InkWell(
                       onTap: () {
                         if (masterRequestTypes == MasterRequestTypes.active) {
+                          Get.to(
+                            DetailsScreen(
+                              id: authenticationController
+                                      .user?.masterProfileId ??
+                                  authenticationController
+                                      .user?.employerProfileId ??
+                                  0,
+                              isComeFromProfile: true,
+                            ),
+                          );
                         } else if (masterRequestTypes ==
                                 MasterRequestTypes.inProgress ||
                             masterRequestTypes == MasterRequestTypes.inActive) {

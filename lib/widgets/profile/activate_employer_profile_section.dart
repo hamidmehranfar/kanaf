@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/controllers/city_controller.dart';
+import 'package:kanaf/models/city.dart';
 import 'package:kanaf/models/employer_user.dart';
 import 'package:kanaf/res/enums/api_method.dart';
 
+import '../address_dropdown_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
 import '/res/enums/degree_type.dart';
@@ -29,9 +32,13 @@ class ActivateEmployerProfileSection extends StatefulWidget {
 class _ActivateEmployerProfileSectionState
     extends State<ActivateEmployerProfileSection> {
   TextEditingController titleTextController = TextEditingController();
-  TextEditingController cityTextController = TextEditingController();
   TextEditingController bioTextController = TextEditingController();
   TextEditingController birthDateTextController = TextEditingController();
+
+  CityController cityController = Get.find(
+    tag: ControllersKey.cityControllerKey,
+  );
+  City? selectedCity;
 
   bool isLoading = false;
 
@@ -70,14 +77,14 @@ class _ActivateEmployerProfileSectionState
     selectedPayment = convertPaymentToString(widget.employerUser!.paymentType);
 
     titleTextController.text = widget.employerUser!.title;
-    cityTextController.text = widget.employerUser!.city.name;
+    selectedCity = cityController.getCityById(widget.employerUser!.city.id);
     bioTextController.text = widget.employerUser!.bio;
     birthDateTextController.text = widget.employerUser!.birthday;
   }
 
   Future<void> activateEmployer() async {
     if (titleTextController.text.isEmpty ||
-        cityTextController.text.isEmpty ||
+        selectedCity == null ||
         birthDateTextController.text.isEmpty ||
         selectedPayment == null ||
         selectedGrade == null) {
@@ -91,7 +98,7 @@ class _ActivateEmployerProfileSectionState
     await authController
         .activateEmployerProfile(
       title: titleTextController.text,
-      cityId: 1,
+      cityId: selectedCity?.id ?? -1,
       bio: bioTextController.text,
       birthDate: birthDateTextController.text,
       paymentIndex: convertStringToPayment(selectedPayment ?? '').index,
@@ -167,26 +174,17 @@ class _ActivateEmployerProfileSectionState
                 ),
               ),
               const SizedBox(height: 7),
-              Container(
-                margin: globalPadding * 5,
-                padding: const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                decoration: BoxDecoration(
-                  color: AppColors.textFieldColor,
-                  borderRadius: globalBorderRadius * 4,
-                ),
-                child: TextField(
-                  controller: cityTextController,
-                  style: theme.textTheme.labelLarge
-                      ?.copyWith(color: theme.colorScheme.surface),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    hintText: "شهر",
-                    hintStyle: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.surface.withValues(alpha: 0.5),
-                    ),
-                  ),
+              Padding(
+                padding: globalPadding * 5,
+                child: AddressDropdownWidget(
+                  cityOnTap: (City city) {
+                    selectedCity = city;
+                  },
+                  itemsDistanceHeight: 7,
+                  fontSize: 16,
+                  dropDownHeight: 52,
+                  dropDownColor: AppColors.sideColor,
+                  selectedColor: AppColors.sideColor.withValues(alpha: 0.55),
                 ),
               ),
               const SizedBox(height: 7),

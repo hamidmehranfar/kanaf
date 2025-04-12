@@ -60,12 +60,13 @@ class _MainScreenState extends State<MainScreen> {
         child: SizedBox(
           width: SizeController.width(context),
           height: SizeController.height(context),
-          child: Stack(children: [
-            IndexedStack(
-              index: currentIndex,
-              children: screens,
-            ),
-            Positioned(
+          child: Stack(
+            children: [
+              IndexedStack(
+                index: currentIndex,
+                children: screens,
+              ),
+              Positioned(
                 bottom: 0,
                 child: CustomBottomNavBar(
                   onTap: (int index) {
@@ -73,8 +74,10 @@ class _MainScreenState extends State<MainScreen> {
                       currentIndex = index;
                     });
                   },
-                )),
-          ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

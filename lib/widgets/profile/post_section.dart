@@ -24,11 +24,10 @@ class _PostSectionState extends State<PostSection> {
     tag: ControllersKey.postControllerKey,
   );
 
-  TextEditingController captionTextController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
+    postController.initCaptionTextController();
   }
 
   Future<void> onPickFile(int index) async {
@@ -209,7 +208,7 @@ class _PostSectionState extends State<PostSection> {
               const SizedBox(width: 15),
               Expanded(
                 child: TextField(
-                  controller: captionTextController,
+                  controller: postController.captionTextController,
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: theme.colorScheme.surface,
                   ),

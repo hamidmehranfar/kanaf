@@ -7,14 +7,17 @@ class CustomCachedImage extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
 
-  const CustomCachedImage({super.key, required this.url,
-    this.width, this.height, this.fit});
+  const CustomCachedImage(
+      {super.key, required this.url, this.width, this.height, this.fit});
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl: url,width: width,height: height,fit: fit,
-      errorWidget: (context, text, object){
+      imageUrl: url,
+      width: width,
+      height: height,
+      fit: fit,
+      errorWidget: (context, text, object) {
         return Image.asset("assets/images/default_image.png");
       },
     );

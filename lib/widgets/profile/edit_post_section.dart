@@ -1,7 +1,15 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '/widgets/custom_shimmer.dart';
+import '/res/enums/media_type.dart';
 import '/controllers/post_controller.dart';
 import '/res/controllers_key.dart';
 import '/widgets/my_divider.dart';
@@ -33,7 +41,10 @@ class _EditPostSectionState extends State<EditPostSection> {
 
   TextEditingController captionTextController = TextEditingController();
 
-  bool isLoading = false;
+  bool isOperationLoading = false;
+
+  List<(String?, Uint8List?)> posts = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -41,47 +52,52 @@ class _EditPostSectionState extends State<EditPostSection> {
     initEditValues();
   }
 
-  void initEditValues() {
+  Future<void> initEditValues() async {
+    setState(() {
+      isLoading = true;
+    });
+
     postController.initPostValues();
 
     List<PostItem> items = widget.post.items;
     for (int i = 0; i < items.length; i++) {
-      postController.networkImages.add(items[i].file);
+      if (items[i].itemType == MediaType.video) {
+        posts.add((null, await getFirstFrame(items[i].file)));
+      } else {
+        posts.add((items[i].file, null));
+      }
     }
 
     captionTextController.text = widget.post.caption;
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
-  // Future<void> onPickFile(int index) async {
-  //   if (isLoading) return;
-  //   if (postController.images[index] == null &&
-  //       postController.networkImages.length <= index) {
-  //     setState(() {
-  //       postController.picturesLoading[index] = true;
-  //     });
-  //     FilePickerResult? result =
-  //         await FilePicker.platform.pickFiles(allowMultiple: true);
-  //
-  //     if (result != null) {
-  //       List<File> files = result.paths.map((path) => File(path!)).toList();
-  //       postController.images[index] = files.isNotEmpty ? files[0] : null;
-  //     } else {
-  //       // User canceled the picker
-  //     }
-  //
-  //     setState(() {
-  //       postController.picturesLoading[index] = false;
-  //     });
-  //   } else if (postController.networkImages.length > index) {
-  //     setState(() {
-  //       postController.networkImages.removeAt(index);
-  //     });
-  //   } else {
-  //     setState(() {
-  //       postController.images[index] = null;
-  //     });
-  //   }
-  // }
+  Future<Uint8List?> getFirstFrame(String videoUrl) async {
+    try {
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/temp_video.mp4';
+
+      // Download video using Dio
+      Dio dio = Dio();
+      await dio.download(videoUrl, filePath);
+
+      // Generate thumbnail from the downloaded file
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: filePath,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 128,
+        quality: 75,
+      );
+
+      return thumbnail;
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<void> editPost() async {
     if (captionTextController.text.isEmpty) {
@@ -94,12 +110,11 @@ class _EditPostSectionState extends State<EditPostSection> {
     }
 
     setState(() {
-      isLoading = true;
+      isOperationLoading = true;
     });
 
     await postController
         .editPostCaption(
-      urlRequest: widget.isMaster ? "master" : "employer",
       postId: widget.post.id,
       caption: captionTextController.text,
     )
@@ -114,19 +129,18 @@ class _EditPostSectionState extends State<EditPostSection> {
     );
 
     setState(() {
-      isLoading = false;
+      isOperationLoading = false;
     });
   }
 
   Future<void> deletePost() async {
     setState(() {
-      isLoading = true;
+      isOperationLoading = true;
     });
 
     await postController
         .deletePost(
       postId: widget.post.id,
-      urlRequest: widget.isMaster ? "master" : "employer",
     )
         .then((value) {
       if (value) {
@@ -135,7 +149,7 @@ class _EditPostSectionState extends State<EditPostSection> {
     });
 
     setState(() {
-      isLoading = false;
+      isOperationLoading = false;
     });
   }
 
@@ -161,23 +175,33 @@ class _EditPostSectionState extends State<EditPostSection> {
                 mainAxisExtent: 95,
               ),
               itemBuilder: (context, index) {
-                // return Stack(
-                //   children: [
-                return postController.picturesLoading[index]
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: theme.colorScheme.onPrimary,
+                return isLoading
+                    ? CustomShimmer(
+                        child: Container(
+                          width: 120,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: globalBorderRadius * 10,
+                            color: theme.colorScheme.secondary,
+                          ),
                         ),
                       )
-                    : postController.networkImages.length > index
+                    : posts.length > index
                         ? ClipRRect(
                             borderRadius: globalBorderRadius * 10,
-                            child: CustomCachedImage(
-                              url: postController.networkImages[index],
-                              width: 105,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
+                            child: posts[index].$1 == null
+                                ? Image.memory(
+                                    posts[index].$2!,
+                                    width: 105,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                : CustomCachedImage(
+                                    url: posts[index].$1!,
+                                    width: 105,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
                           )
                         : Container(
                             width: 120,
@@ -188,39 +212,6 @@ class _EditPostSectionState extends State<EditPostSection> {
                                   .withValues(alpha: 0.4),
                             ),
                           );
-                // Positioned(
-                //   right: 0,
-                //   bottom: 25,
-                //   child: Container(
-                //     width: 27,
-                //     height: 27,
-                //     padding: const EdgeInsets.all(2),
-                //     decoration: BoxDecoration(
-                //         shape: BoxShape.circle,
-                //         color: theme.colorScheme.onPrimary),
-                //     child: Container(
-                //       decoration: BoxDecoration(
-                //         shape: BoxShape.circle,
-                //         color: theme.colorScheme.secondary,
-                //       ),
-                //       child: InkWell(
-                //         onTap: () async {
-                //           await onPickFile(index);
-                //         },
-                //         child: Icon(
-                //           (postController.images[index] == null ||
-                //                   postController.networkImages.length <=
-                //                       index)
-                //               ? Icons.add
-                //               : Icons.close,
-                //           size: 14,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                //   ],
-                // );
               },
             ),
           ),
@@ -270,6 +261,7 @@ class _EditPostSectionState extends State<EditPostSection> {
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: theme.colorScheme.surface,
                     ),
+                    enabled: !isLoading && !isOperationLoading,
                     scrollPadding: const EdgeInsets.only(bottom: 200),
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -297,7 +289,7 @@ class _EditPostSectionState extends State<EditPostSection> {
             ),
           ),
           const SizedBox(height: 12),
-          if (isLoading)
+          if (isOperationLoading)
             SpinKitThreeBounce(
               size: 14,
               color: theme.colorScheme.onPrimary,
@@ -313,7 +305,7 @@ class _EditPostSectionState extends State<EditPostSection> {
               color: theme.colorScheme.tertiary,
             ),
           const SizedBox(height: 8),
-          if (isLoading)
+          if (isOperationLoading)
             SpinKitThreeBounce(
               size: 14,
               color: theme.colorScheme.onPrimary,

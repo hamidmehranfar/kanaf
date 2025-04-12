@@ -1,7 +1,15 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:kanaf/screens/profile/create_post_story_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '/res/enums/media_type.dart';
 import '/widgets/shadow_button.dart';
 import '/screens/post_screen.dart';
 import '/widgets/profile/edit_post_section.dart';
@@ -13,7 +21,6 @@ import '/widgets/custom_cached_image.dart';
 import '/widgets/custom_error_widget.dart';
 import '/widgets/custom_shimmer.dart';
 import '/res/controllers_key.dart';
-import '/res/app_colors.dart';
 import '/screens/create_project_screen.dart';
 import '/widgets/custom_appbar.dart';
 import '/widgets/my_divider.dart';
@@ -40,6 +47,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
   bool isProfileFailed = false;
 
   bool isPostsFailed = false;
+
+  List<Uint8List?> videosFirstFrame = [];
 
   ProjectController profileController = Get.put(
     ProjectController(),
@@ -74,6 +83,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
       urlRequest = "employer";
     }
 
+    videosFirstFrame.clear();
+
     await masterController
         .getMasterOrEmployer(
       id: widget.id,
@@ -90,15 +101,49 @@ class _DetailsScreenState extends State<DetailsScreen> {
       profileId: widget.id,
       urlRequest: urlRequest,
     )
-        .then((value) {
+        .then((value) async {
       if (!value) {
         isPostsFailed = true;
+      } else {
+        for (var post in postController.posts) {
+          if (post.items.isNotEmpty) {
+            if (post.items[0].itemType == MediaType.video) {
+              videosFirstFrame.add(await getFirstFrame(post.items[0].file));
+            } else {
+              videosFirstFrame.add(null);
+            }
+          }
+        }
       }
     });
 
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<Uint8List?> getFirstFrame(String videoUrl) async {
+    try {
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/temp_video.mp4';
+
+      // Download video using Dio
+      Dio dio = Dio();
+      await dio.download(videoUrl, filePath);
+
+      // Generate thumbnail from the downloaded file
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: filePath,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 128,
+        quality: 75,
+      );
+
+      return thumbnail;
+    } catch (e) {
+      return null;
+    }
   }
 
   TextStyle? getStyle(ThemeData theme) {
@@ -116,11 +161,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-        appBar: CustomAppbar(
-          iconAsset: "assets/icons/arrow_back_19.png",
-          onTap: () => Get.back(),
-        ),
-        body: SafeArea(
+      appBar: CustomAppbar(
+        iconAsset: "assets/icons/arrow_back_19.png",
+        onTap: () => Get.back(),
+      ),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _fetchProfileAndPosts();
+          },
           child: Padding(
             padding: globalPadding * 9,
             child: Column(
@@ -362,6 +411,54 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     style: theme.textTheme.titleMedium,
                   ),
                 ],
+                if (widget.isComeFromProfile && !isLoading) ...[
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Opacity(
+                        opacity: 0.3,
+                        child: FilledButton(
+                          onPressed: () {},
+                          style: FilledButton.styleFrom(
+                            backgroundColor: theme.colorScheme.tertiary,
+                            fixedSize: const Size(134, 36),
+                          ),
+                          child: Text(
+                            "چت",
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const CreatePostStoryScreen(
+                                  isStory: false,
+                                );
+                              },
+                            ),
+                          ).then((value) async {
+                            if (value != null && value) {
+                              await _fetchProfileAndPosts();
+                            }
+                          });
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: theme.colorScheme.tertiary,
+                          fixedSize: const Size(134, 36),
+                        ),
+                        child: Text(
+                          "پست جدید",
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 10),
                 MyDivider(
                   color: theme.colorScheme.onSurface,
@@ -405,9 +502,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         ? postController.posts[index].items[0]
                                         : null;
 
-                                Widget itemImage = CustomCachedImage(
-                                  url: item?.file ?? '',
-                                );
+                                Widget? gridItem;
+
+                                if (videosFirstFrame[index] == null) {
+                                  gridItem = CustomCachedImage(
+                                    url: item?.file ?? '',
+                                  );
+                                } else {
+                                  gridItem =
+                                      Image.memory(videosFirstFrame[index]!);
+                                }
 
                                 if (widget.isComeFromProfile) {
                                   return InkWell(
@@ -433,7 +537,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     },
                                     child: Stack(
                                       children: [
-                                        itemImage,
+                                        gridItem,
                                         Positioned(
                                           right: 0,
                                           bottom: 0,
@@ -465,7 +569,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       ),
                                     );
                                   },
-                                  child: itemImage,
+                                  child: gridItem,
                                 );
                               },
                             ),
@@ -473,6 +577,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

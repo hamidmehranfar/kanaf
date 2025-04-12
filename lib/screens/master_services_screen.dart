@@ -1,8 +1,8 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/models/city.dart';
+import 'package:kanaf/widgets/address_dropdown_widget.dart';
 
-import '../models/city.dart';
 import '/controllers/city_controller.dart';
 import '/controllers/master_controller.dart';
 import '/models/master.dart';
@@ -35,11 +35,6 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
   MasterController masterController =
       Get.find(tag: ControllersKey.masterControllerKey);
 
-  List<int> provinces = [];
-  List<int> cities = [];
-  int? selectedProvinceIndex;
-  int? selectedCityIndex;
-
   CityController cityController = Get.find(
     tag: ControllersKey.cityControllerKey,
   );
@@ -48,7 +43,6 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
   void initState() {
     super.initState();
     _fetchProfiles();
-    provinces = cityController.provinces.asMap().keys.toList();
   }
 
   Future<void> _fetchProfiles({int? cityId}) async {
@@ -113,8 +107,8 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                width: 60,
-                                height: 20,
+                                width: 80,
+                                height: 30,
                                 decoration: BoxDecoration(
                                   borderRadius: globalBorderRadius * 3,
                                   color: theme.colorScheme.onSurface,
@@ -128,13 +122,9 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                                   color: theme.colorScheme.onSurface,
                                 ),
                               ),
-                              Container(
+                              const SizedBox(
                                 width: 70,
                                 height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: globalBorderRadius * 2,
-                                  color: theme.colorScheme.onSurface,
-                                ),
                               ),
                             ],
                           ),
@@ -630,160 +620,52 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                   onTap: () => setState(() {
                     filterClick = !filterClick;
                   }),
-                  child: Container(
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: globalBorderRadius * 2,
-                      color: theme.colorScheme.tertiary,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.settings_outlined,
-                              size: 24,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                            Text(
-                              "فیلتر کنید",
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        if (filterClick) ...[
-                          Container(
-                            height: 30,
-                            padding: globalPadding,
-                            margin: globalPadding,
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.secondary,
-                              borderRadius: globalBorderRadius * 3,
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2(
-                                isExpanded: true,
-                                hint: Text(
-                                  "انتخاب استان",
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    fontSize: 7,
-                                    color: theme.colorScheme.onSecondary
-                                        .withValues(alpha: 0.9),
-                                  ),
-                                ),
-                                items: provinces.map((int index) {
-                                  return DropdownMenuItem<int>(
-                                    value: index,
-                                    child: Text(
-                                      cityController.provinces[index].name,
-                                      style:
-                                          theme.textTheme.bodySmall?.copyWith(
-                                        fontSize: 7,
-                                        color: theme.colorScheme.onSecondary
-                                            .withValues(alpha: 0.9),
-                                      ),
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                  );
-                                }).toList(),
-                                value: selectedProvinceIndex,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedProvinceIndex = value;
-                                    selectedCityIndex = null;
-                                    cities = cityController
-                                        .provinces[
-                                            provinces[selectedProvinceIndex!]]
-                                        .cities
-                                        .asMap()
-                                        .keys
-                                        .toList();
-                                  });
-                                },
-                                dropdownStyleData: DropdownStyleData(
-                                  maxHeight: 200,
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.secondary,
-                                    borderRadius: globalBorderRadius * 3,
-                                  ),
-                                ),
-                              ),
-                            ),
+                  child: isFailed
+                      ? Container()
+                      : Container(
+                          width: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: globalBorderRadius * 2,
+                            color: theme.colorScheme.tertiary,
                           ),
-                          const SizedBox(height: 5),
-                          if (selectedProvinceIndex != null)
-                            Container(
-                              height: 30,
-                              padding: globalPadding,
-                              margin: globalPadding,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.secondary,
-                                borderRadius: globalBorderRadius * 3,
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2<int>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    "انتخاب شهر",
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      fontSize: 7,
-                                      color: theme.colorScheme.onSecondary
-                                          .withValues(alpha: 0.9),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.settings_outlined,
+                                    size: 24,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                  Text(
+                                    "فیلتر کنید",
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: theme.colorScheme.onPrimary,
                                     ),
                                   ),
-                                  items: cities.map((var item) {
-                                    return DropdownMenuItem<int>(
-                                      value: item,
-                                      child: Text(
-                                        cityController
-                                            .provinces[
-                                                selectedProvinceIndex ?? 0]
-                                            .cities[item]
-                                            .name,
-                                        style:
-                                            theme.textTheme.bodySmall?.copyWith(
-                                          fontSize: 7,
-                                          color: theme.colorScheme.onSecondary
-                                              .withValues(alpha: 0.9),
-                                        ),
-                                        textDirection: TextDirection.rtl,
-                                      ),
-                                    );
-                                  }).toList(),
-                                  value: selectedCityIndex,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedCityIndex = value;
-
-                                      City city = cityController
-                                          .provinces[selectedProvinceIndex ?? 0]
-                                          .cities[selectedCityIndex ?? 0];
-
-                                      _fetchProfiles(cityId: city.id);
-                                      cityController.saveSelectedCity(city);
-                                    });
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              if (filterClick) ...[
+                                AddressDropdownWidget(
+                                  cityOnTap: (City city) async {
+                                    await _fetchProfiles(cityId: city.id);
+                                    cityController.saveSelectedCity(city);
                                   },
-                                  dropdownStyleData: DropdownStyleData(
-                                    maxHeight: 200,
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.secondary,
-                                      borderRadius: globalBorderRadius * 3,
-                                    ),
-                                  ),
+                                  dropDownHeight: 30,
+                                  fontSize: 7,
+                                  dropDownColor: theme.colorScheme.secondary,
+                                  selectedColor: theme.colorScheme.secondary,
+                                  itemsDistanceHeight: 5,
                                 ),
-                              ),
-                            ),
-                          const SizedBox(height: 20),
-                        ]
-                      ],
-                    ),
-                  ),
+                                const SizedBox(height: 20),
+                              ]
+                            ],
+                          ),
+                        ),
                 ),
               ),
             ],

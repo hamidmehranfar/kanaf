@@ -49,11 +49,7 @@ class CityController extends GetxController {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.containsKey(SharedPreferenceKeys.savedCity)) {
       int? saved = pref.getInt(SharedPreferenceKeys.savedCity);
-      bool cityExist = false;
-
-      if (!cityExist) {
-        _selectedCity = null;
-      }
+      _selectedCity = getCityById(saved ?? -1);
     }
   }
 
@@ -62,5 +58,17 @@ class CityController extends GetxController {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(SharedPreferenceKeys.savedCity, city.id);
+  }
+
+  City? getCityById(int id) {
+    for (var province in _provinces) {
+      for (var city in province.cities) {
+        if (id == city.id) {
+          return city;
+        }
+      }
+    }
+
+    return null;
   }
 }

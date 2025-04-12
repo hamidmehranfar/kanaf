@@ -14,14 +14,12 @@ import '/widgets/profile/post_section.dart';
 
 class CreatePostStoryScreen extends StatefulWidget {
   final bool isStory;
-  final bool isMaster;
   final Post? post;
 
   const CreatePostStoryScreen({
     super.key,
     required this.isStory,
     this.post,
-    required this.isMaster,
   });
 
   @override
@@ -29,7 +27,6 @@ class CreatePostStoryScreen extends StatefulWidget {
 }
 
 class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
-  String requestUrl = "master";
   PostController postController = Get.find(
     tag: ControllersKey.postControllerKey,
   );
@@ -37,7 +34,6 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
   @override
   void initState() {
     super.initState();
-    requestUrl = widget.isMaster ? "master" : "employer";
     postController.initPostValues();
   }
 
@@ -46,7 +42,9 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
       postController.createPostLoading = true;
     });
 
-    await postController.createPost(requestUrl).then(
+    await postController
+        .createPost(caption: postController.captionTextController!.text)
+        .then(
       (value) {
         if (!value) {
           //FIXME : show error
@@ -54,7 +52,7 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
         } else {
           //FIXME : show error
           print(postController.apiMessage);
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(true);
         }
       },
     );

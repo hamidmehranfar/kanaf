@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 
@@ -14,17 +15,18 @@ class PostController extends GetxController {
 
   String _apiMessage = "";
 
-  String get apiMessage => _apiMessage;
+  TextEditingController? _captionTextController;
 
   List<Post> get posts => _posts;
 
-  List<String> _networkImages = [];
   List<(File?, MediaType?)> _images = List.generate(6, (index) => (null, null));
   List<bool> _picturesLoading = List.generate(6, (index) => false);
 
   bool _createPostLoading = false;
 
-  List<String> get networkImages => _networkImages;
+  String get apiMessage => _apiMessage;
+
+  TextEditingController? get captionTextController => _captionTextController;
 
   List<(File?, MediaType?)> get images => _images;
 
@@ -34,10 +36,13 @@ class PostController extends GetxController {
 
   set createPostLoading(bool loading) => _createPostLoading = loading;
 
+  void initCaptionTextController() {
+    _captionTextController = TextEditingController();
+  }
+
   void initPostValues() {
     _images = List.generate(6, (index) => (null, null));
     _picturesLoading = List.generate(6, (index) => false);
-    _networkImages = [];
 
     _createPostLoading = false;
   }
@@ -54,6 +59,7 @@ class PostController extends GetxController {
         onSuccess: (response) {
           _posts = [];
           for (var item in response.data["results"]) {
+            print(item);
             _posts.add(Post.fromJson(item));
           }
           result = true;
@@ -89,7 +95,7 @@ class PostController extends GetxController {
     return (post, isPostLike);
   }
 
-  Future<bool> createPost(String urlRequest) async {
+  Future<bool> createPost({required String caption}) async {
     bool result = false;
 
     List<(File, MediaType)> selectedImages = [];
@@ -100,7 +106,7 @@ class PostController extends GetxController {
     }
 
     dio.FormData formData = dio.FormData.fromMap({
-      "caption": 'test',
+      "caption": caption,
     });
 
     for (int i = 0; i < selectedImages.length; i++) {
@@ -131,7 +137,7 @@ class PostController extends GetxController {
     // });
 
     await ApiController.instance.request(
-      url: '$urlRequest/posts/',
+      url: 'master/posts/',
       method: ApiMethod.post,
       data: formData,
       isMultipleFiles: true,
@@ -147,24 +153,6 @@ class PostController extends GetxController {
     );
 
     return result;
-  }
-
-  bool checkIsItemsChange(Post post) {
-    if (_images.isNotEmpty) return true;
-
-    List<String> urls = [];
-
-    for (var item in post.items) {
-      urls.add(item.file);
-    }
-
-    for (var url in _networkImages) {
-      if (!urls.contains(url)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   // Future<bool> editPosts(Post post, String? caption) async {
@@ -230,7 +218,6 @@ class PostController extends GetxController {
   Future<bool> editPostCaption({
     required int postId,
     String? caption,
-    required String urlRequest,
   }) async {
     Map payload = {
       "caption": caption,
@@ -239,7 +226,7 @@ class PostController extends GetxController {
     bool result = false;
 
     await ApiController.instance.request(
-      url: "$urlRequest/posts/$postId/",
+      url: "master/posts/$postId/",
       method: ApiMethod.patch,
       data: caption != null ? payload : null,
       onSuccess: (response) {
@@ -258,12 +245,11 @@ class PostController extends GetxController {
 
   Future<bool> deletePost({
     required int postId,
-    required String urlRequest,
   }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "$urlRequest/posts/$postId/",
+        url: "master/posts/$postId/",
         method: ApiMethod.delete,
         onSuccess: (response) {
           result = true;

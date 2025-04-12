@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '../../models/city.dart';
+import '../address_dropdown_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/city_controller.dart';
 import '/res/controllers_key.dart';
@@ -22,13 +24,14 @@ class ActivateMasterProfileSection extends StatefulWidget {
 
 class _ActivateMasterProfileSectionState
     extends State<ActivateMasterProfileSection> {
-  TextEditingController cityTextController = TextEditingController();
-
   AuthenticationController authController = Get.find(
     tag: ControllersKey.authControllerKey,
   );
 
-  CityController cityController = CityController();
+  CityController cityController = Get.find(
+    tag: ControllersKey.cityControllerKey,
+  );
+  City? selectedCity;
 
   bool isLoading = false;
 
@@ -78,7 +81,7 @@ class _ActivateMasterProfileSectionState
   Future<void> activateMaster() async {
     if (nationalCardImage == null) {
     } else if (jobImage == null) {
-    } else if (cityTextController.text.isEmpty) {
+    } else if (selectedCity == null) {
       //FIXME : show error
       return;
     }
@@ -245,27 +248,17 @@ class _ActivateMasterProfileSectionState
                 ),
               ),
             const SizedBox(height: 7),
-            Container(
-              height: 50,
-              margin: globalPadding * 5,
-              padding: const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-              decoration: BoxDecoration(
-                color: AppColors.textFieldColor,
-                borderRadius: globalBorderRadius * 4,
-              ),
-              child: TextField(
-                controller: cityTextController,
-                style: theme.textTheme.labelLarge
-                    ?.copyWith(color: theme.colorScheme.surface),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  hintText: "شهر",
-                  hintStyle: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.colorScheme.surface.withValues(alpha: 0.5),
-                  ),
-                ),
+            Padding(
+              padding: globalPadding * 5,
+              child: AddressDropdownWidget(
+                cityOnTap: (City city) {
+                  selectedCity = city;
+                },
+                itemsDistanceHeight: 7,
+                fontSize: 16,
+                dropDownHeight: 52,
+                dropDownColor: AppColors.sideColor,
+                selectedColor: AppColors.sideColor.withValues(alpha: 0.55),
               ),
             ),
             const SizedBox(height: 7),
