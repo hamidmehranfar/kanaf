@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-import '../../models/city.dart';
+import '/models/city.dart';
 import '../address_dropdown_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/city_controller.dart';
@@ -79,9 +79,20 @@ class _ActivateMasterProfileSectionState
   }
 
   Future<void> activateMaster() async {
+    String text = "";
+    bool hasError = false;
     if (nationalCardImage == null) {
+      text = "عکس کارت ملی الزامی است";
+      hasError = true;
     } else if (jobImage == null) {
+      text = "عکس محل کار الزامی است";
+      hasError = true;
     } else if (selectedCity == null) {
+      text = "شهر را انتخاب کنید";
+      hasError = true;
+    }
+
+    if (hasError) {
       //FIXME : show error
       return;
     }
@@ -94,7 +105,7 @@ class _ActivateMasterProfileSectionState
         .activateMasterProfile(
       nationalCardImage: nationalCardImage!,
       jobImage: jobImage!,
-      cityId: 1,
+      cityId: selectedCity?.id ?? -1,
       isMaster: isMaster,
       isLightLine: isLightLine,
       isPainter: isPainter,

@@ -51,12 +51,11 @@ class PostController extends GetxController {
 
   Future<bool> getPosts({
     required int profileId,
-    required String urlRequest,
   }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "$urlRequest/posts/?profile_id=$profileId",
+        url: "master/posts/?profile_id=$profileId",
         method: ApiMethod.get,
         onSuccess: (response) {
           _posts = [];

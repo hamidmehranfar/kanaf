@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kanaf/models/city.dart';
 import 'package:kanaf/models/province.dart';
-import 'package:kanaf/res/shared_storage_keys.dart';
+import 'package:kanaf/res/shared_preference_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '/controllers/api_controller.dart';
@@ -10,6 +10,7 @@ import '/res/enums/api_method.dart';
 class CityController extends GetxController {
   List<Province> _provinces = [];
 
+  Province? _selectedProvince;
   City? _selectedCity;
 
   String _apiMessage = '';
@@ -17,6 +18,8 @@ class CityController extends GetxController {
   List<Province> get provinces => _provinces;
 
   String get apiMessage => _apiMessage;
+
+  Province? get selectedProvince => _selectedProvince;
 
   City? get selectedCity => _selectedCity;
 
@@ -33,6 +36,7 @@ class CityController extends GetxController {
         for (var value in response.data["results"]) {
           _provinces.add(Province.fromJson(value));
         }
+        result = true;
       },
       onCatchDioError: (e) {
         _apiMessage = e.response?.data['detail'] ?? '';
@@ -45,11 +49,13 @@ class CityController extends GetxController {
     return result;
   }
 
-  Future<void> getSavedCity(String name) async {
+  Future<void> getSavedCity() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.containsKey(SharedPreferenceKeys.savedCity)) {
       int? saved = pref.getInt(SharedPreferenceKeys.savedCity);
-      _selectedCity = getCityById(saved ?? -1);
+      if (saved != null) {
+        getAddressByCityId(saved);
+      }
     }
   }
 
@@ -60,15 +66,14 @@ class CityController extends GetxController {
     prefs.setInt(SharedPreferenceKeys.savedCity, city.id);
   }
 
-  City? getCityById(int id) {
+  void getAddressByCityId(int id) {
     for (var province in _provinces) {
       for (var city in province.cities) {
         if (id == city.id) {
-          return city;
+          _selectedCity = city;
+          _selectedProvince = province;
         }
       }
     }
-
-    return null;
   }
 }

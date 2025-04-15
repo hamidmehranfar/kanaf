@@ -29,13 +29,11 @@ import '/global_configs.dart';
 class DetailsScreen extends StatefulWidget {
   final int id;
   final bool isComeFromProfile;
-  final bool? isMaster;
 
   const DetailsScreen({
     super.key,
     required this.id,
     required this.isComeFromProfile,
-    this.isMaster,
   });
 
   @override
@@ -76,19 +74,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
       isPostsFailed = false;
     });
 
-    String urlRequest = "";
-    if (widget.isMaster ?? true) {
-      urlRequest = "master";
-    } else {
-      urlRequest = "employer";
-    }
-
     videosFirstFrame.clear();
 
     await masterController
         .getMasterOrEmployer(
       id: widget.id,
-      urlRequest: urlRequest,
     )
         .then((value) async {
       if (!value) {
@@ -99,7 +89,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     await postController
         .getPosts(
       profileId: widget.id,
-      urlRequest: urlRequest,
     )
         .then((value) async {
       if (!value) {
@@ -525,8 +514,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                             backgroundColor:
                                                 theme.colorScheme.primary,
                                             child: EditPostSection(
-                                              isMaster:
-                                                  widget.isMaster ?? false,
                                               post: postController.posts[index],
                                             ),
                                           );

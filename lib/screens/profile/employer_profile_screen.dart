@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/screens/profile/employer_create_project_screen.dart';
-import '../../models/project.dart';
+import 'package:kanaf/res/enums/project_type.dart';
+import 'package:kanaf/screens/profile/offers_screen.dart';
+
+import '/controllers/size_controller.dart';
+import '/screens/profile/employer_create_project_screen.dart';
+import '/models/project.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/project_controller.dart';
 import '/models/employer_user.dart';
@@ -133,9 +136,11 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
             )
           else if (isFailed)
             Center(
-              child: CustomErrorWidget(onTap: () async {
-                await fetchEmployerProfileAndProjects();
-              }),
+              child: CustomErrorWidget(
+                onTap: () async {
+                  await fetchEmployerProfileAndProjects();
+                },
+              ),
             )
           else ...[
             const SizedBox(height: 20),
@@ -203,7 +208,10 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 const SizedBox(width: 10),
                 FilledButton(
                   onPressed: () {
-                    Get.to(const EmployerCreateProjectScreen());
+                    Get.to(
+                      const OffersScreen(type: ProjectType.recieved),
+                    );
+                    // Get.to(const EmployerCreateProjectScreen());
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: theme.colorScheme.tertiary,

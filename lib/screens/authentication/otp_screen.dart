@@ -44,14 +44,14 @@ class _OtpScreenState extends State<OtpScreen> {
     //   widget.username, textController.text,
     // );
 
-    String? response = await authController.verifyOtp(
+    bool response = await authController.verifyOtp(
       isSignUp: false,
       username: widget.username.toEnglishDigit(),
       otp: "1111",
     );
 
-    if (response != null) {
-      bool result = await authController.getUser(response);
+    if (response) {
+      bool result = await authController.getUser();
       if (result) {
         Get.offAll(const MainScreen());
       } else {

@@ -234,22 +234,18 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                   children: [
                     const SizedBox(height: 5),
                     SvgPicture.asset(
-                      "assets/icons/home.svg",
+                      selectedTab == 2
+                          ? "assets/icons/home_selected.svg"
+                          : "assets/icons/home.svg",
                       width: 30,
                       height: 30,
-                      colorFilter: ColorFilter.mode(
-                        selectedTab == 2
-                            ? theme.colorScheme.tertiary
-                            : theme.colorScheme.secondary,
-                        BlendMode.srcIn,
-                      ),
                     ),
                     Text(
                       "خانه",
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: selectedTab == 2
                             ? theme.colorScheme.tertiary
-                            : theme.colorScheme.secondary,
+                            : theme.colorScheme.onSurface,
                       ),
                     ),
                   ],

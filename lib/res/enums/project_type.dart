@@ -1,11 +1,9 @@
-enum ProjectType{
-  sent, receive
-}
+enum ProjectType { sent, recieved }
 
-ProjectType convertToProjectType(String type){
-  if(type == "sent") {
+ProjectType convertToProjectType(String type) {
+  if (type == "sent") {
     return ProjectType.sent;
   } else {
-    return ProjectType.receive;
+    return ProjectType.recieved;
   }
 }

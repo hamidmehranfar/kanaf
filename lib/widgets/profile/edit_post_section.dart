@@ -22,12 +22,10 @@ import '../custom_cached_image.dart';
 
 class EditPostSection extends StatefulWidget {
   final Post post;
-  final bool isMaster;
 
   const EditPostSection({
     super.key,
     required this.post,
-    required this.isMaster,
   });
 
   @override

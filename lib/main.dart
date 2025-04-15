@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/screens/splash_screen.dart';
 
 import '/controllers/calculate_controller.dart';
 import '/controllers/city_controller.dart';
@@ -87,7 +88,7 @@ class _MyAppState extends State<MyApp> {
         fontFamily: "YekanBakh",
       ),
       locale: const Locale("fa"),
-      home: const StartScreen(),
+      home: const SplashScreen(),
     );
   }
 }

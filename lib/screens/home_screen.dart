@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:kanaf/controllers/city_controller.dart';
 import 'package:kanaf/res/enums/calculate_type.dart';
 import 'package:kanaf/screens/calculate_details_screen.dart';
+import 'package:kanaf/screens/projects_list_screen.dart';
 
 import '/res/controllers_key.dart';
 import '/screens/tutorials_screen.dart';
@@ -171,7 +172,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchCities() async {
-    cityController.fetchCities();
+    cityController.fetchCities().then((value) {
+      if (value) {
+        cityController.getSavedCity();
+      }
+    });
   }
 
   @override
@@ -460,18 +465,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: homeWorkTitles[index + 4],
                     imageIcon: homeWorkIcons[index + 4],
                     onTap: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) {
-                      //       if (index == 0) {
-                      //         return const MasterServicesScreen();
-                      //       } else if (index == 3) {
-                      //         return const TipsScreen();
-                      //       }
-                      //       return const MasterServicesScreen();
-                      //     },
-                      //   ),
-                      // );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const ProjectsListScreen();
+                          },
+                        ),
+                      );
                     },
                   );
                 },
@@ -523,8 +523,10 @@ class _HomeScreenState extends State<HomeScreen> {
               items: List.generate(
                 comments?.length ?? 0,
                 (int index) {
-                  return Container(
-                    width: commentsCurrentIndex == index ? 210 : 100,
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                    width: commentsCurrentIndex == index ? 210 : 140,
                     padding: globalPadding * 5,
                     decoration: BoxDecoration(
                       borderRadius: globalBorderRadius * 5,
@@ -554,7 +556,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                   ),
                                   const SizedBox(height: 5),
-                                  Expanded(
+                                  Flexible(
+                                    flex: 3,
                                     child: SizedBox(
                                       width: 60,
                                       child: Text(

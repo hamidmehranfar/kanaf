@@ -1,66 +1,196 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-import '/models/project.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:kanaf/models/employer_project.dart';
+import 'package:kanaf/res/app_colors.dart';
+import 'package:kanaf/screens/project_details_screen.dart';
+import 'package:kanaf/widgets/custom_cached_image.dart';
+import 'package:kanaf/widgets/custom_shimmer.dart';
+import 'package:kanaf/widgets/shadow_button.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '/res/enums/media_type.dart';
 import '/global_configs.dart';
 import '../my_divider.dart';
 
-class ProjectsItem extends StatelessWidget {
-  final Project project;
+class ProjectsItem extends StatefulWidget {
+  final EmployerProject project;
+
   const ProjectsItem({super.key, required this.project});
+
+  @override
+  State<ProjectsItem> createState() => _ProjectsItemState();
+}
+
+class _ProjectsItemState extends State<ProjectsItem> {
+  String? postUrl;
+  Uint8List? postImage;
+
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initPostImage();
+  }
+
+  Future<void> initPostImage() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (widget.project.items.isNotEmpty) {
+      if (widget.project.items[0].itemType == MediaType.video) {
+        postImage = await getFirstFrame(widget.project.items[0].file);
+      } else {
+        postUrl = widget.project.items[0].file;
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<Uint8List?> getFirstFrame(String videoUrl) async {
+    try {
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/temp_video.mp4';
+
+      // Download video using Dio
+      Dio dio = Dio();
+      await dio.download(videoUrl, filePath);
+
+      // Generate thumbnail from the downloaded file
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: filePath,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 128,
+        quality: 75,
+      );
+
+      return thumbnail;
+    } catch (e) {
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Container(
-      margin: globalPadding * 6,
-      padding: globalPadding * 7,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: globalBorderRadius * 3,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const SizedBox(height: 10,),
-          Image.asset("assets/images/image.png",),
-          const SizedBox(height: 36,),
-          Text(project.profileUser?.firstName ?? "", style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onPrimary,
-          ),),
-          const SizedBox(height: 6,),
-          MyDivider(color: theme.colorScheme.onSurface,
-            height: 1, thickness: 1,
-          ),
-          const SizedBox(height: 4,),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(project.state, style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w300
-                    ),),
-                    //FIXME : ask this
-                    // Text("نظر ادمین کناف کار", style: theme.textTheme.bodyMedium?.copyWith(
-                    //     color: theme.colorScheme.onPrimary,
-                    //     fontWeight: FontWeight.w300
-                    // ),)
-                  ],
-                ),
+    return InkWell(
+      onTap: () {
+        Get.to(
+          ProjectDetailsScreen(project: widget.project),
+        );
+      },
+      child: Container(
+        margin: globalPadding * 5.5,
+        padding: globalPadding * 7,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary,
+          borderRadius: globalBorderRadius * 6,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 30),
+            isLoading
+                ? CustomShimmer(
+                    child: Container(
+                      width: 265,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.onSurface,
+                        borderRadius: globalBorderRadius * 5,
+                      ),
+                    ),
+                  )
+                : postUrl != null
+                    ? ClipRRect(
+                        borderRadius: globalBorderRadius * 5,
+                        child: CustomCachedImage(
+                          url: postUrl!,
+                          width: 265,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : postImage != null
+                        ? ClipRRect(
+                            borderRadius: globalBorderRadius * 5,
+                            child: Image.memory(
+                              postImage!,
+                              width: 265,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Container(),
+            const SizedBox(height: 7),
+            Padding(
+              padding: globalPadding * 7,
+              child: MyDivider(
+                color: AppColors.paleBlack,
+                height: 1,
+                thickness: 1,
               ),
-              const SizedBox(width: 2,),
-              CircleAvatar(
-                backgroundColor: theme.colorScheme.primary,
-                child: Image.asset("assets/images/master_user.png",
-                  width: 36, height: 36,
-                ),
+            ),
+            const SizedBox(height: 9),
+            Padding(
+              padding: globalPadding * 7,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.project.caption,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.surface,
+                        fontSize: 8,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      ShadowButton(
+                        onTap: () {},
+                        width: 70,
+                        text: "جزئیات",
+                      ),
+                      const SizedBox(height: 4),
+                      Padding(
+                        padding: globalPadding,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/price_arrow.svg",
+                              width: 8,
+                              height: 8,
+                            ),
+                            Text(
+                              widget.project.price.toString(),
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface,
+                                fontSize: 10,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 44,)
-        ],
+            ),
+            const SizedBox(height: 15),
+          ],
+        ),
       ),
     );
   }

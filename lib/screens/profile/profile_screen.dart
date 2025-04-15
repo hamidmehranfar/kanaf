@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:kanaf/res/enums/master_request_types.dart';
+import 'package:kanaf/screens/authentication/login_screen.dart';
 import 'package:kanaf/screens/profile/employer_profile_screen.dart';
 import 'package:kanaf/widgets/custom_error_widget.dart';
 import 'package:kanaf/widgets/custom_shimmer.dart';
@@ -13,11 +14,8 @@ import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
 import '/widgets/profile/activate_employer_profile_section.dart';
 import '/widgets/custom_cached_image.dart';
-import '/screens/profile/create_post_story_screen.dart';
-import '/screens/profile/works_report_screen.dart';
 import '/widgets/custom_appbar.dart';
 import '/widgets/my_divider.dart';
-import '/widgets/button_item.dart';
 import '/global_configs.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -56,8 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     bool profileResult = true;
 
     if (needFetchUser) {
-      profileResult = await authenticationController
-          .getUser(authenticationController.user?.token ?? '');
+      profileResult = await authenticationController.getUser();
     }
 
     if (profileResult) {
@@ -75,7 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         masterItemTextWidth = 180;
         masterItemFontSize = 14;
       } else {
-        print("here");
         masterItemImageWidth = 200;
         masterItemTextWidth = 150;
         masterItemFontSize = 16;
@@ -413,6 +409,20 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: theme.colorScheme.tertiary,
+                      ),
+                      onPressed: () {
+                        authenticationController.removeSavedToken().then(
+                          (_) {
+                            Get.off(const LoginScreen());
+                          },
+                        );
+                      },
+                      child: Text("خروج"),
                     ),
                     const SizedBox(height: 80),
                   ],

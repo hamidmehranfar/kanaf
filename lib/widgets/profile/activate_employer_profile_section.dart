@@ -77,7 +77,6 @@ class _ActivateEmployerProfileSectionState
     selectedPayment = convertPaymentToString(widget.employerUser!.paymentType);
 
     titleTextController.text = widget.employerUser!.title;
-    selectedCity = cityController.getCityById(widget.employerUser!.city.id);
     bioTextController.text = widget.employerUser!.bio;
     birthDateTextController.text = widget.employerUser!.birthday;
   }

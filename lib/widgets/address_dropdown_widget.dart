@@ -1,11 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/city_controller.dart';
-import 'package:kanaf/res/controllers_key.dart';
 
-import '../global_configs.dart';
-import '../models/city.dart';
+import '/controllers/city_controller.dart';
+import '/res/controllers_key.dart';
+import '/global_configs.dart';
+import '/models/city.dart';
 
 class AddressDropdownWidget extends StatefulWidget {
   final Function(City city)? cityOnTap;
@@ -14,6 +14,7 @@ class AddressDropdownWidget extends StatefulWidget {
   final double fontSize;
   final Color dropDownColor;
   final Color selectedColor;
+  final bool checkSave;
 
   const AddressDropdownWidget({
     super.key,
@@ -23,6 +24,7 @@ class AddressDropdownWidget extends StatefulWidget {
     required this.fontSize,
     required this.dropDownColor,
     required this.selectedColor,
+    this.checkSave = false,
   });
 
   @override
@@ -41,7 +43,31 @@ class _AddressDropdownWidgetState extends State<AddressDropdownWidget> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.checkSave &&
+        cityController.selectedProvince != null &&
+        cityController.selectedCity != null) {
+      initSelectedValues();
+    }
+
     provinces = cityController.provinces.asMap().keys.toList();
+  }
+
+  void initSelectedValues() {
+    for (int i = 0; i < cityController.provinces.length; i++) {
+      if (cityController.provinces[i] == cityController.selectedProvince) {
+        selectedProvinceIndex = i;
+        cities = cityController.provinces[i].cities.asMap().keys.toList();
+
+        for (int j = 0; j < cityController.provinces[i].cities.length; j++) {
+          if (cityController.provinces[i].cities[j] ==
+              cityController.selectedCity) {
+            selectedCityIndex = j;
+            return;
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -90,8 +116,7 @@ class _AddressDropdownWidgetState extends State<AddressDropdownWidget> {
                 setState(() {
                   selectedProvinceIndex = value;
                   selectedCityIndex = null;
-                  cities = cityController
-                      .provinces[provinces[selectedProvinceIndex!]].cities
+                  cities = cityController.provinces[value!].cities
                       .asMap()
                       .keys
                       .toList();

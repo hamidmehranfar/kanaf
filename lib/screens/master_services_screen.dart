@@ -43,9 +43,14 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
   void initState() {
     super.initState();
     _fetchProfiles();
+
+    // when city has saved
+    if (cityController.selectedCity != null) {
+      filterClick = true;
+    }
   }
 
-  Future<void> _fetchProfiles({int? cityId}) async {
+  Future<void> _fetchProfiles() async {
     setState(() {
       isLoading = true;
       isFailed = false;
@@ -53,7 +58,7 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
 
     List<Master>? response = await masterController.getMastersList(
       pageKey: 1,
-      cityId: cityId,
+      cityId: cityController.selectedCity?.id,
     );
     if (response == null) {
       isFailed = true;
@@ -652,14 +657,15 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                               if (filterClick) ...[
                                 AddressDropdownWidget(
                                   cityOnTap: (City city) async {
-                                    await _fetchProfiles(cityId: city.id);
                                     cityController.saveSelectedCity(city);
+                                    await _fetchProfiles();
                                   },
                                   dropDownHeight: 30,
                                   fontSize: 7,
                                   dropDownColor: theme.colorScheme.secondary,
                                   selectedColor: theme.colorScheme.secondary,
                                   itemsDistanceHeight: 5,
+                                  checkSave: true,
                                 ),
                                 const SizedBox(height: 20),
                               ]

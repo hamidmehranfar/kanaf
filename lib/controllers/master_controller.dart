@@ -96,12 +96,11 @@ class MasterController extends GetxController {
 
   Future<bool> getMasterOrEmployer({
     required int id,
-    required String urlRequest,
   }) async {
     bool result = false;
 
     await ApiController.instance.request(
-      url: "$urlRequest/profiles/$id",
+      url: "master/profiles/$id",
       method: ApiMethod.get,
       needAuth: false,
       onSuccess: (response) {

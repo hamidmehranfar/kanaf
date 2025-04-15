@@ -60,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isLoading = true;
     });
 
-    String? response = await authController.verifyOtp(
+    bool response = await authController.verifyOtp(
       isSignUp: true,
       username: widget.username.toEnglishDigit(),
       otp: "1111",
@@ -73,8 +73,8 @@ class _SignupScreenState extends State<SignupScreen> {
       avatar: avatarImage,
     );
 
-    if (response != null) {
-      bool result = await authController.getUser(response);
+    if (response) {
+      bool result = await authController.getUser();
       if (result) {
         Get.offAll(const MainScreen());
       } else {

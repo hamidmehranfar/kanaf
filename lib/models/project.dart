@@ -1,4 +1,5 @@
 import 'package:kanaf/models/city.dart';
+import 'package:kanaf/models/project_state.dart';
 import 'package:kanaf/models/user.dart';
 
 import '../res/enums/project_type.dart';
@@ -9,7 +10,7 @@ class Project {
   User user;
   DateTime createdTime;
   DateTime? endedTime;
-  String state;
+  ProjectState state;
   num? price;
   num area;
   String userAddress;
@@ -42,7 +43,7 @@ class Project {
         user = User.fromJson(json['user']),
         createdTime = DateTime.tryParse(json['created_time']) ?? DateTime.now(),
         endedTime = DateTime.tryParse(json['ended_time'] ?? ''),
-        state = json['state']['display'],
+        state = ProjectState.fromJson(json['state']),
         price = json['price'],
         area = json['area'],
         userAddress = json['address'],

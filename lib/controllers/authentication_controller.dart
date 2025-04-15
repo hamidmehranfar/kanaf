@@ -8,15 +8,23 @@ import 'package:kanaf/models/user.dart';
 import 'package:kanaf/res/enums/api_method.dart';
 import 'package:kanaf/res/enums/introduction_type.dart';
 import 'package:kanaf/res/enums/master_request_types.dart';
+import 'package:kanaf/res/shared_preference_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationController extends GetxController {
   User? _user;
+
+  String? _userToken;
 
   String? _apiMessage;
 
   User? get user => _user;
 
+  String? get userToken => _userToken;
+
   String? get apiMessage => _apiMessage;
+
+  set userToken(String? token) => _userToken = token;
 
   Future<(bool, bool)> login(String phone) async {
     bool result = false;
@@ -47,7 +55,7 @@ class AuthenticationController extends GetxController {
     return (result, isSuccess);
   }
 
-  Future<String?> verifyOtp({
+  Future<bool> verifyOtp({
     required String username,
     required String otp,
     required bool isSignUp,
@@ -105,14 +113,16 @@ class AuthenticationController extends GetxController {
       }
     }
 
-    String? token;
+    bool result = false;
     await ApiController.instance.request(
       url: "accounts/verify-otp/",
       method: ApiMethod.post,
       needAuth: false,
       data: formData,
       onSuccess: (response) async {
-        token = response.data["token"];
+        _userToken = response.data["token"];
+        saveToken();
+        result = true;
       },
       onCatchDioError: (error) {
         _apiMessage = error.response?.data["detail"];
@@ -122,22 +132,22 @@ class AuthenticationController extends GetxController {
       },
     );
 
-    return token;
+    return result;
   }
 
-  Future<bool> getUser(String token) async {
+  Future<bool> getUser() async {
     bool result = false;
 
     await ApiController.instance.request(
       url: "accounts/user/",
       options: dio.Options(
-        headers: {"Authorization": "Token $token"},
+        headers: {"Authorization": "Token $_userToken"},
       ),
       method: ApiMethod.get,
       needAuth: false,
       onSuccess: (response) {
         _user = User.fromJson(response.data);
-        _user?.token = token;
+        _user?.token = _userToken;
         result = true;
       },
       onCatchDioError: (error) {
@@ -285,5 +295,22 @@ class AuthenticationController extends GetxController {
       },
     );
     return result;
+  }
+
+  Future<void> saveToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(SharedPreferenceKeys.savedToken, _userToken ?? '');
+  }
+
+  Future<void> getSavedToken() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.containsKey(SharedPreferenceKeys.savedToken)) {
+      _userToken = pref.getString(SharedPreferenceKeys.savedToken);
+    }
+  }
+
+  Future<void> removeSavedToken() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.remove(SharedPreferenceKeys.savedToken);
   }
 }

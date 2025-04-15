@@ -6,9 +6,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
-import 'package:kanaf/res/enums/media_type.dart';
 import 'package:mime/mime.dart';
 
+import '/res/enums/media_type.dart';
 import '/controllers/city_controller.dart';
 import '/models/city.dart';
 import '/widgets/address_dropdown_widget.dart';
@@ -134,9 +134,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       isProjectCreateLoading = true;
     });
 
-    //FIXME : here must define fields
     await projectController
-        .createProject(
+        .createProjectWithMaster(
       description: descriptionTextController.text,
       area: areaTextController.text,
       address: addressTextController.text,
@@ -364,7 +363,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           enabledBorder: InputBorder.none,
                           hintText: "آدرس",
                           hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface.withOpacity(0.5),
+                            color: theme.colorScheme.surface
+                                .withValues(alpha: 0.5),
                           ),
                         ),
                       ),
