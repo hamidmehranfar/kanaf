@@ -1,13 +1,15 @@
+import '/res/enums/offer_status.dart';
+
 class ProjectState {
-  String value;
+  OfferStatus state;
   String display;
 
   ProjectState({
-    required this.value,
+    required this.state,
     required this.display,
   });
 
   ProjectState.fromJson(Map<String, dynamic> json)
-      : value = json["value"],
+      : state = convertIndexToOfferStatus(json["value"]),
         display = json["display"];
 }

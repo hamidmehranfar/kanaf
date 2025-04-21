@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '/models/offer_project.dart';
 import '/controllers/project_controller.dart';
 import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '/res/controllers_key.dart';
 import '/widgets/my_divider.dart';
-import 'button_item.dart';
+import '../button_item.dart';
 
 class OfferSection extends StatefulWidget {
   final int projectId;
+  final OfferProject? offeredProject;
 
   const OfferSection({
     super.key,
     required this.projectId,
+    this.offeredProject,
   });
 
   @override
@@ -60,6 +63,66 @@ class _OfferSectionState extends State<OfferSection> {
         }
       },
     );
+
+    setState(() {
+      offerLoading = false;
+    });
+  }
+
+  Future<void> changeOffer() async {
+    Map data = {};
+
+    if (descriptionTextController.text != widget.offeredProject?.message) {
+      data["message"] = descriptionTextController.text;
+    }
+
+    if (priceTextController.text != widget.offeredProject?.price.toString()) {
+      data["price"] = priceTextController.text;
+    }
+
+    if (durationTextController.text !=
+        widget.offeredProject?.duration.toString()) {
+      data["duration"] = durationTextController.text;
+    }
+
+    if (data.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      offerLoading = true;
+    });
+
+    await projectController
+        .changeOfferValues(
+      id: widget.projectId,
+      data: data,
+    )
+        .then(
+      (value) {
+        if (!value) {
+          // FIXME : show error
+        } else {
+          // FIXME : show success
+          Get.back(result: true);
+        }
+      },
+    );
+
+    setState(() {
+      offerLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.offeredProject != null) {
+      durationTextController.text = widget.offeredProject!.duration.toString();
+      priceTextController.text = widget.offeredProject!.price.toString();
+      descriptionTextController.text = widget.offeredProject!.message;
+    }
   }
 
   @override
@@ -172,8 +235,15 @@ class _OfferSectionState extends State<OfferSection> {
               : ButtonItem(
                   width: 200,
                   height: 50,
-                  onTap: () async => await offerProject(),
-                  title: "ارسال",
+                  onTap: () async {
+                    if (widget.offeredProject == null) {
+                      await offerProject();
+                    } else {
+                      await changeOffer();
+                    }
+                  },
+                  title:
+                      widget.offeredProject != null ? "تغییر پیشنهاد" : "ارسال",
                   isButtonDisable: offerLoading,
                   color: theme.colorScheme.tertiary,
                   textStyle: theme.textTheme.bodyLarge,

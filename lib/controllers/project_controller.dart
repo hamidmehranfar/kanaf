@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-
 import 'package:dio/dio.dart' as dio;
-import 'package:kanaf/models/employer_project.dart';
-import 'package:kanaf/models/offer_project.dart';
-import 'package:kanaf/res/enums/project_type.dart';
-import '../res/enums/media_type.dart';
+import 'package:kanaf/res/enums/offer_status.dart';
+
+import '/models/employer_project.dart';
+import '/models/offer_project.dart';
+import '/res/enums/project_type.dart';
+import '/res/enums/media_type.dart';
 import '/controllers/api_controller.dart';
 import '/models/project.dart';
 import '/res/enums/api_method.dart';
@@ -48,7 +49,6 @@ class ProjectController extends GetxController {
       method: ApiMethod.get,
       onSuccess: (response) {
         projects = [];
-        print(response);
         for (var item in response.data["results"]) {
           projects!.add(EmployerProject.fromJson(item));
         }
@@ -254,5 +254,62 @@ class ProjectController extends GetxController {
     );
 
     return projects;
+  }
+
+  Future<bool> changeOfferState({
+    required int id,
+    required OfferStatus status,
+    int? rating,
+  }) async {
+    bool result = false;
+
+    Map data = {
+      "state": convertOfferStatusToIndex(status),
+    };
+
+    if (rating != null) {
+      data["rating"] = rating;
+    }
+
+    await ApiController.instance.request(
+      url: "employer/proposals/$id/",
+      method: ApiMethod.patch,
+      data: data,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
+  }
+
+  Future<bool> changeOfferValues({
+    required int id,
+    required Map data,
+  }) async {
+    bool result = false;
+
+    await ApiController.instance.request(
+      url: "employer/proposals/$id/",
+      method: ApiMethod.patch,
+      data: data,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
   }
 }

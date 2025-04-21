@@ -20,26 +20,27 @@ class StepWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(
-          length,
-          (int index) {
-            return Row(
-              children: [
-                Container(
-                  width: width,
-                  height: height,
-                  decoration: BoxDecoration(
-                    borderRadius: globalBorderRadius * 2,
-                    color: index == (length - selectedIndex - 1)
-                        ? theme.colorScheme.secondary
-                        : theme.colorScheme.primary,
-                  ),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        length,
+        (int index) {
+          return Row(
+            children: [
+              Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  borderRadius: globalBorderRadius * 2,
+                  color: index == (length - selectedIndex - 1)
+                      ? theme.colorScheme.secondary
+                      : theme.colorScheme.tertiary,
                 ),
-                if (index != length - 1) const SizedBox(width: 4),
-              ],
-            );
-          },
-        ));
+              ),
+              if (index != length - 1) const SizedBox(width: 4),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

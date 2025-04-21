@@ -6,14 +6,12 @@ import 'package:kanaf/models/employer_project.dart';
 import '/widgets/custom_error_widget.dart';
 import '/widgets/custom_shimmer.dart';
 import '/controllers/project_controller.dart';
-import '/models/project.dart';
 import '/res/controllers_key.dart';
 import '/widgets/profile/projects_item.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
 import '/widgets/custom_appbar.dart';
 import '/widgets/my_divider.dart';
-import '/widgets/button_item.dart';
 
 class ProjectsListScreen extends StatefulWidget {
   const ProjectsListScreen({super.key});

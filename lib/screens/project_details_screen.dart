@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/widgets/offer_section.dart';
+import 'package:kanaf/widgets/offer/offer_section.dart';
+import 'package:kanaf/widgets/post/display_media_section.dart';
 
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
@@ -66,14 +67,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 28),
-                    ClipRRect(
-                      borderRadius: globalBorderRadius * 5,
-                      child: CustomCachedImage(
-                        url: widget.project.items[0].file,
-                        width: 265,
-                        height: 180,
-                        fit: BoxFit.cover,
-                      ),
+                    DisplayMediaSection(
+                      items: widget.project.items,
+                      radius: 25,
                     ),
                     const SizedBox(height: 25),
                     Container(
@@ -241,6 +237,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 color: theme.colorScheme.tertiary,
                 textStyle: theme.textTheme.bodyLarge,
               ),
+              const SizedBox(height: 100),
             ],
           ),
         ),

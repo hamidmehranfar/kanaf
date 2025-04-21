@@ -38,7 +38,7 @@ class OfferProject {
             ? null
             : DateTime.tryParse(json["ended_time"]),
         state = ProjectState.fromJson(json["state"]),
-        rating = json["rating"],
+        rating = json["rating"] != null ? num.tryParse(json["rating"]) : null,
         price = json["price"],
         duration = json["duration"],
         message = json["message"],

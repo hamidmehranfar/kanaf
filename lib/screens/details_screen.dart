@@ -6,7 +6,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:kanaf/res/enums/project_type.dart';
 import 'package:kanaf/screens/profile/create_post_story_screen.dart';
+import 'package:kanaf/screens/profile/offers_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '/res/enums/media_type.dart';
@@ -424,19 +426,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       const SizedBox(width: 10),
                       FilledButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const CreatePostStoryScreen(
-                                  isStory: false,
-                                );
-                              },
-                            ),
-                          ).then((value) async {
-                            if (value != null && value) {
-                              await _fetchProfileAndPosts();
-                            }
-                          });
+                          Get.to(OffersScreen(type: ProjectType.sent));
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return const CreatePostStoryScreen(
+                          //         isStory: false,
+                          //       );
+                          //     },
+                          //   ),
+                          // ).then((value) async {
+                          //   if (value != null && value) {
+                          //     await _fetchProfileAndPosts();
+                          //   }
+                          // });
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: theme.colorScheme.tertiary,
@@ -554,7 +557,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   onTap: () {
                                     Get.to(
                                       PostScreen(
-                                        postId: postController.posts[index].id,
+                                        postIndex: index,
                                       ),
                                     );
                                   },

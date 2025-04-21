@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/controllers/discussion_controller.dart';
 import 'package:kanaf/screens/splash_screen.dart';
 
 import '/controllers/calculate_controller.dart';
@@ -57,6 +58,11 @@ class _MyAppState extends State<MyApp> {
 
   CityController cityController = Get.put(
     CityController(),
+    tag: ControllersKey.cityControllerKey,
+  );
+
+  DiscussionController discussionController = Get.put(
+    DiscussionController(),
     tag: ControllersKey.cityControllerKey,
   );
 

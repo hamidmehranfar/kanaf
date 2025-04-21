@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kanaf/res/enums/master_request_types.dart';
 import 'package:kanaf/screens/authentication/login_screen.dart';
 import 'package:kanaf/screens/profile/employer_profile_screen.dart';
+import 'package:kanaf/screens/test.dart';
 import 'package:kanaf/widgets/custom_error_widget.dart';
 import 'package:kanaf/widgets/custom_shimmer.dart';
 import 'package:kanaf/widgets/profile/activate_master_profile_section.dart';
@@ -416,6 +417,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         backgroundColor: theme.colorScheme.tertiary,
                       ),
                       onPressed: () {
+                        // Get.to(InstagramFeed());
                         authenticationController.removeSavedToken().then(
                           (_) {
                             Get.off(const LoginScreen());

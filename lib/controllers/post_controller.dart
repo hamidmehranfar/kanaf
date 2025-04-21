@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
@@ -26,6 +25,8 @@ class PostController extends GetxController {
 
   bool _createPostLoading = false;
 
+  RxBool _isPostLoading = false.obs;
+
   String get apiMessage => _apiMessage;
 
   TextEditingController? get captionTextController => _captionTextController;
@@ -35,6 +36,10 @@ class PostController extends GetxController {
   List<bool> get createdPostsLoading => _createdPostsLoading;
 
   bool get createPostLoading => _createPostLoading;
+
+  RxBool get isPostLoading => _isPostLoading;
+
+  void setIsPostLoading(bool isLoading) => _isPostLoading.value = isLoading;
 
   set createPostLoading(bool loading) => _createPostLoading = loading;
 
@@ -58,9 +63,9 @@ class PostController extends GetxController {
         url: "master/posts/?profile_id=$profileId",
         method: ApiMethod.get,
         onSuccess: (response) {
+          print(response.data);
           _posts = [];
           for (var item in response.data["results"]) {
-            print(item);
             _posts.add(Post.fromJson(item));
           }
           result = true;
@@ -83,6 +88,7 @@ class PostController extends GetxController {
         url: "master/posts/$postId",
         method: ApiMethod.get,
         onSuccess: (response) {
+          print(response.data);
           isPostLike = response.data["current_user_like"] != null;
           post = Post.fromJson(response.data);
         },

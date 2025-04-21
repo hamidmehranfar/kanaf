@@ -1,7 +1,7 @@
 import '/models/tutorial.dart';
 import '/controllers/api_controller.dart';
 import '/models/billboard.dart';
-import '/models/comment.dart';
+import '/models/home_comment.dart';
 import '/res/enums/api_method.dart';
 
 class HomeController {
@@ -31,15 +31,15 @@ class HomeController {
     return result;
   }
 
-  Future<List<Comment>?> fetchComments() async {
-    List<Comment>? comments;
+  Future<List<HomeComment>?> fetchComments() async {
+    List<HomeComment>? comments;
     await ApiController.instance.request(
       url: "home/reviews/",
       method: ApiMethod.get,
       onSuccess: (response) {
         comments = [];
         for (var item in response.data["results"]) {
-          comments?.add(Comment.fromJson(item));
+          comments?.add(HomeComment.fromJson(item));
         }
       },
       onCatchDioError: (error) {

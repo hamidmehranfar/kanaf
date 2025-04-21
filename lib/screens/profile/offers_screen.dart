@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/res/app_colors.dart';
 
-import '/widgets/profile/offer_item.dart';
+import '/controllers/size_controller.dart';
+import '/res/app_colors.dart';
+import '../../widgets/offer/offer_item.dart';
 import '/global_configs.dart';
 import '/models/offer_project.dart';
 import '/res/enums/project_type.dart';
@@ -90,7 +90,7 @@ class _OffersScreenState extends State<OffersScreen> {
                     thickness: 1,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Expanded(
                   child: PagedListView.separated(
                     pagingController: _pagingController,
@@ -111,7 +111,11 @@ class _OffersScreenState extends State<OffersScreen> {
                       itemBuilder:
                           (BuildContext context, OfferProject item, int index) {
                         return OfferItem(
-                          project: item,
+                          offer: item,
+                          type: widget.type,
+                          onTap: () async {
+                            _pagingController.refresh();
+                          },
                         );
                       },
                       firstPageErrorIndicatorBuilder: (context) {

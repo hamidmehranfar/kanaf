@@ -18,7 +18,7 @@ import '/res/app_colors.dart';
 import '/widgets/custom_appbar.dart';
 import '/widgets/my_divider.dart';
 import '/controllers/size_controller.dart';
-import '/models/comment.dart';
+import '/models/home_comment.dart';
 import '/screens/master_services_screen.dart';
 import '/widgets/home/home_works_item.dart';
 import '/controllers/home_controller.dart';
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<BillBoard>? billboards;
   bool billboardsError = false;
 
-  List<Comment>? comments;
+  List<HomeComment>? comments;
   bool commentsError = false;
 
   String? tip;
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       commentsError = false;
     });
 
-    List<Comment>? response = await homeController.fetchComments();
+    List<HomeComment>? response = await homeController.fetchComments();
     if (response == null) {
       commentsError = true;
     } else {

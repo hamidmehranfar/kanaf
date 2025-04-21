@@ -209,7 +209,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 FilledButton(
                   onPressed: () {
                     Get.to(
-                      const OffersScreen(type: ProjectType.recieved),
+                      const OffersScreen(type: ProjectType.received),
                     );
                     // Get.to(const EmployerCreateProjectScreen());
                   },
