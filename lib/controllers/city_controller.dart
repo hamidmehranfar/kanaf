@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:kanaf/models/city.dart';
-import 'package:kanaf/models/province.dart';
-import 'package:kanaf/res/shared_preference_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '/models/city.dart';
+import '/models/province.dart';
+import '/res/shared_preference_keys.dart';
 import '/controllers/api_controller.dart';
 import '/res/enums/api_method.dart';
 
@@ -22,6 +22,8 @@ class CityController extends GetxController {
   Province? get selectedProvince => _selectedProvince;
 
   City? get selectedCity => _selectedCity;
+
+  set selectedProvince(Province? province) => _selectedProvince = province;
 
   set selectedCity(City? city) => _selectedCity = city;
 
@@ -49,6 +51,16 @@ class CityController extends GetxController {
     return result;
   }
 
+  Future<void> getSavedProvince() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.containsKey(SharedPreferenceKeys.savedProvince)) {
+      int? saved = pref.getInt(SharedPreferenceKeys.savedProvince);
+      if (saved != null) {
+        getProvinceById(saved);
+      }
+    }
+  }
+
   Future<void> getSavedCity() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.containsKey(SharedPreferenceKeys.savedCity)) {
@@ -59,11 +71,41 @@ class CityController extends GetxController {
     }
   }
 
+  Future<void> saveSelectedProvince(Province province) async {
+    _selectedProvince = province;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(SharedPreferenceKeys.savedProvince, province.id);
+  }
+
   Future<void> saveSelectedCity(City city) async {
     _selectedCity = city;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(SharedPreferenceKeys.savedCity, city.id);
+  }
+
+  Future<void> removeSelectedProvince() async {
+    _selectedProvince = null;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(SharedPreferenceKeys.savedProvince);
+  }
+
+  Future<void> removeSelectedCity() async {
+    _selectedCity = null;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(SharedPreferenceKeys.savedCity);
+  }
+
+  void getProvinceById(int id) {
+    for (var province in _provinces) {
+      if (province.id == id) {
+        _selectedProvince = province;
+        break;
+      }
+    }
   }
 
   void getAddressByCityId(int id) {

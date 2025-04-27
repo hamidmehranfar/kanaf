@@ -9,7 +9,6 @@ import '/models/offer_project.dart';
 import '/res/enums/project_type.dart';
 import '/res/enums/media_type.dart';
 import '/controllers/api_controller.dart';
-import '/models/project.dart';
 import '/res/enums/api_method.dart';
 
 class ProjectController extends GetxController {
@@ -64,16 +63,16 @@ class ProjectController extends GetxController {
     return projects;
   }
 
-  Future<List<Project>?> getEmployerProjects() async {
-    List<Project>? projects;
+  Future<List<EmployerProject>?> getEmployerProjects() async {
+    List<EmployerProject>? projects;
 
     await ApiController.instance.request(
-      url: "master/projects/?kind=sent",
+      url: "employer/posts/",
       method: ApiMethod.get,
       onSuccess: (response) {
         projects = [];
         for (var item in response.data["results"]) {
-          projects!.add(Project.fromJson(item));
+          projects!.add(EmployerProject.fromJson(item));
         }
       },
       onCatchDioError: (e) {
@@ -185,6 +184,52 @@ class ProjectController extends GetxController {
       url: "employer/posts/",
       method: ApiMethod.post,
       data: formData,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
+  }
+
+  Future<bool> editEmployerProject({
+    required Map data,
+    required int projectId,
+  }) async {
+    bool result = false;
+
+    await ApiController.instance.request(
+      url: "employer/posts/$projectId/",
+      method: ApiMethod.patch,
+      data: data,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
+  }
+
+  Future<bool> deleteEmployerProject({
+    required int projectId,
+  }) async {
+    bool result = false;
+
+    await ApiController.instance.request(
+      url: "employer/posts/$projectId/",
+      method: ApiMethod.delete,
       onSuccess: (response) {
         result = true;
       },

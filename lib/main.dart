@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/discussion_controller.dart';
-import 'package:kanaf/screens/splash_screen.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '/controllers/discussion_controller.dart';
+import '/screens/splash_screen.dart';
 import '/controllers/calculate_controller.dart';
 import '/controllers/city_controller.dart';
 import '/controllers/home_controller.dart';
@@ -11,7 +13,6 @@ import '/controllers/post_controller.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/project_controller.dart';
 import '/res/controllers_key.dart';
-import '/screens/start_screen.dart';
 import '/res/color_scheme.dart';
 import '/res/input_decoration_theme.dart';
 import 'res/text_theme.dart';
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
 
   DiscussionController discussionController = Get.put(
     DiscussionController(),
-    tag: ControllersKey.cityControllerKey,
+    tag: ControllersKey.discussionControllerKey,
   );
 
   @override
@@ -93,7 +94,19 @@ class _MyAppState extends State<MyApp> {
         splashColor: Colors.transparent,
         fontFamily: "YekanBakh",
       ),
-      locale: const Locale("fa"),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        // Add Localization
+        PersianMaterialLocalizations.delegate,
+        PersianCupertinoLocalizations.delegate,
+      ],
+      locale: const Locale("fa", "IR"),
+      supportedLocales: const [
+        Locale("fa", "IR"),
+        Locale("en", "US"),
+      ],
       home: const SplashScreen(),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/models/province.dart';
 import '/controllers/city_controller.dart';
 import '/res/controllers_key.dart';
 import '/global_configs.dart';
@@ -9,12 +10,14 @@ import '/models/city.dart';
 
 class AddressDropdownWidget extends StatefulWidget {
   final Function(City city)? cityOnTap;
+  final Function(Province city)? provinceOnTap;
   final double itemsDistanceHeight;
   final double dropDownHeight;
   final double fontSize;
   final Color dropDownColor;
   final Color selectedColor;
   final bool checkSave;
+  final City? selectedCity;
 
   const AddressDropdownWidget({
     super.key,
@@ -25,6 +28,8 @@ class AddressDropdownWidget extends StatefulWidget {
     required this.dropDownColor,
     required this.selectedColor,
     this.checkSave = false,
+    this.provinceOnTap,
+    this.selectedCity,
   });
 
   @override
@@ -44,27 +49,48 @@ class _AddressDropdownWidgetState extends State<AddressDropdownWidget> {
   void initState() {
     super.initState();
 
-    if (widget.checkSave &&
-        cityController.selectedProvince != null &&
-        cityController.selectedCity != null) {
-      initSelectedValues();
+    if (widget.checkSave) {
+      initSelectedValues(
+        cityController.selectedProvince,
+        cityController.selectedCity,
+      );
+    } else if (widget.selectedCity != null) {
+      initSelectedCity(
+        widget.selectedCity,
+      );
     }
 
     provinces = cityController.provinces.asMap().keys.toList();
   }
 
-  void initSelectedValues() {
+  void initSelectedValues(Province? selectedProvince, City? selectedCity) {
     for (int i = 0; i < cityController.provinces.length; i++) {
-      if (cityController.provinces[i] == cityController.selectedProvince) {
+      if (cityController.provinces[i] == selectedProvince) {
         selectedProvinceIndex = i;
         cities = cityController.provinces[i].cities.asMap().keys.toList();
 
         for (int j = 0; j < cityController.provinces[i].cities.length; j++) {
-          if (cityController.provinces[i].cities[j] ==
-              cityController.selectedCity) {
+          if (cityController.provinces[i].cities[j] == selectedCity) {
             selectedCityIndex = j;
             return;
           }
+        }
+
+        return;
+      }
+    }
+  }
+
+  void initSelectedCity(City? selectedCity) {
+    for (int i = 0; i < cityController.provinces.length; i++) {
+      for (int j = 0; j < cityController.provinces[i].cities.length; j++) {
+        if (cityController.provinces[i].cities[j].id == selectedCity?.id) {
+          selectedProvinceIndex = i;
+
+          cities = cityController.provinces[i].cities.asMap().keys.toList();
+
+          selectedCityIndex = j;
+          return;
         }
       }
     }
@@ -120,6 +146,9 @@ class _AddressDropdownWidgetState extends State<AddressDropdownWidget> {
                       .asMap()
                       .keys
                       .toList();
+                  if (widget.provinceOnTap != null) {
+                    widget.provinceOnTap!(cityController.provinces[value]);
+                  }
                 });
               },
               dropdownStyleData: DropdownStyleData(

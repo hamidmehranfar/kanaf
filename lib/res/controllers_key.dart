@@ -7,4 +7,5 @@ class ControllersKey {
   static String homeControllerKey = "home";
   static String calculateControllerKey = "calculate";
   static String cityControllerKey = "city";
+  static String discussionControllerKey = "discussion";
 }

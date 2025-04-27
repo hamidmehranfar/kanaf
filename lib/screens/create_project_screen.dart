@@ -8,6 +8,7 @@ import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:mime/mime.dart';
 
+import '../widgets/error_snack_bar.dart';
 import '/res/enums/media_type.dart';
 import '/controllers/city_controller.dart';
 import '/models/city.dart';
@@ -126,7 +127,10 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     }
 
     if (hasError) {
-      //FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: message,
+      );
       return;
     }
 
@@ -145,13 +149,12 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     )
         .then((value) {
       if (!value) {
+        showSnackbarMessage(
+          context: context,
+          message: projectController.apiMessage,
+        );
       } else {
         Get.back();
-        Get.showSnackbar(const GetSnackBar(
-          title: "ایجاد",
-          message: "پروژه با موفقیت ایجاد شد",
-          duration: Duration(seconds: 2),
-        ));
       }
     });
 
@@ -170,300 +173,304 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         },
         iconAsset: "assets/icons/arrow_back_19.png",
       ),
-      body: SizedBox(
-        height: SizeController.height(context),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 25),
-              Text(
-                "ایجاد پروژه",
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.w300,
-                  color: theme.colorScheme.tertiary,
+      body: SafeArea(
+        bottom: true,
+        child: SizedBox(
+          height: SizeController.height(context),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 25),
+                Text(
+                  "ایجاد پروژه",
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.w300,
+                    color: theme.colorScheme.tertiary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 14),
-              Padding(
-                padding: globalPadding * 11,
-                child: MyDivider(
-                  color: theme.colorScheme.onSecondary,
-                  height: 1,
-                  thickness: 1,
+                const SizedBox(height: 14),
+                Padding(
+                  padding: globalPadding * 11,
+                  child: MyDivider(
+                    color: theme.colorScheme.onSecondary,
+                    height: 1,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 13),
-              Container(
-                margin: globalPadding * 6,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: globalBorderRadius * 6,
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 18),
-                    Column(
-                      verticalDirection: VerticalDirection.up,
-                      children: [
-                        Container(
-                          margin: globalPadding * 5,
-                          height: 220,
-                          child: GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 4,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 1,
-                              mainAxisExtent: 110,
-                            ),
-                            itemBuilder: (context, index) {
-                              return Stack(
-                                children: [
-                                  isItemsLoading[index]
-                                      ? Center(
-                                          child: CircularProgressIndicator(
-                                            color: theme.colorScheme.onPrimary,
-                                          ),
-                                        )
-                                      : items[index].$1 != null
-                                          ? ClipRRect(
-                                              borderRadius:
-                                                  globalBorderRadius * 10,
-                                              child: items[index].$2 ==
-                                                      MediaType.image
-                                                  ? Image.file(
-                                                      items[index].$1!,
-                                                      width: 150,
-                                                      height: 100,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : Image.memory(
-                                                      videosFrame[index] ??
-                                                          Uint8List(0),
-                                                      width: 150,
-                                                      height: 100,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                            )
-                                          : InkWell(
-                                              onTap: () async {
-                                                await onPickFile(index);
-                                              },
-                                              child: Container(
-                                                width: 150,
-                                                height: 100,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      globalBorderRadius * 10,
-                                                  color: theme
-                                                      .colorScheme.secondary
-                                                      .withValues(alpha: 0.4),
+                const SizedBox(height: 13),
+                Container(
+                  margin: globalPadding * 6,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    borderRadius: globalBorderRadius * 6,
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 18),
+                      Column(
+                        verticalDirection: VerticalDirection.up,
+                        children: [
+                          Container(
+                            margin: globalPadding * 5,
+                            height: 220,
+                            child: GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: 4,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 1,
+                                mainAxisExtent: 110,
+                              ),
+                              itemBuilder: (context, index) {
+                                return Stack(
+                                  children: [
+                                    isItemsLoading[index]
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                              color:
+                                                  theme.colorScheme.onPrimary,
+                                            ),
+                                          )
+                                        : items[index].$1 != null
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    globalBorderRadius * 10,
+                                                child: items[index].$2 ==
+                                                        MediaType.image
+                                                    ? Image.file(
+                                                        items[index].$1!,
+                                                        width: 150,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Image.memory(
+                                                        videosFrame[index] ??
+                                                            Uint8List(0),
+                                                        width: 150,
+                                                        height: 100,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              )
+                                            : InkWell(
+                                                onTap: () async {
+                                                  await onPickFile(index);
+                                                },
+                                                child: Container(
+                                                  width: 150,
+                                                  height: 100,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        globalBorderRadius * 10,
+                                                    color: theme
+                                                        .colorScheme.secondary
+                                                        .withValues(alpha: 0.4),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 10,
-                                    child: Container(
-                                      width: 27,
-                                      height: 27,
-                                      padding: const EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: theme.colorScheme.onPrimary),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 10,
                                       child: Container(
+                                        width: 27,
+                                        height: 27,
+                                        padding: const EdgeInsets.all(2),
                                         decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: theme.colorScheme.secondary,
-                                        ),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            await onPickFile(index);
-                                          },
-                                          child: Icon(
-                                            (items[index].$1 == null)
-                                                ? Icons.add
-                                                : Icons.close,
-                                            size: 14,
+                                            shape: BoxShape.circle,
+                                            color: theme.colorScheme.onPrimary),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: theme.colorScheme.secondary,
+                                          ),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              await onPickFile(index);
+                                            },
+                                            child: Icon(
+                                              (items[index].$1 == null)
+                                                  ? Icons.add
+                                                  : Icons.close,
+                                              size: 14,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              );
-                            },
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        // InkWell(
-                        //   onTap: () async {
-                        //     await onPickFile();
-                        //   },
-                        //   child: Container(
-                        //     width: 100,
-                        //     padding: const EdgeInsets.only(
-                        //         top: 3, bottom: 5, left: 8, right: 8),
-                        //     decoration: BoxDecoration(
-                        //       color: theme.colorScheme.tertiary
-                        //           .withValues(alpha: 0.75),
-                        //       borderRadius: globalBorderRadius * 3,
-                        //       border: Border(
-                        //         top: BorderSide(
-                        //           color: theme.colorScheme.onSurface
-                        //               .withValues(alpha: 0.5),
-                        //         ),
-                        //       ),
-                        //       boxShadow: [
-                        //         BoxShadow(
-                        //           color: theme.colorScheme.onPrimary,
-                        //           offset: const Offset(-5, -5),
-                        //           blurRadius: 50,
-                        //           spreadRadius: 5,
-                        //         )
-                        //       ],
-                        //     ),
-                        //     child: Center(
-                        //       child: Text(
-                        //         "اپلود عکس",
-                        //         style: theme.textTheme.bodyLarge,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                    const SizedBox(height: 13),
-                    Padding(
-                      padding: globalPadding * 8,
-                      child: MyDivider(
-                        color: theme.colorScheme.onSurface,
-                        height: 1,
-                        thickness: 1,
+                          // InkWell(
+                          //   onTap: () async {
+                          //     await onPickFile();
+                          //   },
+                          //   child: Container(
+                          //     width: 100,
+                          //     padding: const EdgeInsets.only(
+                          //         top: 3, bottom: 5, left: 8, right: 8),
+                          //     decoration: BoxDecoration(
+                          //       color: theme.colorScheme.tertiary
+                          //           .withValues(alpha: 0.75),
+                          //       borderRadius: globalBorderRadius * 3,
+                          //       border: Border(
+                          //         top: BorderSide(
+                          //           color: theme.colorScheme.onSurface
+                          //               .withValues(alpha: 0.5),
+                          //         ),
+                          //       ),
+                          //       boxShadow: [
+                          //         BoxShadow(
+                          //           color: theme.colorScheme.onPrimary,
+                          //           offset: const Offset(-5, -5),
+                          //           blurRadius: 50,
+                          //           spreadRadius: 5,
+                          //         )
+                          //       ],
+                          //     ),
+                          //     child: Center(
+                          //       child: Text(
+                          //         "اپلود عکس",
+                          //         style: theme.textTheme.bodyLarge,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      margin: globalPadding * 10,
-                      padding:
-                          const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                      decoration: BoxDecoration(
-                        color: AppColors.textFieldColor,
-                        borderRadius: globalBorderRadius * 4,
-                      ),
-                      child: TextField(
-                        controller: addressTextController,
-                        style: theme.textTheme.labelLarge
-                            ?.copyWith(color: theme.colorScheme.surface),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          hintText: "آدرس",
-                          hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface
-                                .withValues(alpha: 0.5),
-                          ),
+                      const SizedBox(height: 13),
+                      Padding(
+                        padding: globalPadding * 8,
+                        child: MyDivider(
+                          color: theme.colorScheme.onSurface,
+                          height: 1,
+                          thickness: 1,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 7),
-                    Padding(
-                      padding: globalPadding * 10,
-                      child: AddressDropdownWidget(
-                        cityOnTap: (City city) {
-                          selectedCity = city;
-                        },
-                        itemsDistanceHeight: 7,
-                        fontSize: 16,
-                        dropDownHeight: 52,
-                        dropDownColor: AppColors.sideColor,
-                        selectedColor:
-                            AppColors.sideColor.withValues(alpha: 0.55),
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                    Container(
-                      margin: globalPadding * 10,
-                      padding:
-                          const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                      decoration: BoxDecoration(
-                        color: AppColors.textFieldColor,
-                        borderRadius: globalBorderRadius * 4,
-                      ),
-                      child: TextField(
-                        controller: areaTextController,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.surface,
+                      const SizedBox(height: 14),
+                      Container(
+                        margin: globalPadding * 10,
+                        padding:
+                            const EdgeInsets.only(bottom: 5, right: 9, left: 9),
+                        decoration: BoxDecoration(
+                          color: AppColors.textFieldColor,
+                          borderRadius: globalBorderRadius * 4,
                         ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          hintText: "متراژ",
-                          hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface
-                                .withValues(alpha: 0.5),
+                        child: TextField(
+                          controller: addressTextController,
+                          style: theme.textTheme.labelLarge
+                              ?.copyWith(color: theme.colorScheme.surface),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "آدرس",
+                            hintStyle: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.surface
+                                  .withValues(alpha: 0.5),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 7),
-                    Container(
-                      margin: globalPadding * 10,
-                      padding:
-                          const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                      decoration: BoxDecoration(
-                        color: AppColors.textFieldColor,
-                        borderRadius: globalBorderRadius * 4,
-                      ),
-                      child: TextField(
-                        controller: descriptionTextController,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.surface,
+                      const SizedBox(height: 7),
+                      Padding(
+                        padding: globalPadding * 10,
+                        child: AddressDropdownWidget(
+                          cityOnTap: (City city) {
+                            selectedCity = city;
+                          },
+                          itemsDistanceHeight: 7,
+                          fontSize: 16,
+                          dropDownHeight: 52,
+                          dropDownColor: AppColors.sideColor,
+                          selectedColor:
+                              AppColors.sideColor.withValues(alpha: 0.55),
                         ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          hintText: "توضیحات",
-                          hintStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: theme.colorScheme.surface
-                                .withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 7),
+                      Container(
+                        margin: globalPadding * 10,
+                        padding:
+                            const EdgeInsets.only(bottom: 5, right: 9, left: 9),
+                        decoration: BoxDecoration(
+                          color: AppColors.textFieldColor,
+                          borderRadius: globalBorderRadius * 4,
+                        ),
+                        child: TextField(
+                          controller: areaTextController,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.surface,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "متراژ",
+                            hintStyle: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.surface
+                                  .withValues(alpha: 0.5),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 23),
-                  ],
+                      const SizedBox(height: 7),
+                      Container(
+                        margin: globalPadding * 10,
+                        padding:
+                            const EdgeInsets.only(bottom: 5, right: 9, left: 9),
+                        decoration: BoxDecoration(
+                          color: AppColors.textFieldColor,
+                          borderRadius: globalBorderRadius * 4,
+                        ),
+                        child: TextField(
+                          controller: descriptionTextController,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.surface,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            hintText: "توضیحات",
+                            hintStyle: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.surface
+                                  .withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 23),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: globalPadding * 11,
-                child: MyDivider(
-                  color: theme.colorScheme.onSecondary,
-                  height: 1,
-                  thickness: 1,
+                const SizedBox(height: 10),
+                Padding(
+                  padding: globalPadding * 11,
+                  child: MyDivider(
+                    color: theme.colorScheme.onSecondary,
+                    height: 1,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              (isProjectCreateLoading)
-                  ? SpinKitThreeBounce(
-                      size: 14,
-                      color: theme.colorScheme.onSecondary,
-                    )
-                  : ButtonItem(
-                      onTap: () async => await createProject(),
-                      isButtonDisable: isProjectCreateLoading,
-                      title: "ایجاد",
-                      color: theme.colorScheme.tertiary,
-                      textStyle: theme.textTheme.bodyLarge,
-                    ),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 12),
+                (isProjectCreateLoading)
+                    ? SpinKitThreeBounce(
+                        size: 14,
+                        color: theme.colorScheme.onSecondary,
+                      )
+                    : ButtonItem(
+                        onTap: () async => await createProject(),
+                        isButtonDisable: isProjectCreateLoading,
+                        title: "ایجاد",
+                        color: theme.colorScheme.tertiary,
+                        textStyle: theme.textTheme.bodyLarge,
+                      ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

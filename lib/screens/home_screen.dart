@@ -3,11 +3,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/city_controller.dart';
-import 'package:kanaf/res/enums/calculate_type.dart';
-import 'package:kanaf/screens/calculate_details_screen.dart';
-import 'package:kanaf/screens/projects_list_screen.dart';
 
+import '/controllers/city_controller.dart';
+import '/res/enums/calculate_type.dart';
+import '/screens/calculate_details_screen.dart';
+import '/screens/projects_list_screen.dart';
 import '/res/controllers_key.dart';
 import '/screens/tutorials_screen.dart';
 import '/widgets/custom_cached_image.dart';
@@ -174,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchCities() async {
     cityController.fetchCities().then((value) {
       if (value) {
+        cityController.getSavedProvince();
         cityController.getSavedCity();
       }
     });

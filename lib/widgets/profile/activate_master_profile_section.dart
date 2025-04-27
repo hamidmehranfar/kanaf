@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '../error_snack_bar.dart';
 import '/models/city.dart';
-import '../address_dropdown_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/city_controller.dart';
 import '/res/controllers_key.dart';
@@ -13,6 +13,7 @@ import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '../button_item.dart';
 import '../my_divider.dart';
+import '../address_dropdown_widget.dart';
 
 class ActivateMasterProfileSection extends StatefulWidget {
   const ActivateMasterProfileSection({super.key});
@@ -93,7 +94,10 @@ class _ActivateMasterProfileSectionState
     }
 
     if (hasError) {
-      //FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: text,
+      );
       return;
     }
 
@@ -113,10 +117,16 @@ class _ActivateMasterProfileSectionState
     )
         .then((value) {
       if (value) {
-        //FIXME : show success
+        showSnackbarMessage(
+          context: context,
+          message: "پروفایل اوساکار در دست بررسی است",
+        );
         Get.back(result: true);
       } else {
-        //FIXME : show error
+        showSnackbarMessage(
+          context: context,
+          message: authController.apiMessage ?? '',
+        );
       }
     });
 

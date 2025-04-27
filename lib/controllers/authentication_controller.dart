@@ -2,14 +2,15 @@ import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/api_controller.dart';
-import 'package:kanaf/models/employer_user.dart';
-import 'package:kanaf/models/user.dart';
-import 'package:kanaf/res/enums/api_method.dart';
-import 'package:kanaf/res/enums/introduction_type.dart';
-import 'package:kanaf/res/enums/master_request_types.dart';
-import 'package:kanaf/res/shared_preference_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '/controllers/api_controller.dart';
+import '/models/employer_user.dart';
+import '/models/user.dart';
+import '/res/enums/api_method.dart';
+import '/res/enums/introduction_type.dart';
+import '/res/enums/master_request_types.dart';
+import '/res/shared_preference_keys.dart';
 
 class AuthenticationController extends GetxController {
   User? _user;

@@ -6,12 +6,14 @@ class ShadowButton extends StatelessWidget {
   final Function() onTap;
   final double? width;
   final String text;
+  final List<BoxShadow>? shadow;
 
   const ShadowButton({
     super.key,
     required this.onTap,
     required this.width,
     required this.text,
+    this.shadow,
   });
 
   @override
@@ -30,13 +32,14 @@ class ShadowButton extends StatelessWidget {
               color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.onPrimary,
-              offset: const Offset(-15, -10),
-              blurRadius: 50,
-            )
-          ],
+          boxShadow: shadow ??
+              [
+                BoxShadow(
+                  color: theme.colorScheme.onPrimary,
+                  offset: const Offset(-15, -10),
+                  blurRadius: 50,
+                ),
+              ],
         ),
         child: Center(
           child: Text(

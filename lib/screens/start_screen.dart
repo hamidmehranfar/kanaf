@@ -28,6 +28,7 @@ class StartScreen extends StatelessWidget {
             const StepWidget(
               selectedIndex: 0,
               length: 3,
+              isReverse: true,
             ),
             const SizedBox(height: 16),
             Padding(

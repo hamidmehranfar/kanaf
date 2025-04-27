@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/global_configs.dart';
+import 'package:kanaf/res/enums/message_type.dart';
 
+import '../error_snack_bar.dart';
+import '/global_configs.dart';
 import '/controllers/project_controller.dart';
 import '/res/controllers_key.dart';
 import '/res/enums/offer_status.dart';
@@ -30,7 +32,10 @@ class _FinishOfferDialogState extends State<FinishOfferDialog> {
 
   Future<void> finishOffer() async {
     if (rating == null) {
-      //FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: "امتیاز را وارد کنید",
+      );
       return;
     }
     setState(() {
@@ -45,9 +50,16 @@ class _FinishOfferDialogState extends State<FinishOfferDialog> {
     )
         .then((value) {
       if (!value) {
-        //FIXME : show error
+        showSnackbarMessage(
+          context: context,
+          message: projectController.apiMessage,
+        );
       } else {
-        //FIXME : show success
+        showSnackbarMessage(
+          context: context,
+          message: "امتیاز با موفقیت ثبت شد",
+          type: MessageType.success,
+        );
         Get.back(result: true);
       }
     });
@@ -71,7 +83,7 @@ class _FinishOfferDialogState extends State<FinishOfferDialog> {
             "امتیاز به استادکار",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w400,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+              color: theme.colorScheme.surface.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 25),
@@ -83,11 +95,11 @@ class _FinishOfferDialogState extends State<FinishOfferDialog> {
                 return IconButton(
                   onPressed: () {
                     setState(() {
-                      rating = index;
+                      rating = 4 - index;
                     });
                   },
                   icon: Icon(
-                    rating == null || rating! < index
+                    rating == null || rating! < (4 - index)
                         ? Icons.star_border
                         : Icons.star,
                     size: 32,

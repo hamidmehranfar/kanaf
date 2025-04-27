@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../global_configs.dart';
+import '/global_configs.dart';
 
 class StepWidget extends StatelessWidget {
   final double width;
   final double height;
   final int selectedIndex;
   final int length;
+  final bool isReverse;
 
   const StepWidget({
     super.key,
@@ -14,6 +15,7 @@ class StepWidget extends StatelessWidget {
     this.height = 11,
     required this.selectedIndex,
     required this.length,
+    this.isReverse = false,
   });
 
   @override
@@ -31,9 +33,13 @@ class StepWidget extends StatelessWidget {
                 height: height,
                 decoration: BoxDecoration(
                   borderRadius: globalBorderRadius * 2,
-                  color: index == (length - selectedIndex - 1)
-                      ? theme.colorScheme.secondary
-                      : theme.colorScheme.tertiary,
+                  color: isReverse
+                      ? index == (length - selectedIndex - 1)
+                          ? theme.colorScheme.secondary
+                          : theme.colorScheme.tertiary
+                      : index == selectedIndex
+                          ? theme.colorScheme.secondary
+                          : theme.colorScheme.tertiary,
                 ),
               ),
               if (index != length - 1) const SizedBox(width: 4),

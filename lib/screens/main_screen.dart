@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '/../controllers/size_controller.dart';
-import '/../widgets/custom_bottom_navbar.dart';
-import '/../screens/home_screen.dart';
-import '/../screens/search_screen.dart';
+import 'package:kanaf/screens/discussion_forum/discussion_category_list_screen.dart';
 
+import '/controllers/size_controller.dart';
+import '/widgets/custom_bottom_navbar.dart';
+import '/screens/home_screen.dart';
+import '/screens/search_screen.dart';
 import 'profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,11 +34,13 @@ class _MainScreenState extends State<MainScreen> {
         });
       },
     ),
-    Scaffold(
-        backgroundColor: Colors.green,
-        body: Center(
-          child: Text("talar page"),
-        )),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(builder: (context) {
+          return const DiscussionCategoriesListScreen();
+        });
+      },
+    ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(builder: (context) {

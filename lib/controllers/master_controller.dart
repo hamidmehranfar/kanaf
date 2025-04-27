@@ -46,8 +46,12 @@ class MasterController extends GetxController {
     }
   }
 
-  Future<List<Master>?> getMastersList(
-      {required int pageKey, MasterServices? type, int? cityId}) async {
+  Future<List<Master>?> getMastersList({
+    required int pageKey,
+    MasterServices? type,
+    int? provinceId,
+    int? cityId,
+  }) async {
     List<Master>? result;
 
     String queryParam = '';
@@ -71,6 +75,16 @@ class MasterController extends GetxController {
       }
 
       queryParam += 'city=$cityId';
+    }
+
+    if (provinceId != null) {
+      if (queryParam.isEmpty) {
+        queryParam = '/?';
+      } else {
+        queryParam += '&';
+      }
+
+      queryParam += 'province=$provinceId';
     }
 
     await ApiController.instance.request(

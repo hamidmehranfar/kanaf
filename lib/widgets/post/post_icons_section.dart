@@ -3,16 +3,19 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../error_snack_bar.dart';
 import '/controllers/post_controller.dart';
 import '/models/post.dart';
 import '/res/controllers_key.dart';
 
 class PostIconsSection extends StatefulWidget {
   final Post post;
+  final Function() onTap;
 
   const PostIconsSection({
     super.key,
     required this.post,
+    required this.onTap,
   });
 
   @override
@@ -40,7 +43,14 @@ class _PostIconsSectionState extends State<PostIconsSection> {
     });
     await postController.deletePostLikes(likeId ?? -1).then((value) {
       if (value) {
-        isPostLiked = !isPostLiked;
+        if (value) {
+          isPostLiked = !isPostLiked;
+        } else {
+          showSnackbarMessage(
+            context: context,
+            message: postController.apiMessage,
+          );
+        }
       }
     });
 
@@ -58,6 +68,11 @@ class _PostIconsSectionState extends State<PostIconsSection> {
       if (value.$1) {
         isPostLiked = !isPostLiked;
         likeId = value.$2;
+      } else {
+        showSnackbarMessage(
+          context: context,
+          message: postController.apiMessage,
+        );
       }
     });
 
@@ -74,6 +89,9 @@ class _PostIconsSectionState extends State<PostIconsSection> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         InkWell(
+          onTap: () {
+            widget.onTap();
+          },
           child: SvgPicture.asset(
             "assets/icons/message.svg",
             width: 21,
@@ -81,29 +99,29 @@ class _PostIconsSectionState extends State<PostIconsSection> {
           ),
         ),
         const SizedBox(width: 20),
-        likeOperationLoading
-            ? SizedBox(
-                width: 32,
-                height: 32,
-                child: SpinKitThreeBounce(
+        SizedBox(
+          width: 32,
+          height: 32,
+          child: likeOperationLoading
+              ? SpinKitThreeBounce(
                   color: theme.colorScheme.secondary,
                   size: 20,
+                )
+              : InkWell(
+                  onTap: () async {
+                    if (isPostLiked) {
+                      await dislikePost();
+                    } else {
+                      await likePost();
+                    }
+                  },
+                  child: Icon(
+                    isPostLiked ? Icons.favorite : Icons.favorite_border,
+                    size: 28,
+                    color: theme.colorScheme.secondary,
+                  ),
                 ),
-              )
-            : InkWell(
-                onTap: () async {
-                  if (isPostLiked) {
-                    await dislikePost();
-                  } else {
-                    await likePost();
-                  }
-                },
-                child: Icon(
-                  isPostLiked ? Icons.favorite : Icons.favorite_border,
-                  size: 28,
-                  color: theme.colorScheme.secondary,
-                ),
-              ),
+        ),
         const SizedBox(width: 16),
       ],
     );

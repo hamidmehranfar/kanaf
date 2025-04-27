@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:video_player/video_player.dart';
 
 import '/res/enums/media_type.dart';
 import '/controllers/api_controller.dart';
@@ -15,17 +16,23 @@ class PostController extends GetxController {
 
   String _apiMessage = "";
 
+  VideoPlayerController? _currentPlayedVideoController;
+
+  RxInt _postCurrentIndex = 0.obs;
+
+  List<(File?, MediaType?)> _createdPosts =
+      List.generate(6, (index) => (null, null));
+
+  List<bool> _createdPostsLoading = List.generate(6, (index) => false);
+
+  final List<(Map<int, VideoPlayerController>, int, bool)> _videoControllers =
+      [];
+
   TextEditingController? _captionTextController;
 
   List<Post> get posts => _posts;
 
-  List<(File?, MediaType?)> _createdPosts =
-      List.generate(6, (index) => (null, null));
-  List<bool> _createdPostsLoading = List.generate(6, (index) => false);
-
   bool _createPostLoading = false;
-
-  RxBool _isPostLoading = false.obs;
 
   String get apiMessage => _apiMessage;
 
@@ -33,13 +40,22 @@ class PostController extends GetxController {
 
   List<(File?, MediaType?)> get createdPosts => _createdPosts;
 
+  RxInt get postCurrentIndex => _postCurrentIndex;
+
+  void setPostCurrentIndex(int index) => _postCurrentIndex.value = index;
+
+  VideoPlayerController? get currentPlayedVideoController =>
+      _currentPlayedVideoController;
+
+  set currentPlayedVideoController(VideoPlayerController? controller) =>
+      _currentPlayedVideoController = controller;
+
   List<bool> get createdPostsLoading => _createdPostsLoading;
 
+  List<(Map<int, VideoPlayerController>, int, bool)> get videoControllers =>
+      _videoControllers;
+
   bool get createPostLoading => _createPostLoading;
-
-  RxBool get isPostLoading => _isPostLoading;
-
-  void setIsPostLoading(bool isLoading) => _isPostLoading.value = isLoading;
 
   set createPostLoading(bool loading) => _createPostLoading = loading;
 
@@ -54,28 +70,36 @@ class PostController extends GetxController {
     _createPostLoading = false;
   }
 
+  void initVideoControllers() {
+    _videoControllers.clear();
+
+    for (int i = 0; i < _posts.length; i++) {
+      _videoControllers.add(({}, 0, true));
+    }
+  }
+
   Future<bool> getPosts({
     required int profileId,
   }) async {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/posts/?profile_id=$profileId",
-        method: ApiMethod.get,
-        onSuccess: (response) {
-          print(response.data);
-          _posts = [];
-          for (var item in response.data["results"]) {
-            _posts.add(Post.fromJson(item));
-          }
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data?['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/posts/?profile_id=$profileId",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        _posts = [];
+        for (var item in response.data["results"]) {
+          _posts.add(Post.fromJson(item));
+        }
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data?['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return result;
   }
@@ -85,19 +109,19 @@ class PostController extends GetxController {
     bool isPostLike = false;
 
     await ApiController.instance.request(
-        url: "master/posts/$postId",
-        method: ApiMethod.get,
-        onSuccess: (response) {
-          print(response.data);
-          isPostLike = response.data["current_user_like"] != null;
-          post = Post.fromJson(response.data);
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/posts/$postId",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        isPostLike = response.data["current_user_like"] != null;
+        post = Post.fromJson(response.data);
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return (post, isPostLike);
   }
@@ -241,17 +265,18 @@ class PostController extends GetxController {
     bool result = false;
 
     await ApiController.instance.request(
-        url: "master/posts/$postId/",
-        method: ApiMethod.delete,
-        onSuccess: (response) {
-          result = true;
-        },
-        onCatchDioError: (e) {
-          _apiMessage = e.response?.data['detail'] ?? '';
-        },
-        onCatchError: (e) {
-          _apiMessage = 'مشکلی پیش آمده است';
-        });
+      url: "master/posts/$postId/",
+      method: ApiMethod.delete,
+      onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
 
     return result;
   }
@@ -415,6 +440,29 @@ class PostController extends GetxController {
       url: "master/likes/$postId/",
       method: ApiMethod.delete,
       onSuccess: (response) {
+        result = true;
+      },
+      onCatchDioError: (e) {
+        _apiMessage = e.response?.data['detail'] ?? '';
+      },
+      onCatchError: (e) {
+        _apiMessage = 'مشکلی پیش آمده است';
+      },
+    );
+
+    return result;
+  }
+
+  Future<bool> getSearchPosts(String keyword) async {
+    bool result = false;
+    await ApiController.instance.request(
+      url: "master/explore/posts/?q=$keyword",
+      method: ApiMethod.get,
+      onSuccess: (response) {
+        _posts = [];
+        for (var value in response.data["results"]) {
+          _posts.add(Post.fromJson(value));
+        }
         result = true;
       },
       onCatchDioError: (e) {

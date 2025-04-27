@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/models/city.dart';
-import 'package:kanaf/widgets/address_dropdown_widget.dart';
+import 'package:kanaf/models/province.dart';
+import 'package:kanaf/widgets/filter_section.dart';
 
+import '../widgets/error_snack_bar.dart';
+import '/models/city.dart';
+import '/widgets/address_dropdown_widget.dart';
 import '/controllers/city_controller.dart';
 import '/controllers/master_controller.dart';
 import '/models/master.dart';
@@ -35,22 +38,16 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
   MasterController masterController =
       Get.find(tag: ControllersKey.masterControllerKey);
 
-  CityController cityController = Get.find(
-    tag: ControllersKey.cityControllerKey,
-  );
-
   @override
   void initState() {
     super.initState();
     _fetchProfiles();
-
-    // when city has saved
-    if (cityController.selectedCity != null) {
-      filterClick = true;
-    }
   }
 
-  Future<void> _fetchProfiles() async {
+  Future<void> _fetchProfiles({
+    Province? province,
+    City? city,
+  }) async {
     setState(() {
       isLoading = true;
       isFailed = false;
@@ -58,15 +55,15 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
 
     List<Master>? response = await masterController.getMastersList(
       pageKey: 1,
-      cityId: cityController.selectedCity?.id,
+      cityId: city?.id,
+      provinceId: province?.id,
     );
     if (response == null) {
       isFailed = true;
-      Get.showSnackbar(const GetSnackBar(
-        title: "خطا",
+      showSnackbarMessage(
+        context: context,
         message: "خطایی رخ داده است",
-        duration: Duration(seconds: 2),
-      ));
+      );
     } else if (response.isEmpty) {
       isListEmpty = true;
     } else {
@@ -288,9 +285,7 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                                             .kanafMasters.length,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
+                                    const SizedBox(height: 16),
                                   ],
                                   if (masterController
                                       .lightLines.isNotEmpty) ...[
@@ -623,52 +618,40 @@ class _MasterServicesScreenState extends State<MasterServicesScreen> {
                 top: 10,
                 child: InkWell(
                   onTap: () => setState(() {
-                    filterClick = !filterClick;
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return FilterSection(
+                          onTap: (Province? province, City? city) {
+                            _fetchProfiles(province: province, city: city);
+                          },
+                        );
+                      },
+                    );
                   }),
                   child: isFailed
                       ? Container()
                       : Container(
                           width: 100,
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           decoration: BoxDecoration(
                             borderRadius: globalBorderRadius * 2,
                             color: theme.colorScheme.tertiary,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.settings_outlined,
-                                    size: 24,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
-                                  Text(
-                                    "فیلتر کنید",
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: theme.colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.settings_outlined,
+                                size: 32,
+                                color: theme.colorScheme.onSurface,
                               ),
-                              const SizedBox(height: 8),
-                              if (filterClick) ...[
-                                AddressDropdownWidget(
-                                  cityOnTap: (City city) async {
-                                    cityController.saveSelectedCity(city);
-                                    await _fetchProfiles();
-                                  },
-                                  dropDownHeight: 30,
-                                  fontSize: 7,
-                                  dropDownColor: theme.colorScheme.secondary,
-                                  selectedColor: theme.colorScheme.secondary,
-                                  itemsDistanceHeight: 5,
-                                  checkSave: true,
+                              Text(
+                                "فیلتر کنید",
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
                                 ),
-                                const SizedBox(height: 20),
-                              ]
+                              ),
                             ],
                           ),
                         ),

@@ -1,0 +1,2 @@
+E:/kanaf-project/kanaf/android/app/.cxx/RelWithDebInfo/5f6e5g6j/x86_64/CMakeFiles/edit_cache.dir
+E:/kanaf-project/kanaf/android/app/.cxx/RelWithDebInfo/5f6e5g6j/x86_64/CMakeFiles/rebuild_cache.dir

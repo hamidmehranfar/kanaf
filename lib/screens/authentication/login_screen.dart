@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/widgets/step_widget.dart';
+import 'package:kanaf/widgets/error_snack_bar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '/widgets/step_widget.dart';
 import '/screens/authentication/otp_screen.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/size_controller.dart';
@@ -37,14 +38,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login() async {
+    if (textController.text.isEmpty) {
+      showSnackbarMessage(
+        context: context,
+        message: "شماره همراه خود را وارد کنید",
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
-
-    if (textController.text.isEmpty) {
-      // FIXME : ask this for its error type
-      return;
-    }
 
     var result =
         await authController.login(textController.text.toEnglishDigit());
@@ -63,17 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } else {
-      Get.showSnackbar(
-        GetSnackBar(
-          title: 'خطا',
-          message: authController.apiMessage != null
-              ? authController.apiMessage!.isEmpty
-                  ? 'خطایی رخ داده است'
-                  : authController.apiMessage
-              : 'خطایی رخ داده است',
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      showSnackbarMessage(
+          context: context, message: authController.apiMessage ?? '');
     }
 
     setState(() {
@@ -89,6 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SizedBox(
         width: SizeController.width(context),
         child: SingleChildScrollView(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -102,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const StepWidget(
                 selectedIndex: 1,
                 length: 3,
+                isReverse: true,
               ),
               const SizedBox(height: 16),
               Padding(
@@ -121,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (value) {
                     textController.text = value.toPersianDigit();
                   },
-                  scrollPadding: const EdgeInsets.only(bottom: 100),
+                  // scrollPadding: const EdgeInsets.only(bottom: 70),
                   hintText: "شماره همراه",
                   controller: textController,
                   keyboardType: TextInputType.number,

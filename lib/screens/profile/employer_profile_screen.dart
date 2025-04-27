@@ -1,11 +1,18 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:kanaf/res/enums/project_type.dart';
 import 'package:kanaf/screens/profile/offers_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '/res/enums/media_type.dart';
+import '/models/employer_project.dart';
 import '/controllers/size_controller.dart';
 import '/screens/profile/employer_create_project_screen.dart';
-import '/models/project.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/project_controller.dart';
 import '/models/employer_user.dart';
@@ -30,6 +37,8 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   bool isLoading = false;
   bool isFailed = false;
 
+  List<Uint8List?> videosFirstFrame = [];
+
   AuthenticationController authController = Get.find(
     tag: ControllersKey.authControllerKey,
   );
@@ -39,7 +48,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   );
 
   EmployerUser? employerProfile;
-  List<Project?> projects = [];
+  List<EmployerProject?> projects = [];
 
   @override
   void initState() {
@@ -59,11 +68,24 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       } else {
         employerProfile = value;
 
-        await projectController.getEmployerProjects().then((value) {
+        await projectController.getEmployerProjects().then((value) async {
           if (value == null) {
             isFailed = true;
           } else {
             projects = value;
+            for (var post in projects) {
+              if (post?.items.isNotEmpty ?? false) {
+                if (post!.items[0].itemType == MediaType.video) {
+                  videosFirstFrame.add(
+                    await getFirstFrame(post.items[0].file),
+                  );
+                } else {
+                  videosFirstFrame.add(null);
+                }
+              } else {
+                videosFirstFrame.add(null);
+              }
+            }
           }
         });
       }
@@ -74,13 +96,37 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
     });
   }
 
+  Future<Uint8List?> getFirstFrame(String videoUrl) async {
+    try {
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/temp_video.mp4';
+
+      // Download video using Dio
+      Dio dio = Dio();
+      await dio.download(videoUrl, filePath);
+
+      // Generate thumbnail from the downloaded file
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: filePath,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 128,
+        quality: 75,
+      );
+
+      return thumbnail;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
     return Scaffold(
       appBar: CustomAppbar(
-        onTap: () => Get.back(),
+        onTap: () => Navigator.pop(context),
         iconAsset: "assets/icons/arrow_back_19.png",
       ),
       body: Column(
@@ -208,10 +254,14 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 const SizedBox(width: 10),
                 FilledButton(
                   onPressed: () {
+                    // Get.to(
+                    //   const OffersScreen(type: ProjectType.received),
+                    // );
                     Get.to(
-                      const OffersScreen(type: ProjectType.received),
+                      const EmployerCreateProjectScreen(
+                        project: null,
+                      ),
                     );
-                    // Get.to(const EmployerCreateProjectScreen());
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: theme.colorScheme.tertiary,
@@ -241,48 +291,99 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
               child: Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 11,
-                children: List.generate(
-                  projects.length,
-                  (index) {
-                    return SizedBox(
-                      height: 125,
-                      width: 140,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: 5,
-                            bottom: 5,
-                            child: Container(
-                              width: 135,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                borderRadius: globalBorderRadius * 5,
-                              ),
-                              child: Image.asset(
-                                "assets/images/default_image.png",
-                                width: 134,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              ),
+                children: isLoading
+                    ? List.generate(3, (index) {
+                        return CustomShimmer(
+                          child: Container(
+                            width: 135,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: globalBorderRadius * 5,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Image.asset(
-                                "assets/images/edit-pen.png",
-                                width: 30,
-                                height: 30,
-                              ),
+                        );
+                      })
+                    : List.generate(
+                        projects.length,
+                        (index) {
+                          return SizedBox(
+                            height: 125,
+                            width: 140,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  right: 5,
+                                  bottom: 5,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Get.to(
+                                        EmployerCreateProjectScreen(
+                                          project: projects[index],
+                                        ),
+                                      )?.then((value) {
+                                        if (value != null && value) {
+                                          fetchEmployerProfileAndProjects();
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                        width: 135,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius * 5,
+                                          color:
+                                              (projects[index]?.items.isEmpty ??
+                                                      true)
+                                                  ? theme.colorScheme.primary
+                                                  : null,
+                                        ),
+                                        child: (projects[index]
+                                                    ?.items
+                                                    .isEmpty ??
+                                                true)
+                                            ? Container()
+                                            : videosFirstFrame[index] == null
+                                                ? ClipRRect(
+                                                    borderRadius:
+                                                        globalBorderRadius * 5,
+                                                    child: CustomCachedImage(
+                                                      url: projects[index]
+                                                              ?.items[0]
+                                                              .file ??
+                                                          '',
+                                                      width: 265,
+                                                      height: 180,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : ClipRRect(
+                                                    borderRadius:
+                                                        globalBorderRadius * 5,
+                                                    child: Image.memory(
+                                                      videosFirstFrame[index] ??
+                                                          Uint8List(0),
+                                                      width: 265,
+                                                      height: 180,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Image.asset(
+                                    "assets/images/edit-pen.png",
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ),

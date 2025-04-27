@@ -24,19 +24,21 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       height: 90,
       padding: globalPadding * 6,
       decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
-          borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
-          boxShadow: hasShadow
-              ? [
-                  BoxShadow(
-                    color: theme.colorScheme.onSurface,
-                    blurRadius: 20,
-                    spreadRadius: 20,
-                  )
-                ]
-              : null),
+        color: theme.colorScheme.primary,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(25),
+          bottomRight: Radius.circular(25),
+        ),
+        boxShadow: hasShadow
+            ? [
+                BoxShadow(
+                  color: theme.colorScheme.onSurface,
+                  blurRadius: 20,
+                  spreadRadius: 10,
+                )
+              ]
+            : null,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

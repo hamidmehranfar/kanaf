@@ -7,3 +7,12 @@ CalculateType convertStringToCalculateType(String name) {
     return CalculateType.wall;
   }
 }
+
+String convertCalculateTypeToString(CalculateType type) {
+  switch (type) {
+    case CalculateType.roof:
+      return "سقف";
+    case CalculateType.wall:
+      return "دیوار";
+  }
+}

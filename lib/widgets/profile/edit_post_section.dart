@@ -8,6 +8,7 @@ import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../error_snack_bar.dart';
 import '/widgets/custom_shimmer.dart';
 import '/res/enums/media_type.dart';
 import '/controllers/post_controller.dart';
@@ -99,7 +100,10 @@ class _EditPostSectionState extends State<EditPostSection> {
 
   Future<void> editPost() async {
     if (captionTextController.text.isEmpty) {
-      //FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: "کپشن نمیتواند خالی باشد",
+      );
       return;
     }
     if (widget.post.caption == captionTextController.text) {
@@ -121,7 +125,10 @@ class _EditPostSectionState extends State<EditPostSection> {
         if (value) {
           Get.back(result: true);
         } else {
-          //FIXME : show error
+          showSnackbarMessage(
+            context: context,
+            message: postController.apiMessage,
+          );
         }
       },
     );
@@ -143,6 +150,11 @@ class _EditPostSectionState extends State<EditPostSection> {
         .then((value) {
       if (value) {
         Get.back(result: true);
+      } else {
+        showSnackbarMessage(
+          context: context,
+          message: postController.apiMessage,
+        );
       }
     });
 
@@ -293,14 +305,26 @@ class _EditPostSectionState extends State<EditPostSection> {
               color: theme.colorScheme.onPrimary,
             )
           else
-            ButtonItem(
-              width: 180,
-              height: 40,
-              onTap: () async {
-                await editPost();
-              },
-              title: "ذخیره",
-              color: theme.colorScheme.tertiary,
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(20, 20),
+                    spreadRadius: -15,
+                    blurRadius: 50,
+                    color: theme.colorScheme.onPrimary,
+                  )
+                ],
+              ),
+              child: ButtonItem(
+                width: 180,
+                height: 40,
+                onTap: () async {
+                  await editPost();
+                },
+                title: "ذخیره",
+                color: theme.colorScheme.tertiary,
+              ),
             ),
           const SizedBox(height: 8),
           if (isOperationLoading)

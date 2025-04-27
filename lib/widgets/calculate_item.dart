@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/models/sub_category.dart';
-import 'package:kanaf/widgets/calculate_info_dialog.dart';
-import 'package:kanaf/widgets/custom_cached_image.dart';
+
+import '/global_configs.dart';
+import '/models/sub_category.dart';
+import '/widgets/calculate_info_dialog.dart';
+import '/widgets/custom_cached_image.dart';
 
 class CalculateItem extends StatelessWidget {
   final SubCategory subCategory;
@@ -43,7 +44,7 @@ class CalculateItem extends StatelessWidget {
                           ).then((value) async {});
                         },
                         child: Container(
-                          width: 90,
+                          width: 85,
                           height: 35,
                           padding: globalPadding / 2,
                           decoration: BoxDecoration(
@@ -54,7 +55,9 @@ class CalculateItem extends StatelessWidget {
                           child: Center(
                             child: Text(
                               subCategory.materials[index].name,
-                              style: theme.textTheme.labelSmall,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontSize: 10,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -83,7 +86,10 @@ class CalculateItem extends StatelessWidget {
                     child: Center(
                       child: Text(
                         subCategory.name,
-                        style: theme.textTheme.bodyLarge,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color:
+                              theme.colorScheme.surface.withValues(alpha: 0.8),
+                        ),
                       ),
                     ),
                   ),

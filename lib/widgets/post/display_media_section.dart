@@ -1,22 +1,27 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
-import '../step_widget.dart';
+import '/controllers/post_controller.dart';
+import '/res/controllers_key.dart';
 import '/models/post_item.dart';
 import '/controllers/size_controller.dart';
 import '/res/enums/media_type.dart';
 import '../custom_cached_image.dart';
 import '../custom_shimmer.dart';
+import '../step_widget.dart';
 
 class DisplayMediaSection extends StatefulWidget {
   final List<PostItem> items;
   final double? radius;
+  final int index;
 
   const DisplayMediaSection({
     super.key,
     required this.items,
-    this.radius,
+    required this.index,
+    required this.radius,
   });
 
   @override
@@ -25,60 +30,78 @@ class DisplayMediaSection extends StatefulWidget {
 
 class _DisplayMediaSectionState extends State<DisplayMediaSection> {
   bool isVideoLoading = false;
-  bool isVideoCompleted = false;
 
   bool isStop = false;
 
   int itemCurrentIndex = 0;
+  int videoPlayedIndex = 0;
 
-  Map<String, VideoPlayerController?> controllers = {};
+  PostController postController = Get.find(
+    tag: ControllersKey.postControllerKey,
+  );
 
   @override
   void initState() {
     super.initState();
     if ((widget.items.isNotEmpty) &&
         widget.items[itemCurrentIndex].itemType == MediaType.video) {
-      fetchVideo(itemCurrentIndex);
+      fetchVideo(itemCurrentIndex, false);
     }
   }
 
-  Future<void> fetchVideo(int index) async {
-    setState(() {
-      isVideoLoading = true;
-    });
-
+  Future<void> fetchVideo(int index, bool isCarousal) async {
     String url = widget.items[index].file;
 
-    if (controllers[url] == null) {
-      isVideoCompleted = false;
-      controllers[url] = VideoPlayerController.networkUrl(Uri.parse(url));
-
-      await controllers[url]!.initialize();
-
-      controllers[url]!.addListener(() {
-        if (controllers[url]!.value.isCompleted) {
-          setState(() {
-            isVideoCompleted = true;
-            isStop = true;
-          });
-        }
-      });
-
-      controllers[url]!.play();
+    bool isUrlExist = false;
+    for (var mapIndex
+        in postController.videoControllers[widget.index].$1.keys) {
+      if (mapIndex == index) {
+        isUrlExist = true;
+        break;
+      }
     }
 
-    setState(() {
-      isVideoLoading = false;
-    });
-  }
+    if (!isCarousal || !isUrlExist) {
+      setState(() {
+        isVideoLoading = true;
+      });
 
-  @override
-  void dispose() {
-    super.dispose();
+      VideoPlayerController temp =
+          VideoPlayerController.networkUrl(Uri.parse(url));
 
-    controllers.forEach((key, value) {
-      value?.dispose();
-    });
+      postController.videoControllers[widget.index].$1[index] = temp;
+
+      await temp.initialize();
+
+      temp.setLooping(true);
+
+      if (postController.postCurrentIndex.value == widget.index &&
+          index == postController.videoControllers[widget.index].$2) {
+        postController.currentPlayedVideoController?.pause();
+        postController.currentPlayedVideoController = temp;
+        temp.play();
+      } else {
+        temp.pause();
+      }
+
+      setState(() {
+        isVideoLoading = false;
+      });
+    } else {
+      if (postController.currentPlayedVideoController !=
+          postController.videoControllers[widget.index].$1[index]) {
+        postController.currentPlayedVideoController?.pause();
+        postController.videoControllers[widget.index].$1[index]?.play();
+
+        postController.currentPlayedVideoController =
+            postController.videoControllers[widget.index].$1[index];
+      } else {
+        postController.currentPlayedVideoController?.play();
+      }
+
+      var temp = postController.videoControllers[widget.index].$1;
+      postController.videoControllers[widget.index] = (temp, index, true);
+    }
   }
 
   @override
@@ -98,7 +121,7 @@ class _DisplayMediaSectionState extends State<DisplayMediaSection> {
                       child: CustomCachedImage(
                         url: widget.items[index].file,
                         fit: BoxFit.cover,
-                        height: 360,
+                        height: 355,
                         width: SizeController.width(context),
                       ),
                     )
@@ -121,69 +144,33 @@ class _DisplayMediaSectionState extends State<DisplayMediaSection> {
                           ] else ...[
                             Expanded(
                               child: InkWell(
-                                onTap: () {
-                                  isStop = !isStop;
-
-                                  setState(() {
-                                    if (isVideoCompleted) {
-                                      isVideoCompleted = false;
-                                      controllers[widget.items[index].file]!
-                                          .seekTo(
-                                        const Duration(seconds: 0),
-                                      );
-                                    }
-                                    if (isStop) {
-                                      controllers[widget.items[index].file]!
-                                          .pause();
-                                    } else {
-                                      controllers[widget.items[index].file]!
-                                          .play();
-                                    }
-                                  });
-                                },
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        height: 360,
-                                        decoration: BoxDecoration(
-                                          borderRadius: widget.radius != null
-                                              ? BorderRadius.circular(
-                                                  widget.radius!)
-                                              : null,
-                                          color: Colors.grey
-                                              .withValues(alpha: 0.3),
-                                        ),
-                                        width: double.infinity,
-                                        child: AspectRatio(
-                                          aspectRatio: controllers[
-                                                  widget.items[index].file]!
-                                              .value
-                                              .aspectRatio,
-                                          child: VideoPlayer(
-                                            controllers[
-                                                widget.items[index].file]!,
-                                          ),
-                                        ),
+                                child: Container(
+                                  height: 355,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: widget.radius == null
+                                        ? null
+                                        : BorderRadius.circular(widget.radius!),
+                                    color: Colors.grey.withValues(alpha: 0.3),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        widget.radius == null
+                                            ? 0
+                                            : widget.radius!),
+                                    child: AspectRatio(
+                                      aspectRatio: postController
+                                          .videoControllers[widget.index]
+                                          .$1[videoPlayedIndex]!
+                                          .value
+                                          .aspectRatio,
+                                      child: VideoPlayer(
+                                        postController
+                                            .videoControllers[widget.index]
+                                            .$1[videoPlayedIndex]!,
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 0,
-                                      bottom: 0,
-                                      right: 0,
-                                      left: 0,
-                                      child: Icon(
-                                        isStop
-                                            ? Icons.play_circle
-                                            : Icons.pause_circle,
-                                        size: 56,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -201,7 +188,17 @@ class _DisplayMediaSectionState extends State<DisplayMediaSection> {
             initialPage: itemCurrentIndex,
             onPageChanged: (index, changeReason) {
               if (widget.items[index].itemType == MediaType.video) {
-                fetchVideo(index);
+                videoPlayedIndex = index;
+                fetchVideo(videoPlayedIndex, true);
+              } else {
+                postController.currentPlayedVideoController?.pause();
+
+                var tempControllers =
+                    postController.videoControllers[widget.index].$1;
+                var tempIndex =
+                    postController.videoControllers[widget.index].$2;
+                postController.videoControllers[widget.index] =
+                    (tempControllers, tempIndex, false);
               }
               setState(() {
                 itemCurrentIndex = index;

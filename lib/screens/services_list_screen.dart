@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '/widgets/custom_error_widget.dart';
+import '/widgets/custom_shimmer.dart';
 import '/controllers/master_controller.dart';
 import '/models/master.dart';
 import '/res/controllers_key.dart';
@@ -112,10 +114,47 @@ class _ServicesListScreenState extends State<ServicesListScreen> {
                       height: 10,
                     );
                   },
-                  builderDelegate: PagedChildBuilderDelegate(itemBuilder:
-                      (BuildContext context, Master item, int index) {
-                    return PosterItem(master: item);
-                  }),
+                  builderDelegate: PagedChildBuilderDelegate(
+                    itemBuilder:
+                        (BuildContext context, Master item, int index) {
+                      return PosterItem(master: item);
+                    },
+                    noMoreItemsIndicatorBuilder: (context) {
+                      return const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("موردی یافت نشد"),
+                          SizedBox(height: 36),
+                        ],
+                      );
+                    },
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return const Center(
+                        child: Text("موردی یافت نشد"),
+                      );
+                    },
+                    firstPageErrorIndicatorBuilder: (context) {
+                      return CustomErrorWidget(onTap: () {
+                        _pagingController.refresh();
+                      });
+                    },
+                    firstPageProgressIndicatorBuilder: (context) {
+                      return CustomShimmer(
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: globalPadding * 6,
+                              height: 400,
+                              decoration: BoxDecoration(
+                                borderRadius: globalBorderRadius * 3,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

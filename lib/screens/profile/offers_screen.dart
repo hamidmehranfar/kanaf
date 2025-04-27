@@ -4,7 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '/controllers/size_controller.dart';
 import '/res/app_colors.dart';
-import '../../widgets/offer/offer_item.dart';
+import '/widgets/offer/offer_item.dart';
 import '/global_configs.dart';
 import '/models/offer_project.dart';
 import '/res/enums/project_type.dart';
@@ -63,7 +63,8 @@ class _OffersScreenState extends State<OffersScreen> {
       backgroundColor: theme.colorScheme.primary,
       appBar: CustomAppbar(
         iconAsset: "assets/icons/arrow_back_19.png",
-        onTap: () => Get.back(),
+        onTap: () => Navigator.pop(context),
+        hasShadow: true,
       ),
       body: SizedBox(
         height: SizeController.height(context),
@@ -75,6 +76,7 @@ class _OffersScreenState extends State<OffersScreen> {
             padding: globalPadding * 12,
             child: Column(
               children: [
+                const SizedBox(height: 25),
                 Text(
                   "پیشنهاد ها",
                   style: theme.textTheme.headlineSmall?.copyWith(
@@ -122,6 +124,30 @@ class _OffersScreenState extends State<OffersScreen> {
                         return CustomErrorWidget(onTap: () {
                           _pagingController.refresh();
                         });
+                      },
+                      noMoreItemsIndicatorBuilder: (context) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "موردی یافت نشد",
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 36),
+                          ],
+                        );
+                      },
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return Center(
+                          child: Text(
+                            "موردی یافت نشد",
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        );
                       },
                       firstPageProgressIndicatorBuilder: (context) {
                         return CustomShimmer(

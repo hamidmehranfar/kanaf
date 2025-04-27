@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/widgets/error_snack_bar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
 import '/widgets/choose_profile_image.dart';
@@ -53,8 +54,11 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> signup() async {
     if (firstNameTextController.text.isEmpty ||
         lastNameTextController.text.isEmpty) {
-      //FIXME : show error
-      // message = "لطفا نام خود را وارد کنید";
+      showSnackbarMessage(
+        context: context,
+        message: "لطفا نام خود را وارد کنید",
+      );
+      return;
     }
     setState(() {
       isLoading = true;
@@ -78,7 +82,10 @@ class _SignupScreenState extends State<SignupScreen> {
       if (result) {
         Get.offAll(const MainScreen());
       } else {
-        //FIXME : show error
+        showSnackbarMessage(
+          context: context,
+          message: authController.apiMessage ?? '',
+        );
       }
     }
   }

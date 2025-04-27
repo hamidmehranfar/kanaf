@@ -37,5 +37,5 @@ class Post {
         user = User.fromJson(json["profile"]["user"]),
         createdDate = DateTime.tryParse(json["created_time"]) ?? DateTime.now(),
         caption = json["caption"],
-        isCurrentUserLiked = json["current_user_like"];
+        isCurrentUserLiked = json["current_user_like"] == null ? false : true;
 }

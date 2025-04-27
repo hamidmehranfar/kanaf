@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/city_controller.dart';
-import 'package:kanaf/models/city.dart';
-import 'package:kanaf/models/employer_user.dart';
-import 'package:kanaf/res/enums/api_method.dart';
+import 'package:kanaf/res/enums/message_type.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
 
-import '../address_dropdown_widget.dart';
+import '../error_snack_bar.dart';
+import '/controllers/city_controller.dart';
+import '/models/city.dart';
+import '/models/employer_user.dart';
+import '/res/enums/api_method.dart';
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
 import '/res/enums/degree_type.dart';
@@ -15,6 +18,7 @@ import '/global_configs.dart';
 import '/res/app_colors.dart';
 import '/widgets/button_item.dart';
 import '/widgets/my_divider.dart';
+import '../address_dropdown_widget.dart';
 
 class ActivateEmployerProfileSection extends StatefulWidget {
   final EmployerUser? employerUser;
@@ -33,12 +37,13 @@ class _ActivateEmployerProfileSectionState
     extends State<ActivateEmployerProfileSection> {
   TextEditingController titleTextController = TextEditingController();
   TextEditingController bioTextController = TextEditingController();
-  TextEditingController birthDateTextController = TextEditingController();
 
   CityController cityController = Get.find(
     tag: ControllersKey.cityControllerKey,
   );
   City? selectedCity;
+
+  String? birthDate;
 
   bool isLoading = false;
 
@@ -78,16 +83,19 @@ class _ActivateEmployerProfileSectionState
 
     titleTextController.text = widget.employerUser!.title;
     bioTextController.text = widget.employerUser!.bio;
-    birthDateTextController.text = widget.employerUser!.birthday;
+    birthDate = widget.employerUser!.birthday;
   }
 
   Future<void> activateEmployer() async {
     if (titleTextController.text.isEmpty ||
         selectedCity == null ||
-        birthDateTextController.text.isEmpty ||
+        birthDate == null ||
         selectedPayment == null ||
         selectedGrade == null) {
-      //FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: "لطفا مقادیر را وارد کنید",
+      );
       return;
     }
     setState(() {
@@ -99,17 +107,24 @@ class _ActivateEmployerProfileSectionState
       title: titleTextController.text,
       cityId: selectedCity?.id ?? -1,
       bio: bioTextController.text,
-      birthDate: birthDateTextController.text,
+      birthDate: birthDate ?? '',
       paymentIndex: convertStringToPayment(selectedPayment ?? '').index,
       degreeIndex: convertStringToDegree(selectedGrade ?? '').index,
       method: widget.employerUser == null ? ApiMethod.post : ApiMethod.patch,
     )
         .then((value) {
       if (value) {
-        // show success
+        showSnackbarMessage(
+          context: context,
+          message: "پروفایل کارفرما فعال شد",
+          type: MessageType.success,
+        );
         Get.back(result: true);
       } else {
-        // show error
+        showSnackbarMessage(
+          context: context,
+          message: authController.apiMessage ?? '',
+        );
         print(authController.apiMessage);
       }
     });
@@ -184,6 +199,7 @@ class _ActivateEmployerProfileSectionState
                   dropDownHeight: 52,
                   dropDownColor: AppColors.sideColor,
                   selectedColor: AppColors.sideColor.withValues(alpha: 0.55),
+                  selectedCity: widget.employerUser?.city,
                 ),
               ),
               const SizedBox(height: 7),
@@ -211,27 +227,60 @@ class _ActivateEmployerProfileSectionState
                 ),
               ),
               const SizedBox(height: 7),
-              Container(
-                margin: globalPadding * 5,
-                padding: const EdgeInsets.only(bottom: 5, right: 9, left: 9),
-                decoration: BoxDecoration(
-                  color: AppColors.textFieldColor,
-                  borderRadius: globalBorderRadius * 4,
-                ),
-                child: TextField(
-                  controller: birthDateTextController,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.surface,
+              InkWell(
+                onTap: () async {
+                  Jalali? picked = await showPersianDatePicker(
+                    context: context,
+                    initialDate: Jalali.now(),
+                    firstDate: Jalali(1320, 8),
+                    lastDate: Jalali(1450, 9),
+                    initialEntryMode: PersianDatePickerEntryMode.calendarOnly,
+                    initialDatePickerMode: PersianDatePickerMode.year,
+                  );
+
+                  if (picked != null) {
+                    setState(() {
+                      birthDate =
+                          '${picked.year}-${picked.month}-${picked.day}';
+                    });
+                  }
+                },
+                child: Container(
+                  height: 50,
+                  margin: globalPadding * 5,
+                  padding: const EdgeInsets.only(bottom: 5, right: 9, left: 9),
+                  decoration: BoxDecoration(
+                    color: AppColors.textFieldColor,
+                    borderRadius: globalBorderRadius * 3,
                   ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    hintText: "تاریخ تولد",
-                    hintStyle: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.surface.withValues(alpha: 0.5),
-                    ),
-                  ),
+                  child: birthDate == null
+                      ? Center(
+                          child: Text(
+                            'تاریخ تولد',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.5)),
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              birthDate?.toPersianDigit() ?? '',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.surface,
+                              ),
+                            ),
+                            Text(
+                              'انتخاب',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.surface
+                                    .withValues(alpha: 0.7),
+                              ),
+                            )
+                          ],
+                        ),
                 ),
               ),
               const SizedBox(height: 7),

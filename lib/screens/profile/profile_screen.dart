@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/res/enums/master_request_types.dart';
-import 'package:kanaf/screens/authentication/login_screen.dart';
-import 'package:kanaf/screens/profile/employer_profile_screen.dart';
-import 'package:kanaf/screens/test.dart';
-import 'package:kanaf/widgets/custom_error_widget.dart';
-import 'package:kanaf/widgets/custom_shimmer.dart';
-import 'package:kanaf/widgets/profile/activate_master_profile_section.dart';
-import 'package:kanaf/widgets/profile/activate_profile_status.dart';
 
+import '/res/enums/master_request_types.dart';
+import '/screens/authentication/login_screen.dart';
+import '/screens/profile/employer_profile_screen.dart';
+import '/widgets/custom_error_widget.dart';
+import '/widgets/custom_shimmer.dart';
+import '/widgets/profile/activate_master_profile_section.dart';
+import '/widgets/profile/activate_profile_status.dart';
 import '/screens/details_screen.dart';
 import '/controllers/authentication_controller.dart';
 import '/res/controllers_key.dart';
@@ -26,10 +25,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
-    with TickerProviderStateMixin {
-  TabController? tabController;
-
+class _ProfileScreenState extends State<ProfileScreen> {
   AuthenticationController authenticationController = Get.find(
     tag: ControllersKey.authControllerKey,
   );
@@ -92,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       // barrierColor: Colors.transparent.withValues(alpha: 0.9),
       context: context,
       builder: (context) {
-        return ActivateMasterProfileSection();
+        return const ActivateMasterProfileSection();
       },
     ).then((value) async {
       if (value) {
@@ -101,70 +97,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
   }
 
-  Future<void> showMasterOrEmployerUser(Function(bool isMaster) onTap) async {
-    var theme = Theme.of(context);
-    if (authenticationController.user?.employerProfileId != null &&
-        authenticationController.user?.masterProfileId != null) {
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            backgroundColor: theme.colorScheme.primary,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: () {
-                    onTap(true);
-                  },
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: globalBorderRadius * 2,
-                    ),
-                    backgroundColor: theme.colorScheme.onSurface,
-                  ),
-                  child: Text(
-                    "به عنوان اوساکار",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: () {
-                    onTap(false);
-                  },
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: globalBorderRadius * 2,
-                    ),
-                    backgroundColor: theme.colorScheme.onSurface,
-                  ),
-                  child: Text(
-                    "به عنوان کار فرما",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          );
-        },
-      );
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    tabController = TabController(
-      length: 1,
-      vsync: this,
-    );
 
     fetchUserValues(false);
   }
@@ -265,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     const SizedBox(height: 22),
                     const MyDivider(
-                      color: Color(0xff3333333),
+                      color: Color(0xff333333),
                       height: 1,
                       thickness: 1,
                     ),
@@ -285,7 +220,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                             await fetchUserValues(true);
                           });
                         } else {
-                          Get.to(const EmployerProfileScreen());
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const EmployerProfileScreen();
+                              },
+                            ),
+                          );
                         }
                       },
                       child: Stack(
@@ -334,14 +275,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                     InkWell(
                       onTap: () {
                         if (masterRequestTypes == MasterRequestTypes.active) {
-                          Get.to(
-                            DetailsScreen(
-                              id: authenticationController
-                                      .user?.masterProfileId ??
-                                  authenticationController
-                                      .user?.employerProfileId ??
-                                  0,
-                              isComeFromProfile: true,
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return DetailsScreen(
+                                  id: authenticationController
+                                          .user?.masterProfileId ??
+                                      authenticationController
+                                          .user?.employerProfileId ??
+                                      0,
+                                  isComeFromProfile: true,
+                                );
+                              },
                             ),
                           );
                         } else if (masterRequestTypes ==

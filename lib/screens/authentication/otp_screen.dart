@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/widgets/error_snack_bar.dart';
 import 'package:persian_number_utility/persian_number_utility.dart';
 
-import '../../widgets/step_widget.dart';
+import '/widgets/step_widget.dart';
 import '/controllers/authentication_controller.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
@@ -40,10 +41,6 @@ class _OtpScreenState extends State<OtpScreen> {
       isLoading = true;
     });
 
-    // String? response = await authController.verifyOtp(
-    //   widget.username, textController.text,
-    // );
-
     bool response = await authController.verifyOtp(
       isSignUp: false,
       username: widget.username.toEnglishDigit(),
@@ -55,7 +52,8 @@ class _OtpScreenState extends State<OtpScreen> {
       if (result) {
         Get.offAll(const MainScreen());
       } else {
-        //FIXME : show error
+        showSnackbarMessage(
+            context: context, message: authController.apiMessage ?? '');
       }
     }
 
@@ -69,53 +67,62 @@ class _OtpScreenState extends State<OtpScreen> {
     var theme = Theme.of(context);
 
     return Scaffold(
-      body: Padding(
-        padding: globalPadding * 12,
-        child: SizedBox(
-          width: SizeController.width(context),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 140),
-                Image.asset(
-                  "assets/images/start_screen/person.png",
-                  width: 115,
-                  height: 335,
-                ),
-                const SizedBox(height: 10),
-                const StepWidget(
-                  selectedIndex: 2,
-                  length: 3,
-                ),
-                const SizedBox(height: 16),
-                Text(
+      body: SizedBox(
+        width: SizeController.width(context),
+        child: SingleChildScrollView(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/start_screen/construction_ruler_pencil.png",
+                width: SizeController.width(context),
+                height: 490,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 10),
+              const StepWidget(
+                selectedIndex: 2,
+                length: 3,
+                isReverse: true,
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: globalPadding * 12,
+                child: Text(
                   AppStrings.welcomeText,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 18),
-                CustomTextField(
+              ),
+              const SizedBox(height: 18),
+              Padding(
+                padding: globalPadding * 12,
+                child: CustomTextField(
                   onChanged: (value) {
                     textController.text = value.toPersianDigit();
                   },
                   hintText: "کد تأیید",
-                  scrollPadding: const EdgeInsets.only(bottom: 100),
+                  // scrollPadding: const EdgeInsets.only(bottom: 100),
                   controller: textController,
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 30),
-                LoginButton(
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: globalPadding * 12,
+                child: LoginButton(
                   isLoading: isLoading,
                   onTap: () async {
                     await otpVerification();
                   },
                   buttonText: "ارسال کد",
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),

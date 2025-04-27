@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:kanaf/widgets/offer/offer_section.dart';
-import 'package:kanaf/widgets/post/display_media_section.dart';
+import 'package:get/get.dart';
+import 'package:kanaf/controllers/post_controller.dart';
+import 'package:kanaf/res/controllers_key.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
 
+import '/widgets/offer/offer_section.dart';
+import '/widgets/post/display_media_section.dart';
 import '/controllers/size_controller.dart';
 import '/global_configs.dart';
 import '/models/employer_project.dart';
 import '/res/app_colors.dart';
-import '/widgets/custom_cached_image.dart';
 import '/widgets/my_divider.dart';
 import '/widgets/button_item.dart';
 import '/widgets/custom_appbar.dart';
@@ -24,6 +27,18 @@ class ProjectDetailsScreen extends StatefulWidget {
 }
 
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
+  PostController postController = Get.find(
+    tag: ControllersKey.postControllerKey,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+
+    postController.videoControllers.clear();
+    postController.videoControllers.add(({}, 0, true));
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -70,6 +85,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                     DisplayMediaSection(
                       items: widget.project.items,
                       radius: 25,
+                      index: 0,
                     ),
                     const SizedBox(height: 25),
                     Container(
@@ -93,11 +109,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              Text(
-                                widget.project.caption,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.secondary
-                                      .withValues(alpha: 0.5),
+                              Expanded(
+                                child: Text(
+                                  widget.project.caption,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.secondary
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  textAlign: TextAlign.end,
                                 ),
                               ),
                             ],
@@ -133,11 +152,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              Text(
-                                widget.project.price.toString(),
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.secondary
-                                      .withValues(alpha: 0.5),
+                              Expanded(
+                                child: Text(
+                                  "${widget.project.price.toString().toPersianDigit().seRagham()} تومان",
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.secondary
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  textAlign: TextAlign.end,
                                 ),
                               ),
                             ],
@@ -153,11 +175,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              Text(
-                                widget.project.duration.toString(),
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.secondary
-                                      .withValues(alpha: 0.5),
+                              Expanded(
+                                child: Text(
+                                  "${widget.project.duration.toString().toPersianDigit().seRagham()} روز",
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.secondary
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  textAlign: TextAlign.end,
                                 ),
                               ),
                             ],
@@ -173,11 +198,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              Text(
-                                widget.project.area.toString(),
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.secondary
-                                      .withValues(alpha: 0.5),
+                              Expanded(
+                                child: Text(
+                                  "${widget.project.area.toString().toPersianDigit().seRagham()} روز",
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.secondary
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  textAlign: TextAlign.end,
                                 ),
                               ),
                             ],
@@ -193,11 +221,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                       .withValues(alpha: 0.5),
                                 ),
                               ),
-                              Text(
-                                widget.project.city?.name ?? '',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.colorScheme.secondary
-                                      .withValues(alpha: 0.5),
+                              Expanded(
+                                child: Text(
+                                  widget.project.city?.name ?? '',
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.secondary
+                                        .withValues(alpha: 0.5),
+                                  ),
+                                  textAlign: TextAlign.end,
                                 ),
                               ),
                             ],

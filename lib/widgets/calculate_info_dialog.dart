@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/calculate_controller.dart';
-import 'package:kanaf/global_configs.dart';
-import 'package:kanaf/models/calculate_material.dart';
-import 'package:kanaf/res/controllers_key.dart';
-import 'package:kanaf/screens/calculate_result_screen.dart';
-import 'package:kanaf/widgets/my_divider.dart';
 
-import '../res/app_colors.dart';
+import '/controllers/calculate_controller.dart';
+import '/global_configs.dart';
+import '/models/calculate_material.dart';
+import '/res/controllers_key.dart';
+import '/screens/calculate_result_screen.dart';
+import '/widgets/my_divider.dart';
+import '/res/app_colors.dart';
 import 'button_item.dart';
 
 class CalculateInfoDialog extends StatefulWidget {
@@ -101,6 +101,7 @@ class _CalculateInfoDialogState extends State<CalculateInfoDialog> {
               widget.material.name,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w400,
+                color: theme.colorScheme.surface.withValues(alpha: 0.7),
               ),
             ),
           ),
@@ -127,7 +128,7 @@ class _CalculateInfoDialogState extends State<CalculateInfoDialog> {
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
-                hintText: "عدد",
+                hintText: "متراژ (متر)",
                 hintStyle: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.surface.withValues(alpha: 0.5),
                 ),
@@ -186,6 +187,13 @@ class _CalculateInfoDialogState extends State<CalculateInfoDialog> {
               ),
             ),
           ],
+          const SizedBox(height: 10),
+          Text(
+            widget.material.description,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.surface.withValues(alpha: 0.7),
+            ),
+          ),
           const SizedBox(height: 20),
           const MyDivider(
             color: Color(0xff333333),

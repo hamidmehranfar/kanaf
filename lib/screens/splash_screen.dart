@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/authentication_controller.dart';
-import 'package:kanaf/res/controllers_key.dart';
-import 'package:kanaf/screens/start_screen.dart';
 
+import '/controllers/authentication_controller.dart';
+import '/res/controllers_key.dart';
+import '/screens/start_screen.dart';
 import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {

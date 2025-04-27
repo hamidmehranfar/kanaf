@@ -1,13 +1,25 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/controllers/size_controller.dart';
-import 'package:kanaf/res/app_colors.dart';
-import 'package:kanaf/widgets/custom_appbar.dart';
-import '../widgets/my_divider.dart';
-import '../global_configs.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '/widgets/post/posts_grid_section.dart';
+import '/res/enums/media_type.dart';
+import '/controllers/post_controller.dart';
+import '/res/controllers_key.dart';
+import '/controllers/size_controller.dart';
+import '/res/app_colors.dart';
+import '/widgets/custom_appbar.dart';
+import '/widgets/my_divider.dart';
+import '/global_configs.dart';
 
 class SearchScreen extends StatefulWidget {
   final bool isMainScreen;
+
   const SearchScreen({super.key, required this.isMainScreen});
 
   @override
@@ -15,26 +27,76 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  TextEditingController controller = TextEditingController();
-  FocusNode focus = FocusNode();
-  List<String> searchList = [];
+  TextEditingController searchTextController = TextEditingController();
+
+  bool isLoading = false;
+  bool isFailed = false;
+
+  PostController postController = Get.find(
+    tag: ControllersKey.postControllerKey,
+  );
+
+  List<Uint8List?> videosFirstFrame = [];
 
   @override
   void initState() {
     super.initState();
+
+    postController.posts.clear();
   }
 
-  void onChangeListener(String searchText){
-    searchList.clear();
-    if("حمید".contains(searchText) && searchText.isNotEmpty){
-      searchList.add("حمید مهران فر");
-      searchList.add("حمید مهران فر 2");
-      searchList.add("حمید مهران فر 3");
+  Future<void> fetchPosts() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    videosFirstFrame.clear();
+
+    await postController
+        .getSearchPosts(searchTextController.text)
+        .then((values) async {
+      if (values) {
+        for (var post in postController.posts) {
+          if (post.items.isNotEmpty) {
+            if (post.items[0].itemType == MediaType.video) {
+              videosFirstFrame.add(await getFirstFrame(post.items[0].file));
+            } else {
+              videosFirstFrame.add(null);
+            }
+          }
+        }
+      } else {
+        isFailed = true;
+      }
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<Uint8List?> getFirstFrame(String videoUrl) async {
+    try {
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/temp_video.mp4';
+
+      // Download video using Dio
+      Dio dio = Dio();
+      await dio.download(videoUrl, filePath);
+
+      // Generate thumbnail from the downloaded file
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: filePath,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 128,
+        quality: 75,
+      );
+
+      return thumbnail;
+    } catch (e) {
+      return null;
     }
-    else{
-      searchList.clear();
-    }
-    setState(() {});
   }
 
   @override
@@ -43,20 +105,23 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: theme.colorScheme.primary,
       appBar: CustomAppbar(
-        onTap: (){
+        onTap: () {
           Navigator.of(context).pop();
         },
-        iconAsset: "assets/icons/arrow_back_19.png",
+        icon: Icons.menu,
         hasShadow: true,
       ),
       body: Column(
         children: [
-          const SizedBox(height: 17,),
-          Text("بررسی", style: theme.textTheme.headlineLarge?.copyWith(
+          const SizedBox(height: 17),
+          Text(
+            "بررسی",
+            style: theme.textTheme.headlineLarge?.copyWith(
               color: theme.colorScheme.secondary,
-              fontWeight: FontWeight.w300
-          ),),
-          const SizedBox(height: 8,),
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          const SizedBox(height: 8),
           Padding(
             padding: globalPadding * 11,
             child: MyDivider(
@@ -65,30 +130,26 @@ class _SearchScreenState extends State<SearchScreen> {
               thickness: 1,
             ),
           ),
-          const SizedBox(height: 18,),
+          const SizedBox(height: 18),
           Container(
             width: SizeController.width(context),
             height: 63,
             margin: globalPadding * 6,
-            padding: const EdgeInsets.only(
-              left: 11,
-              right: 11,
-              top: 8,
-              bottom: 8
-            ),
+            padding:
+                const EdgeInsets.only(left: 11, right: 11, top: 8, bottom: 8),
             decoration: BoxDecoration(
               borderRadius: globalBorderRadius * 5,
               color: theme.colorScheme.primary,
               boxShadow: [
                 BoxShadow(
-                    color: theme.colorScheme.tertiary,
-                    offset: const Offset(-3,-3)
+                  color: theme.colorScheme.tertiary,
+                  offset: const Offset(-3, -3),
                 ),
                 BoxShadow(
-                    color: theme.colorScheme.onSecondary,
-                    offset: const Offset(3, 3)
-                )
-              ]
+                  color: theme.colorScheme.onSecondary,
+                  offset: const Offset(3, 3),
+                ),
+              ],
             ),
             child: Container(
               padding: const EdgeInsets.only(bottom: 5),
@@ -98,87 +159,60 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               child: Row(
                 children: [
-                  const SizedBox(width: 8,),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.surface
-                      ),
+                      style: theme.textTheme.labelLarge
+                          ?.copyWith(color: theme.colorScheme.surface),
+                      controller: searchTextController,
+                      autofocus: false,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         hintText: "جستجو",
                         hintStyle: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.surface.withOpacity(0.5)
-                        )
+                          color:
+                              theme.colorScheme.surface.withValues(alpha: 0.5),
+                        ),
                       ),
-                    )
+                    ),
                   ),
                   SizedBox(
                     width: 25,
                     height: 25,
                     child: IconButton(
-                      onPressed: (){
-
+                      onPressed: () async {
+                        await fetchPosts();
                       },
                       style: IconButton.styleFrom(
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        padding: EdgeInsets.zero
+                        padding: EdgeInsets.zero,
                       ),
-                      icon: Icon(Icons.search, size: 25,
-                        color:theme.colorScheme.tertiary,)
+                      icon: Icon(
+                        Icons.search,
+                        size: 25,
+                        color: theme.colorScheme.tertiary,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8,)
+                  const SizedBox(width: 8)
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 14,),
+          const SizedBox(height: 14),
           Expanded(
-              child: Padding(
-                padding: globalPadding * 6,
-                child: SizedBox(
-                  width: SizeController.width(context),
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10
-                    ),
-                    itemBuilder: (context, index){
-                      return Container(
-                        color: theme.colorScheme.inverseSurface,
-                        width: 80,
-                        height: 80,
-                      );
-                    },
-                  ),
-                ),
-              )
-          )
-          // Expanded(
-          //   child: ListView.builder(
-          //     shrinkWrap: true,
-          //     itemBuilder: (context, index){
-          //       return Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Container(
-          //             padding: globalPadding * 2,
-          //             child: Text(searchList[index], style: theme.textTheme.bodyLarge,),
-          //           ),
-          //           const SizedBox(height: 8,),
-          //           MyDivider(color: theme.colorScheme.shadow,
-          //               height: 1, thickness: 1).paddingSymmetric(horizontal: 8),
-          //           const SizedBox(height: 8,),
-          //         ],
-          //       );
-          //     },
-          //     itemCount: searchList.length,
-          //   ),
-          // )
+            child: PostsGridSection(
+              key: const ValueKey("search"),
+              isLoading: isLoading,
+              isFailed: isFailed,
+              onTap: fetchPosts,
+              isComeFromProfile: false,
+              videosFrame: videosFirstFrame,
+              padding: globalPadding * 2,
+            ),
+          ),
         ],
       ),
     );

@@ -2,23 +2,23 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
-import 'package:kanaf/res/enums/project_type.dart';
 import 'package:kanaf/screens/profile/create_post_story_screen.dart';
-import 'package:kanaf/screens/profile/offers_screen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:persian_number_utility/persian_number_utility.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '/res/app_colors.dart';
+import '/res/enums/project_type.dart';
+import '/screens/profile/offers_screen.dart';
+import '/widgets/post/posts_grid_section.dart';
 import '/res/enums/media_type.dart';
 import '/widgets/shadow_button.dart';
-import '/screens/post_screen.dart';
-import '/widgets/profile/edit_post_section.dart';
 import '/controllers/master_controller.dart';
 import '/controllers/post_controller.dart';
 import '/controllers/project_controller.dart';
-import '/models/post_item.dart';
 import '/widgets/custom_cached_image.dart';
 import '/widgets/custom_error_widget.dart';
 import '/widgets/custom_shimmer.dart';
@@ -154,7 +154,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return Scaffold(
       appBar: CustomAppbar(
         iconAsset: "assets/icons/arrow_back_19.png",
-        onTap: () => Get.back(),
+        onTap: () {
+          if (widget.isComeFromProfile) {
+            Navigator.of(context).pop();
+          } else {
+            Get.back();
+          }
+        },
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -168,129 +174,132 @@ class _DetailsScreenState extends State<DetailsScreen> {
               children: [
                 if (isLoading)
                   CustomShimmer(
-                      child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 32),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        width: 40,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        width: 40,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        width: 40,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: globalBorderRadius,
+                                          color: theme.colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: globalBorderRadius,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 80,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: globalBorderRadius,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
                           children: [
-                            const SizedBox(height: 32),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      width: 40,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      width: 40,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      width: 40,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: globalBorderRadius,
-                                        color: theme.colorScheme.onSurface,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            const SizedBox(height: 12),
+                            Container(
+                              width: 88,
+                              height: 88,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: theme.colorScheme.onSurface,
+                              ),
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Container(
-                                  width: 80,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: globalBorderRadius,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
-                                ),
-                                Container(
-                                  width: 80,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: globalBorderRadius,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(height: 10),
+                            Container(
+                              width: 60,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: globalBorderRadius,
+                                color: theme.colorScheme.onSurface,
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          const SizedBox(height: 12),
-                          Container(
-                            width: 88,
-                            height: 88,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            width: 60,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: globalBorderRadius,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ))
+                        )
+                      ],
+                    ),
+                  )
                 else if (isProfileFailed)
                   Center(
                     child: CustomErrorWidget(onTap: () async {
@@ -300,53 +309,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 else ...[
                   const SizedBox(height: 23),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
                           children: [
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     Column(
-                            //       children: [
-                            //         Text(
-                            //           postController.posts.length
-                            //               .toString()
-                            //               .toPersianDigit(),
-                            //           style: getStyle(theme),
-                            //         ),
-                            //         Text(
-                            //           "پست",
-                            //           style: getStyle(theme),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     Column(
-                            //       children: [
-                            //         Text(
-                            //           "3".toPersianDigit(),
-                            //           style: getStyle(theme),
-                            //         ),
-                            //         Text(
-                            //           "رتبه",
-                            //           style: getStyle(theme),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     Column(
-                            //       children: [
-                            //         Text(
-                            //           "3".toPersianDigit(),
-                            //           style: getStyle(theme),
-                            //         ),
-                            //         Text(
-                            //           "رتبه",
-                            //           style: getStyle(theme),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
+                            Padding(
+                              padding: globalPadding,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        postController.posts.length
+                                            .toString()
+                                            .toPersianDigit(),
+                                        style: getStyle(theme),
+                                      ),
+                                      Text(
+                                        "پست",
+                                        style: getStyle(theme),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "3".toPersianDigit(),
+                                        style: getStyle(theme),
+                                      ),
+                                      Text(
+                                        "سابقه",
+                                        style: getStyle(theme),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "3".toPersianDigit(),
+                                        style: getStyle(theme),
+                                      ),
+                                      Text(
+                                        "رتبه",
+                                        style: getStyle(theme),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                             if (!widget.isComeFromProfile) ...[
                               const SizedBox(height: 14),
                               Row(
@@ -354,18 +368,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   ShadowButton(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      String url =
+                                          "tel:${masterController.master?.user.userName}";
+                                      if (await canLaunchUrl(Uri.parse(url))) {
+                                        await launchUrl(Uri.parse(url));
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
                                     width: 100,
-                                    text: "ارتباط با استاد کار",
+                                    text: "تماس",
                                   ),
                                   ShadowButton(
                                     onTap: () {
-                                      Get.to(CreateProjectScreen(
-                                        profileId: widget.id,
-                                      ));
+                                      Get.to(
+                                        CreateProjectScreen(
+                                            profileId: widget.id),
+                                      );
                                     },
                                     width: 100,
-                                    text: "ثبت پروژه با استادکار",
+                                    text: "ثبت پروژه",
                                   ),
                                 ],
                               ),
@@ -376,20 +399,37 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       const SizedBox(width: 11),
                       Column(
                         children: [
-                          ClipOval(
-                            child: CustomCachedImage(
-                              url: masterController.master?.user.avatar ?? '',
-                              width: 88,
-                              height: 88,
-                              fit: BoxFit.cover,
+                          Container(
+                            padding: globalAllPadding / 2,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.paleBlack,
+                            ),
+                            child: Container(
+                              padding: globalAllPadding / 2,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: theme.colorScheme.surface,
+                              ),
+                              child: ClipOval(
+                                child: CustomCachedImage(
+                                  url: masterController.master?.user.avatar ??
+                                      '',
+                                  width: 88,
+                                  height: 88,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 2),
                           SizedBox(
-                            width: 90,
+                            width: 100,
                             child: Text(
                               "${masterController.master?.user.firstName ?? ''} ${masterController.master?.user.lastName ?? ''}",
-                              style: theme.textTheme.titleMedium,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],
@@ -409,45 +449,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Opacity(
-                        opacity: 0.3,
-                        child: FilledButton(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            backgroundColor: theme.colorScheme.tertiary,
-                            fixedSize: const Size(134, 36),
-                          ),
-                          child: Text(
-                            "چت",
-                            style: theme.textTheme.bodyLarge,
+                      FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const OffersScreen(
+                                    type: ProjectType.sent);
+                              },
+                            ),
+                          );
+                        },
+                        style: FilledButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          backgroundColor: theme.colorScheme.tertiary,
+                          padding: EdgeInsets.zero,
+                          fixedSize: const Size(154, 36),
+                        ),
+                        child: Text(
+                          "وضعیت پیشنهاد ها",
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontSize: 14,
                           ),
                         ),
                       ),
                       const SizedBox(width: 10),
                       FilledButton(
                         onPressed: () {
-                          Get.to(OffersScreen(type: ProjectType.sent));
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const CreatePostStoryScreen(
-                          //         isStory: false,
-                          //       );
-                          //     },
-                          //   ),
-                          // ).then((value) async {
-                          //   if (value != null && value) {
-                          //     await _fetchProfileAndPosts();
-                          //   }
-                          // });
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const CreatePostStoryScreen(
+                                  isStory: false,
+                                );
+                              },
+                            ),
+                          ).then((value) async {
+                            if (value != null && value) {
+                              await _fetchProfileAndPosts();
+                            }
+                          });
                         },
                         style: FilledButton.styleFrom(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: theme.colorScheme.tertiary,
+                          padding: EdgeInsets.zero,
                           fixedSize: const Size(134, 36),
                         ),
                         child: Text(
                           "پست جدید",
-                          style: theme.textTheme.bodyLarge,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ],
@@ -461,110 +514,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
                 const SizedBox(height: 14),
                 Expanded(
-                  child: isLoading
-                      ? GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            return CustomShimmer(
-                              child: Container(
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            );
-                          },
-                        )
-                      : isPostsFailed
-                          ? Center(
-                              child: CustomErrorWidget(
-                                onTap: () async {
-                                  await _fetchProfileAndPosts();
-                                },
-                              ),
-                            )
-                          : MasonryGridView.count(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              itemCount: postController.posts.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                PostItem? item =
-                                    postController.posts[index].items.isNotEmpty
-                                        ? postController.posts[index].items[0]
-                                        : null;
-
-                                Widget? gridItem;
-
-                                if (videosFirstFrame[index] == null) {
-                                  gridItem = CustomCachedImage(
-                                    url: item?.file ?? '',
-                                  );
-                                } else {
-                                  gridItem =
-                                      Image.memory(videosFirstFrame[index]!);
-                                }
-
-                                if (widget.isComeFromProfile) {
-                                  return InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            backgroundColor:
-                                                theme.colorScheme.primary,
-                                            child: EditPostSection(
-                                              post: postController.posts[index],
-                                            ),
-                                          );
-                                        },
-                                      ).then((value) async {
-                                        if (value != null && value) {
-                                          await _fetchProfileAndPosts();
-                                        }
-                                      });
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        gridItem,
-                                        Positioned(
-                                          right: 0,
-                                          bottom: 0,
-                                          child: Container(
-                                            width: 25,
-                                            height: 25,
-                                            decoration: BoxDecoration(
-                                              color: theme.colorScheme.primary,
-                                              borderRadius:
-                                                  globalBorderRadius * 2,
-                                            ),
-                                            child: Image.asset(
-                                              "assets/images/edit-pen.png",
-                                              width: 30,
-                                              height: 30,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-
-                                return InkWell(
-                                  onTap: () {
-                                    Get.to(
-                                      PostScreen(
-                                        postIndex: index,
-                                      ),
-                                    );
-                                  },
-                                  child: gridItem,
-                                );
-                              },
-                            ),
+                  child: PostsGridSection(
+                    key: const ValueKey("detail"),
+                    isLoading: isLoading,
+                    isFailed: isPostsFailed,
+                    onTap: _fetchProfileAndPosts,
+                    isComeFromProfile: widget.isComeFromProfile,
+                    videosFrame: videosFirstFrame,
+                  ),
                 ),
               ],
             ),

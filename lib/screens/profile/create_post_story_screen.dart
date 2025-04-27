@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/res/enums/message_type.dart';
 
+import '../../widgets/error_snack_bar.dart';
 import '/models/post.dart';
 import '/controllers/post_controller.dart';
 import '/res/controllers_key.dart';
@@ -47,11 +49,16 @@ class _CreatePostStoryScreenState extends State<CreatePostStoryScreen> {
         .then(
       (value) {
         if (!value) {
-          //FIXME : show error
-          print(postController.apiMessage);
+          showSnackbarMessage(
+            context: context,
+            message: postController.apiMessage,
+          );
         } else {
-          //FIXME : show error
-          print(postController.apiMessage);
+          showSnackbarMessage(
+            context: context,
+            message: "پست با موفقیت ایجاد شد",
+            type: MessageType.success,
+          );
           Navigator.of(context).pop(true);
         }
       },

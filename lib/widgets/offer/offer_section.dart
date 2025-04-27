@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/res/enums/message_type.dart';
 
+import '../error_snack_bar.dart';
 import '/models/offer_project.dart';
 import '/controllers/project_controller.dart';
 import '/global_configs.dart';
@@ -38,7 +40,10 @@ class _OfferSectionState extends State<OfferSection> {
   Future<void> offerProject() async {
     if (durationTextController.text.isEmpty ||
         priceTextController.text.isEmpty) {
-      // FIXME : show error
+      showSnackbarMessage(
+        context: context,
+        message: "مقادیر را وارد کنید",
+      );
       return;
     }
 
@@ -56,9 +61,16 @@ class _OfferSectionState extends State<OfferSection> {
         .then(
       (value) {
         if (!value) {
-          // FIXME : show error
+          showSnackbarMessage(
+            context: context,
+            message: projectController.apiMessage,
+          );
         } else {
-          // FIXME : show success
+          showSnackbarMessage(
+            context: context,
+            message: "پیشنهاد ارسال شد",
+            type: MessageType.success,
+          );
           Get.close(2);
         }
       },
@@ -101,9 +113,16 @@ class _OfferSectionState extends State<OfferSection> {
         .then(
       (value) {
         if (!value) {
-          // FIXME : show error
+          showSnackbarMessage(
+            context: context,
+            message: projectController.apiMessage,
+          );
         } else {
-          // FIXME : show success
+          showSnackbarMessage(
+            context: context,
+            message: "پیشنهاد تغییر داده شد",
+            type: MessageType.success,
+          );
           Get.back(result: true);
         }
       },
@@ -139,7 +158,7 @@ class _OfferSectionState extends State<OfferSection> {
             "فرم پیشنهاد به کارفرما",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w400,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+              color: theme.colorScheme.surface.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 25),
@@ -165,7 +184,7 @@ class _OfferSectionState extends State<OfferSection> {
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
-                hintText: "قیمت پیشنهادی",
+                hintText: "قیمت پیشنهادی (تومان)",
                 hintStyle: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.surface.withValues(alpha: 0.5),
                 ),
@@ -189,7 +208,7 @@ class _OfferSectionState extends State<OfferSection> {
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
-                hintText: "مدت زمان پیشنهادی",
+                hintText: "مدت زمان پیشنهادی (روز)",
                 hintStyle: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.surface.withValues(alpha: 0.5),
                 ),

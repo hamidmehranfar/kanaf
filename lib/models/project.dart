@@ -1,8 +1,7 @@
-import 'package:kanaf/models/city.dart';
-import 'package:kanaf/models/project_state.dart';
-import 'package:kanaf/models/user.dart';
-
-import '../res/enums/project_type.dart';
+import '/models/city.dart';
+import '/models/project_state.dart';
+import '/models/user.dart';
+import '/res/enums/project_type.dart';
 
 class Project {
   int id;

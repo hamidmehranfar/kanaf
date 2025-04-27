@@ -50,11 +50,16 @@ class _PostCaptionSectionState extends State<PostCaptionSection> {
                   text: "${widget.post.user.firstName ?? ''} ",
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color:
+                        theme.colorScheme.inverseSurface.withValues(alpha: 0.8),
                   ),
                 ),
                 TextSpan(
                   text: displayBio,
-                  style: theme.textTheme.bodyLarge,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color:
+                        theme.colorScheme.inverseSurface.withValues(alpha: 0.8),
+                  ),
                 ),
               ],
             ),
@@ -70,7 +75,8 @@ class _PostCaptionSectionState extends State<PostCaptionSection> {
                 isBioExpanded ? 'نمایش کمتر' : 'بیشتر',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+                  color:
+                      theme.colorScheme.inverseSurface.withValues(alpha: 0.8),
                 ),
               ),
             ),
