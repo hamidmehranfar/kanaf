@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/widgets/home/choose_calculation_type_dialog.dart';
 
 import '/controllers/city_controller.dart';
 import '/res/enums/calculate_type.dart';
@@ -310,124 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return Dialog(
-                              backgroundColor: theme.colorScheme.primary,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const SizedBox(height: 33),
-                                  Padding(
-                                    padding: globalPadding * 15,
-                                    child: Text(
-                                      "محاسبه",
-                                      style: theme.textTheme.headlineLarge
-                                          ?.copyWith(
-                                        color: theme.colorScheme.secondary,
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 35),
-                                  Padding(
-                                    padding: globalPadding * 5,
-                                    child: MyDivider(
-                                      color: theme.colorScheme.onSecondary,
-                                      height: 1,
-                                      thickness: 1,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 38),
-                                  InkWell(
-                                    onTap: () {
-                                      Get.off(
-                                        const CalculateDetailsScreen(
-                                          type: CalculateType.roof,
-                                        ),
-                                      );
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        SizedBox(
-                                          width: 200,
-                                          height: 86,
-                                          child: SvgPicture.asset(
-                                            'assets/images/calculate_button_svg.svg',
-                                            width: 200,
-                                            height: 86,
-                                            fit: BoxFit.cover,
-                                            colorFilter: ColorFilter.mode(
-                                              theme.colorScheme.tertiary,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 0,
-                                          right: 0,
-                                          top: 0,
-                                          bottom: 20,
-                                          child: Center(
-                                            child: Text(
-                                              "کناف سقف",
-                                              style: theme
-                                                  .textTheme.headlineSmall
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 15),
-                                  InkWell(
-                                    onTap: () {
-                                      Get.off(
-                                        const CalculateDetailsScreen(
-                                          type: CalculateType.wall,
-                                        ),
-                                      );
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        SizedBox(
-                                          width: 200,
-                                          height: 86,
-                                          child: SvgPicture.asset(
-                                            'assets/images/calculate_button_svg.svg',
-                                            width: 200,
-                                            height: 86,
-                                            fit: BoxFit.cover,
-                                            colorFilter: ColorFilter.mode(
-                                              theme.colorScheme.secondary,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 0,
-                                          right: 0,
-                                          top: 0,
-                                          bottom: 20,
-                                          child: Center(
-                                            child: Text(
-                                              "کناف دیوار",
-                                              style: theme
-                                                  .textTheme.headlineSmall
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 60),
-                                ],
-                              ),
-                            );
+                            return const ChooseCalculationTypeDialog();
                           },
                         );
                       } else {

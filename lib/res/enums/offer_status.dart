@@ -20,7 +20,7 @@ OfferStatus convertIndexToOfferStatus(String index) {
   }
 }
 
-String convertOfferStatusToIndex(OfferStatus status) {
+String convertOfferStatusToIndex(OfferStatus? status) {
   switch (status) {
     case OfferStatus.review:
       return "0";
@@ -30,5 +30,20 @@ String convertOfferStatusToIndex(OfferStatus status) {
       return "2";
     case OfferStatus.deny:
       return "3";
+    default:
+      return "0";
+  }
+}
+
+String convertOfferStatusToString(OfferStatus status) {
+  switch (status) {
+    case OfferStatus.review:
+      return "بررسی";
+    case OfferStatus.accept:
+      return "تایید";
+    case OfferStatus.deny:
+      return "رد";
+    case OfferStatus.finish:
+      return "خاتمه";
   }
 }

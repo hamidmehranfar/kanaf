@@ -128,13 +128,7 @@ class _DiscussionForumListScreenState extends State<DiscussionForumListScreen> {
                           return DiscussionForumItem(discussion: item);
                         },
                         noMoreItemsIndicatorBuilder: (context) {
-                          return const Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("موردی یافت نشد"),
-                              SizedBox(height: 36),
-                            ],
-                          );
+                          return const SizedBox(height: 36);
                         },
                         noItemsFoundIndicatorBuilder: (context) {
                           return const Center(

@@ -62,6 +62,7 @@ class _CalculateInfoDialogState extends State<CalculateInfoDialog> {
 
     await calculateController
         .getResult(
+      mainCategoryId: widget.material.id,
       quantity: numberTextController.text,
       variable1Value: variable1TextController?.text ?? '',
       variable2Value: variable2TextController?.text ?? '',

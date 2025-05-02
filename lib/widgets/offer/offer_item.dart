@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:kanaf/res/app_colors.dart';
-import 'package:kanaf/widgets/offer/finish_offer_dialog.dart';
 
+import '/res/enums/message_type.dart';
+import '/widgets/error_snack_bar.dart';
+import '/res/app_colors.dart';
+import '/widgets/offer/finish_offer_dialog.dart';
 import '/res/enums/offer_status.dart';
 import '/res/enums/project_type.dart';
 import '/controllers/project_controller.dart';
@@ -49,7 +51,15 @@ class _OfferItemState extends State<OfferItem> {
     )
         .then(
       (value) {
-        //show success
+        showSnackbarMessage(
+          context: context,
+          message: "درخواست پذیرفته شد",
+          type: MessageType.success,
+        );
+
+        projectController.offerTabPagingController[
+                int.parse(convertOfferStatusToIndex(OfferStatus.accept))]
+            .refresh();
       },
     );
 
@@ -70,7 +80,14 @@ class _OfferItemState extends State<OfferItem> {
     )
         .then(
       (value) {
-        //show success
+        showSnackbarMessage(
+          context: context,
+          message: "درخواست رد شد",
+          type: MessageType.success,
+        );
+        projectController.offerTabPagingController[
+                int.parse(convertOfferStatusToIndex(OfferStatus.deny))]
+            .refresh();
       },
     );
 
@@ -188,9 +205,7 @@ class _OfferItemState extends State<OfferItem> {
                               );
                             },
                           ).then((value) {
-                            if (value != null && value is bool && value) {
-                              widget.onTap();
-                            }
+                            if (value != null && value is bool && value) {}
                           });
                         },
                         style: FilledButton.styleFrom(

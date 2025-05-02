@@ -1,34 +1,31 @@
 import 'package:get/get.dart';
-import 'package:kanaf/models/calculate_material.dart';
 
+import '/models/calculate_material.dart';
 import '/controllers/api_controller.dart';
 import '/models/main_category.dart';
 import '/res/enums/api_method.dart';
-import '/res/enums/calculate_type.dart';
 
 class CalculateController extends GetxController {
   String _apiMessage = "";
 
-  MainCategory? _mainCategory;
+  List<MainCategory> _mainCategories = [];
 
   String get apiMessage => _apiMessage;
 
-  MainCategory? get mainCategory => _mainCategory;
+  List<MainCategory> get mainCategories => _mainCategories;
 
-  Future<bool> getSubCategory(CalculateType type) async {
+  Future<bool> getSubCategory() async {
     bool result = false;
 
     await ApiController.instance.request(
       url: "material/categories/",
       method: ApiMethod.get,
       onSuccess: (response) {
+        _mainCategories.clear();
         for (var value in response.data) {
-          MainCategory temp = MainCategory.fromJson(value);
-          if (temp.type == type) {
-            _mainCategory = temp;
-            break;
-          }
+          _mainCategories.add(MainCategory.fromJson(value));
         }
+
         result = true;
       },
       onCatchDioError: (e) {
@@ -43,6 +40,7 @@ class CalculateController extends GetxController {
   }
 
   Future<(List<(String, String)>?, CalculateMaterial?)> getResult({
+    required int mainCategoryId,
     required String quantity,
     required String variable1Value,
     required String variable2Value,
@@ -53,7 +51,7 @@ class CalculateController extends GetxController {
     CalculateMaterial? material;
 
     Map<String, String> payload = {
-      "material_type_id": _mainCategory?.id.toString() ?? '',
+      "material_type_id": mainCategoryId.toString() ?? '',
       "quantity": quantity,
     };
 

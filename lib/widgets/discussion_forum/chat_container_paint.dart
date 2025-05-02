@@ -1,6 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:kanaf/res/app_colors.dart';
+import 'package:kanaf/widgets/my_divider.dart';
 
 import '../error_snack_bar.dart';
 import '/res/enums/reaction_type.dart';
@@ -48,6 +52,10 @@ class _ChatContainerPaintState extends State<ChatContainerPaint> {
   String userAvatar = "";
   bool isSent = false;
 
+  bool replyClick = false;
+  bool replyLoading = false;
+  TextEditingController replyTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -79,6 +87,37 @@ class _ChatContainerPaintState extends State<ChatContainerPaint> {
         ? widget.discussion?.currentUserReaction?.reaction ==
             ReactionType.dislike
         : widget.answer?.currentUserReaction?.reaction == ReactionType.dislike;
+  }
+
+  Future<void> replyAnswer() async {
+    setState(() {
+      replyLoading = true;
+    });
+
+    await discussionController
+        .sendAnswerMessage(
+      message: replyTextController.text,
+      discussion: widget.answer?.discussionId ?? -1,
+      repliedAnswer: widget.answer?.id,
+    )
+        .then(
+      (value) {
+        if (value != null) {
+          widget.answer?.repliedAnswers.add(value);
+          replyTextController.text = "";
+          replyClick = false;
+        } else {
+          showSnackbarMessage(
+            context: context,
+            message: discussionController.apiMessage,
+          );
+        }
+      },
+    );
+
+    setState(() {
+      replyLoading = false;
+    });
   }
 
   Future<void> likeAnswerReaction() async {
@@ -353,39 +392,160 @@ class _ChatContainerPaintState extends State<ChatContainerPaint> {
                 : theme.colorScheme.secondary.withValues(alpha: 0.33),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                name,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: widget.isMainMessage ? 20 : 12,
-                  color: theme.colorScheme.surface.withValues(alpha: 0.75),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  name,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: widget.isMainMessage ? 20 : 12,
+                    color: theme.colorScheme.surface.withValues(alpha: 0.75),
+                  ),
                 ),
               ),
               if (widget.discussion != null &&
                   widget.discussion?.image != null) ...[
                 const SizedBox(height: 5),
-                ClipRRect(
-                  borderRadius: globalBorderRadius * 3,
-                  child: CustomCachedImage(
-                    url: widget.discussion!.image!,
-                    width: 165,
-                    height: 130,
-                    fit: BoxFit.cover,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ClipRRect(
+                    borderRadius: globalBorderRadius * 3,
+                    child: CustomCachedImage(
+                      url: widget.discussion!.image!,
+                      width: 165,
+                      height: 130,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 4),
               ] else
                 SizedBox(height: widget.isMainMessage ? 10 : 4),
-              Text(
-                text,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: widget.isMainMessage ? 13 : 9,
-                  fontWeight:
-                      widget.isMainMessage ? FontWeight.w400 : FontWeight.w500,
-                  color: theme.colorScheme.surface.withValues(alpha: 0.75),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  text,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: widget.isMainMessage ? 13 : 9,
+                    fontWeight: widget.isMainMessage
+                        ? FontWeight.w400
+                        : FontWeight.w500,
+                    color: theme.colorScheme.surface.withValues(alpha: 0.75),
+                  ),
                 ),
               ),
+              if ((!widget.isMainMessage &&
+                      (widget.answer?.repliedAnswers.isNotEmpty ?? false)) ||
+                  replyClick) ...[
+                const SizedBox(height: 4),
+                MyDivider(
+                  color: AppColors.paleBlack.withValues(alpha: 0.4),
+                  height: 1,
+                  thickness: 1,
+                ),
+                const SizedBox(height: 4),
+                ...widget.answer!.repliedAnswers.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final replied = entry.value;
+                  final isLast =
+                      index == widget.answer!.repliedAnswers.length - 1;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        replied.user.firstName ?? '',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 12,
+                          color:
+                              theme.colorScheme.surface.withValues(alpha: 0.75),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        replied.answer ?? '',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              theme.colorScheme.surface.withValues(alpha: 0.75),
+                        ),
+                      ),
+                      if (!isLast) ...[
+                        const SizedBox(height: 4),
+                        MyDivider(
+                          color: AppColors.paleBlack.withValues(alpha: 0.2),
+                          height: 1,
+                          thickness: 1,
+                        ),
+                        const SizedBox(height: 4),
+                      ],
+                    ],
+                  );
+                }),
+                if (replyClick) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: replyLoading
+                            ? SpinKitThreeBounce(
+                                size: 14,
+                                color: AppColors.textFieldColor,
+                              )
+                            : InkWell(
+                                onTap: () async {
+                                  await replyAnswer();
+                                },
+                                child: Transform.rotate(
+                                  angle: 180 * math.pi / 180,
+                                  child: Icon(
+                                    Icons.send,
+                                    color: AppColors.paleBlack,
+                                  ),
+                                ),
+                              ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 40,
+                          padding: globalPadding * 3,
+                          decoration: BoxDecoration(
+                            borderRadius: globalBorderRadius * 4,
+                            color: AppColors.textFieldColor
+                                .withValues(alpha: 0.78),
+                          ),
+                          child: Center(
+                            child: TextField(
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: theme.colorScheme.surface,
+                              ),
+                              controller: replyTextController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                hintText: "پیام",
+                                hintStyle:
+                                    theme.textTheme.labelMedium?.copyWith(
+                                  color: theme.colorScheme.surface
+                                      .withValues(alpha: 0.5),
+                                ),
+                              ),
+                              scrollPadding: const EdgeInsets.only(bottom: 200),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ]
+              ],
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -448,27 +608,34 @@ class _ChatContainerPaintState extends State<ChatContainerPaint> {
                             color: theme.colorScheme.primary,
                           ),
                         ),
-                  const SizedBox(width: 4),
-                  InkWell(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.replay,
-                          size: 14,
-                          color: theme.colorScheme.primary,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          "پاسخ $name",
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            fontSize: 12,
-                            color: theme.colorScheme.secondary
-                                .withValues(alpha: 0.61),
+                  if (!widget.isMainMessage) ...[
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          replyClick = !replyClick;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.replay,
+                            size: 14,
+                            color: theme.colorScheme.primary,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 5),
+                          Text(
+                            "پاسخ $name",
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              fontSize: 12,
+                              color: theme.colorScheme.secondary
+                                  .withValues(alpha: 0.61),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
               const SizedBox(height: 5),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:kanaf/res/enums/offer_status.dart';
 
 import '/models/employer_project.dart';
@@ -13,6 +14,8 @@ import '/res/enums/api_method.dart';
 
 class ProjectController extends GetxController {
   String _apiMessage = '';
+
+  List<PagingController<int, OfferProject>> _offerTabPagingController = [];
 
   get apiMessage {
     return _apiMessage;
@@ -39,6 +42,24 @@ class ProjectController extends GetxController {
   //
   //   return projects;
   // }
+
+  List<PagingController<int, OfferProject>> get offerTabPagingController =>
+      _offerTabPagingController;
+
+  void initPagingControllers() {
+    _offerTabPagingController = List.generate(
+      OfferStatus.values.length,
+      (index) {
+        return PagingController(firstPageKey: 1);
+      },
+    );
+  }
+
+  void deposePagingControllers() {
+    for (var controller in _offerTabPagingController) {
+      controller.dispose();
+    }
+  }
 
   Future<List<EmployerProject>?> getHomeProjects(int pageKey) async {
     List<EmployerProject>? projects;
@@ -278,11 +299,17 @@ class ProjectController extends GetxController {
   Future<List<OfferProject>?> getOffers({
     required ProjectType type,
     required int pageKey,
+    required int? status,
   }) async {
     List<OfferProject>? projects;
 
+    String queryParam = "?kind=${type.name}&pageKey=$pageKey";
+    if (status != null) {
+      queryParam += "&state=$status";
+    }
+
     await ApiController.instance.request(
-      url: "employer/proposals/?kind=${type.name}&pageKey=$pageKey",
+      url: "employer/proposals/$queryParam",
       method: ApiMethod.get,
       onSuccess: (response) {
         projects = [];

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '/widgets/offer/offer_tab_item.dart';
+import '/res/enums/offer_status.dart';
 import '/controllers/size_controller.dart';
-import '/res/app_colors.dart';
-import '/widgets/offer/offer_item.dart';
 import '/global_configs.dart';
 import '/models/offer_project.dart';
 import '/res/enums/project_type.dart';
@@ -12,8 +12,6 @@ import '/widgets/my_divider.dart';
 import '/controllers/project_controller.dart';
 import '/res/controllers_key.dart';
 import '/widgets/custom_appbar.dart';
-import '/widgets/custom_error_widget.dart';
-import '/widgets/custom_shimmer.dart';
 
 class OffersScreen extends StatefulWidget {
   final ProjectType type;
@@ -24,36 +22,30 @@ class OffersScreen extends StatefulWidget {
   State<OffersScreen> createState() => _OffersScreenState();
 }
 
-class _OffersScreenState extends State<OffersScreen> {
-  ProjectController profileController = Get.find(
+class _OffersScreenState extends State<OffersScreen>
+    with SingleTickerProviderStateMixin {
+  ProjectController projectController = Get.find(
     tag: ControllersKey.projectControllerKey,
   );
 
-  final PagingController<int, OfferProject> _pagingController =
-      PagingController(firstPageKey: 1);
+  late TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey) async {
-      await _fetchProjects(pageKey);
+
+    tabController = TabController(length: 4, vsync: this);
+    tabController.addListener(() {
+      setState(() {});
     });
+
+    projectController.initPagingControllers();
   }
 
-  Future<void> _fetchProjects(int pageKey) async {
-    final newItems =
-        await profileController.getOffers(pageKey: pageKey, type: widget.type);
-    if (newItems == null) {
-      _pagingController.error = profileController.apiMessage;
-    } else {
-      final lastPage = newItems.length < 10;
-      if (lastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    projectController.deposePagingControllers();
   }
 
   @override
@@ -63,113 +55,69 @@ class _OffersScreenState extends State<OffersScreen> {
       backgroundColor: theme.colorScheme.primary,
       appBar: CustomAppbar(
         iconAsset: "assets/icons/arrow_back_19.png",
-        onTap: () => Navigator.pop(context),
+        onTap: () => Navigator.of(context).pop(),
         hasShadow: true,
       ),
       body: SizedBox(
         height: SizeController.height(context),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            _pagingController.refresh();
-          },
-          child: Padding(
-            padding: globalPadding * 12,
-            child: Column(
-              children: [
-                const SizedBox(height: 25),
-                Text(
-                  "پیشنهاد ها",
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: theme.colorScheme.secondary.withValues(alpha: 0.4),
-                  ),
+        child: Padding(
+          padding: globalPadding * 12,
+          child: Column(
+            children: [
+              const SizedBox(height: 25),
+              Text(
+                "پیشنهاد ها",
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: theme.colorScheme.secondary.withValues(alpha: 0.4),
                 ),
-                const SizedBox(height: 18),
-                Padding(
-                  padding: globalPadding,
-                  child: MyDivider(
-                    color: theme.colorScheme.secondary,
-                    height: 1,
-                    thickness: 1,
-                  ),
+              ),
+              const SizedBox(height: 18),
+              Padding(
+                padding: globalPadding,
+                child: MyDivider(
+                  color: theme.colorScheme.secondary,
+                  height: 1,
+                  thickness: 1,
                 ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: PagedListView.separated(
-                    pagingController: _pagingController,
-                    separatorBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          const SizedBox(height: 13),
-                          MyDivider(
-                            color: AppColors.paleBlack,
-                            height: 1,
-                            thickness: 1,
-                          ),
-                          const SizedBox(height: 18),
-                        ],
+              ),
+              const SizedBox(height: 12),
+              TabBar(
+                labelColor: theme.colorScheme.surface,
+                unselectedLabelColor:
+                    theme.colorScheme.surface.withValues(alpha: 0.5),
+                unselectedLabelStyle: theme.textTheme.labelMedium,
+                controller: tabController,
+                indicatorSize: TabBarIndicatorSize.tab,
+                tabs: List.generate(
+                  OfferStatus.values.length,
+                  (index) {
+                    return Tab(
+                      child: Text(
+                        convertOfferStatusToString(
+                          OfferStatus.values[index],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: List.generate(
+                    OfferStatus.values.length,
+                    (index) {
+                      return OfferTabItem(
+                        key: ValueKey(OfferStatus.values[index]),
+                        type: widget.type,
+                        offerStatusIndex: index,
                       );
                     },
-                    builderDelegate: PagedChildBuilderDelegate(
-                      itemBuilder:
-                          (BuildContext context, OfferProject item, int index) {
-                        return OfferItem(
-                          offer: item,
-                          type: widget.type,
-                          onTap: () async {
-                            _pagingController.refresh();
-                          },
-                        );
-                      },
-                      firstPageErrorIndicatorBuilder: (context) {
-                        return CustomErrorWidget(onTap: () {
-                          _pagingController.refresh();
-                        });
-                      },
-                      noMoreItemsIndicatorBuilder: (context) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "موردی یافت نشد",
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 36),
-                          ],
-                        );
-                      },
-                      noItemsFoundIndicatorBuilder: (context) {
-                        return Center(
-                          child: Text(
-                            "موردی یافت نشد",
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
-                        );
-                      },
-                      firstPageProgressIndicatorBuilder: (context) {
-                        return CustomShimmer(
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: globalPadding * 6,
-                                height: 400,
-                                decoration: BoxDecoration(
-                                  borderRadius: globalBorderRadius * 3,
-                                  color: theme.colorScheme.onSurface,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

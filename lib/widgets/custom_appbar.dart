@@ -7,6 +7,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? icon;
   final String? iconAsset;
   final bool hasShadow;
+  final PreferredSizeWidget? bottom;
 
   const CustomAppbar({
     super.key,
@@ -14,6 +15,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
     this.icon,
     this.iconAsset,
     this.hasShadow = false,
+    this.bottom,
   });
 
   @override
@@ -42,9 +44,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

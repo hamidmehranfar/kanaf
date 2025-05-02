@@ -232,31 +232,38 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
               children: [
                 FilledButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return ActivateEmployerProfileSection(
-                          employerUser: employerProfile,
-                        );
-                      },
-                    ).then((value) async {
-                      await fetchEmployerProfileAndProjects();
-                    });
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) {
+                    //     return ActivateEmployerProfileSection(
+                    //       employerUser: employerProfile,
+                    //     );
+                    //   },
+                    // ).then((value) async {
+                    //   await fetchEmployerProfileAndProjects();
+                    // });
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const OffersScreen(type: ProjectType.received);
+                        },
+                      ),
+                    );
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: theme.colorScheme.tertiary,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    fixedSize: const Size.fromWidth(150),
                   ),
                   child: Text(
-                    "تغییر مشخصات",
+                    "پیشنهادهای ورودی",
                     style: theme.textTheme.bodyLarge,
                   ),
                 ),
                 const SizedBox(width: 10),
                 FilledButton(
                   onPressed: () {
-                    // Get.to(
-                    //   const OffersScreen(type: ProjectType.received),
-                    // );
                     Get.to(
                       const EmployerCreateProjectScreen(
                         project: null,
@@ -265,6 +272,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: theme.colorScheme.tertiary,
+                    fixedSize: const Size.fromWidth(150),
                   ),
                   child: Text(
                     "پروژه جدید",

@@ -4,14 +4,24 @@ import '../res/enums/calculate_type.dart';
 
 class MainCategory {
   final int id;
-  final CalculateType type;
+  final String name;
+  final bool isComingSoon;
   final List<SubCategory> subCategories;
 
-  MainCategory(this.id, this.type, this.subCategories);
+  MainCategory(
+    this.id,
+    this.name,
+    this.subCategories,
+    this.isComingSoon,
+  );
 
   MainCategory.fromJson(Map<String, dynamic> json)
       : id = json["id"],
-        type = convertStringToCalculateType(json["name"]),
+        name = json["name"],
+        isComingSoon = json["is_comming_soon"],
         subCategories = List.from(
-            json["subcategories"].map((item) => SubCategory.fromJson(item)));
+          json["subcategories"].map(
+            (item) => SubCategory.fromJson(item),
+          ),
+        );
 }
